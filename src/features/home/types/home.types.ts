@@ -6,6 +6,11 @@ export interface Category {
   icon: StaticImageData | string;
 }
 
+export interface LocationState {
+  lat: number;
+  lng: number;
+}
+
 export interface Venue {
   id: string;
   name: string;
@@ -13,13 +18,22 @@ export interface Venue {
   rating: number;
   reviewCount: number;
   address: string;
+  city?: string;
+  district?: string;
   openTime: string;
   imageUrl: string;
-  location: {
-    lat: number;
-    lng: number;
-  };
-  markerColor: string; // Màu sắc hiển thị marker trên bản đồ
+  location: LocationState;
+  markerColor: string;
+  distance?: number;
+  distanceText?: string;
 }
 
 export type ViewMode = "grid" | "map";
+
+export interface FilterState {
+  selectedSports: string[];
+  city: string;
+  district: string;
+  ratingMin: number;
+  openNow: boolean;
+}

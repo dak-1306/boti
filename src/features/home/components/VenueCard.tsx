@@ -1,6 +1,8 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Image from "next/image";
-import { Star, MapPin, Clock } from "lucide-react";
+import { Star, MapPin, Clock, ImageOff } from "lucide-react";
 import { Venue } from "../types/home.types";
 import { HOME_TEXTS } from "../constants/home.constants";
 
@@ -9,57 +11,74 @@ interface VenueCardProps {
 }
 
 export function VenueCard({ venue }: VenueCardProps) {
+  const [imageError, setImageError] = useState(false);
+
   return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-      {/* Thumbnail */}
-      <div className="relative h-28 w-full bg-slate-100">
-        <Image
-          src={venue.imageUrl}
-          alt={venue.name}
-          fill
-          className="object-cover"
-          sizes="(max-width: 430px) 50vw, 200px"
-        />
+    <div className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-xs border border-slate-100 dark:bg-slate-900 dark:border-slate-800/80 transition-transform active:scale-[0.98]">
+      {/* 1. Khung Ảnh Sân (Xử lý Fallback khi ảnh lỗi) */}
+      <div className="relative h-28 w-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+        {!imageError && venue.imageUrl ? (
+          <Image
+            src={venue.imageUrl}
+            alt={venue.name}
+            fill
+            className="object-cover"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          /* Placeholder hiển thị khi ảnh lỗi hoặc không có URL */
+          <div className="flex flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500">
+            <ImageOff className="h-6 w-6 stroke-[1.5]" />
+            <span className="text-[9px] font-medium text-slate-400">
+              Không có ảnh
+            </span>
+          </div>
+        )}
+
+        {/* Badge khoảng cách GPS */}
+        {venue.distanceText && (
+          <span className="absolute top-2 left-2 z-10 rounded-md bg-blue-600/90 px-1.5 py-0.5 text-[9px] font-bold text-white backdrop-blur-xs shadow-xs">
+            {venue.distanceText}
+          </span>
+        )}
       </div>
 
-      {/* Details */}
-      <div className="flex flex-1 flex-col p-2.5">
-        <h3 className="line-clamp-1 text-xs font-bold text-slate-800 dark:text-slate-100">
-          {venue.name}
-        </h3>
+      {/* 2. Nội dung thông tin card */}
+      <div className="flex flex-1 flex-col justify-between p-2.5">
+        <div className="space-y-1">
+          {/* Loại môn & Đánh giá */}
+          <div className="flex items-center justify-between gap-1">
+            <span className="truncate text-[10px] font-semibold text-blue-600 dark:text-blue-400">
+              {venue.category}
+            </span>
+            <div className="flex items-center gap-0.5 shrink-0 text-amber-500">
+              <Star className="h-3 w-3 fill-amber-500" />
+              <span className="text-[11px] font-bold">{venue.rating}</span>
+            </div>
+          </div>
 
-        {/* Tag Category */}
-        <div className="mt-1">
-          <span className="rounded-md bg-blue-50 px-1.5 py-0.5 text-[9px] font-medium text-blue-600 dark:bg-blue-950 dark:text-blue-300">
-            {venue.category}
-          </span>
+          {/* Tên sân */}
+          <h3 className="line-clamp-1 text-xs font-bold text-slate-800 dark:text-slate-100">
+            {venue.name}
+          </h3>
+
+          {/* Địa chỉ */}
+          <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+            <MapPin className="h-3 w-3 shrink-0 text-slate-400" />
+            <p className="line-clamp-1 text-[10px]">{venue.address}</p>
+          </div>
+
+          {/* Giờ mở cửa */}
+          <div className="flex items-center gap-1 text-slate-400">
+            <Clock className="h-3 w-3 shrink-0" />
+            <span className="text-[9px] font-medium truncate">
+              {venue.openTime}
+            </span>
+          </div>
         </div>
 
-        {/* Rating */}
-        <div className="mt-2 flex items-center gap-1 text-[10px] text-slate-500">
-          <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-          <span className="font-semibold text-slate-700 dark:text-slate-200">
-            {venue.rating.toFixed(1)}
-          </span>
-          <span>
-            ({venue.reviewCount} {HOME_TEXTS.reviewsText})
-          </span>
-        </div>
-
-        {/* Address */}
-        <div className="mt-1 flex items-start gap-1 text-[10px] text-slate-500">
-          <MapPin className="h-3 w-3 shrink-0 text-blue-500" />
-          <span className="line-clamp-2">{venue.address}</span>
-        </div>
-
-        {/* Open Time */}
-        <div className="mt-1 flex items-center gap-1 text-[10px] text-slate-500">
-          <Clock className="h-3 w-3 shrink-0 text-blue-500" />
-          <span>{venue.openTime}</span>
-        </div>
-
-        {/* Action Button */}
-        <button className="mt-3 w-full rounded-xl bg-blue-500 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-600 active:scale-95">
+        {/* 3. Nút Đặt Lịch Full Width */}
+        <button className="mt-3 w-full rounded-xl bg-blue-600 py-2 text-xs font-bold text-white transition hover:bg-blue-700 active:scale-95 shadow-xs">
           {HOME_TEXTS.bookBtn}
         </button>
       </div>
