@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Star, MapPin, Clock, ChevronRight, ImageOff } from "lucide-react";
 import { Venue } from "../../types/home.types";
-import { HOME_TEXTS } from "../../constants/home.constants";
 
 interface VenueMapCardProps {
   venue: Venue;
@@ -21,9 +20,9 @@ export function VenueMapCard({ venue, onClick }: VenueMapCardProps) {
     >
       {/* 1. Hình ảnh bên trái + Fallback & Badge Khoảng cách */}
       <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-        {!imageError && venue.imageUrl ? (
+        {!imageError && (venue.images?.[0] || venue.imageUrl) ? (
           <Image
-            src={venue.imageUrl}
+            src={venue.images?.[0] || venue.imageUrl || ""}
             alt={venue.name}
             fill
             className="object-cover"

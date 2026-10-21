@@ -15,6 +15,7 @@ interface VenueMapViewProps {
   userLocation: LocationState | null;
   onRequestLocation: () => void;
   isLoadingLocation: boolean;
+  onOpenDetail: (venue: Venue) => void;
 }
 
 export function VenueMapView({
@@ -24,6 +25,7 @@ export function VenueMapView({
   userLocation,
   onRequestLocation,
   isLoadingLocation,
+  onOpenDetail,
 }: VenueMapViewProps) {
   const { mapContainerRef, handleRecenterToUser } = useLeafletMap({
     venues,
@@ -54,7 +56,10 @@ export function VenueMapView({
             exit="exit"
             className="absolute bottom-4 left-4 right-4 z-10"
           >
-            <VenueMapCard venue={selectedVenue} />
+            <VenueMapCard
+              venue={selectedVenue}
+              onClick={() => onOpenDetail(selectedVenue)}
+            />
           </motion.div>
         )}
       </AnimatePresence>

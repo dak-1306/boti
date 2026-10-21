@@ -8,25 +8,28 @@ import { HOME_TEXTS } from "../constants/home.constants";
 
 interface VenueCardProps {
   venue: Venue;
+  onClick: () => void;
 }
 
-export function VenueCard({ venue }: VenueCardProps) {
+export function VenueCard({ venue, onClick }: VenueCardProps) {
   const [imageError, setImageError] = useState(false);
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-xs border border-slate-100 dark:bg-slate-900 dark:border-slate-800/80 transition-transform active:scale-[0.98]">
+    <div
+      onClick={onClick}
+      className="flex cursor-pointer flex-col overflow-hidden rounded-2xl bg-white shadow-xs border border-slate-100 dark:bg-slate-900 dark:border-slate-800/80 transition-transform active:scale-[0.98]"
+    >
       {/* 1. Khung Ảnh Sân (Xử lý Fallback khi ảnh lỗi) */}
       <div className="relative h-28 w-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-        {!imageError && venue.imageUrl ? (
+        {!imageError && (venue.images?.[0] || venue.imageUrl) ? (
           <Image
-            src={venue.imageUrl}
+            src={venue.images?.[0] || venue.imageUrl || ""}
             alt={venue.name}
             fill
             className="object-cover"
             onError={() => setImageError(true)}
           />
         ) : (
-          /* Placeholder hiển thị khi ảnh lỗi hoặc không có URL */
           <div className="flex flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500">
             <ImageOff className="h-6 w-6 stroke-[1.5]" />
             <span className="text-[9px] font-medium text-slate-400">
@@ -78,7 +81,13 @@ export function VenueCard({ venue }: VenueCardProps) {
         </div>
 
         {/* 3. Nút Đặt Lịch Full Width */}
-        <button className="mt-3 w-full rounded-xl bg-blue-600 py-2 text-xs font-bold text-white transition hover:bg-blue-700 active:scale-95 shadow-xs">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
+          className="mt-3 w-full rounded-xl bg-blue-600 py-2 text-xs font-bold text-white transition hover:bg-blue-700 active:scale-95 shadow-xs"
+        >
           {HOME_TEXTS.bookBtn}
         </button>
       </div>

@@ -12,10 +12,15 @@ import {
 
 interface VenueGridProps {
   venues: Venue[];
+  onSelectVenue: (venue: Venue) => void;
   onResetFilters?: () => void;
 }
 
-export function VenueGrid({ venues, onResetFilters }: VenueGridProps) {
+export function VenueGrid({
+  venues,
+  onSelectVenue,
+  onResetFilters,
+}: VenueGridProps) {
   if (venues.length === 0) {
     return (
       <motion.div
@@ -53,7 +58,7 @@ export function VenueGrid({ venues, onResetFilters }: VenueGridProps) {
     >
       {venues.map((venue) => (
         <motion.div key={venue.id} variants={gridItemVariants}>
-          <VenueCard venue={venue} />
+          <VenueCard venue={venue} onClick={() => onSelectVenue(venue)} />
         </motion.div>
       ))}
     </motion.div>

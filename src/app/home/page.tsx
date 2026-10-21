@@ -6,7 +6,8 @@ import { CategoryList } from "@/features/home/components/CategoryList";
 import { VenueSectionHeader } from "@/features/home/components/VenueSectionHeader";
 import { VenueGrid } from "@/features/home/components/VenueGrid";
 import { VenueMapView } from "@/features/home/components/map/VenueMapView";
-import { FilterDrawer } from "@/features/home/components/drawer/FilterDrawer";
+import { FilterDrawer } from "@/features/home/components/drawer-filter/FilterDrawer";
+import { VenueDetailDrawer } from "@/features/home/components/detail-drawer/VenueDetailDrawer";
 import { BottomNav } from "@/components/common/BottomNav";
 import { useHome } from "@/features/home/hooks/useHome";
 import { viewSwitchVariants } from "@/features/home/constants/home.motion";
@@ -33,6 +34,10 @@ export default function HomePage() {
     onRequestLocation,
     isLoadingLocation,
     hasLocation,
+    // Detail Drawer State & Handlers
+    detailVenue,
+    openDetailDrawer,
+    closeDetailDrawer,
   } = useHome();
 
   return (
@@ -70,7 +75,11 @@ export default function HomePage() {
               exit="exit"
               className="h-full overflow-y-auto pb-4 no-scrollbar"
             >
-              <VenueGrid venues={venues} onResetFilters={handleResetFilters} />
+              <VenueGrid
+                venues={venues}
+                onSelectVenue={openDetailDrawer}
+                onResetFilters={handleResetFilters}
+              />
             </motion.div>
           ) : (
             <motion.div
@@ -85,6 +94,7 @@ export default function HomePage() {
                 venues={venues}
                 selectedVenue={selectedVenueOnMap}
                 onSelectVenue={setSelectedVenueOnMap}
+                onOpenDetail={openDetailDrawer}
                 userLocation={userLocation}
                 onRequestLocation={onRequestLocation}
                 isLoadingLocation={isLoadingLocation}
@@ -103,6 +113,13 @@ export default function HomePage() {
         onClose={closeFilterDrawer}
         filters={filters}
         onApplyFilters={setFilters}
+      />
+
+      {/* VENUE DETAIL DRAWER */}
+      <VenueDetailDrawer
+        venue={detailVenue}
+        isOpen={!!detailVenue}
+        onClose={closeDetailDrawer}
       />
     </div>
   );

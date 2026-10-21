@@ -17,6 +17,8 @@ export const useHome = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
 
+  const [detailVenue, setDetailVenue] = useState<Venue | null>(null);
+
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTER_STATE);
 
@@ -148,5 +150,10 @@ export const useHome = () => {
     isLoadingLocation,
     locationError,
     hasLocation: !!userLocation,
+
+    // Detail Drawer
+    detailVenue,
+    openDetailDrawer: (venue: Venue) => setDetailVenue(venue),
+    closeDetailDrawer: () => setDetailVenue(null),
   };
 };

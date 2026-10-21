@@ -66,10 +66,16 @@ export function FilterDrawer({
   };
 
   return (
-    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DrawerContent className="max-h-[85vh] rounded-t-[28px] bg-white dark:bg-slate-900 sm:mx-auto sm:max-w-[390px]">
+    <Drawer
+      open={isOpen}
+      onOpenChange={(open) => !open && onClose()}
+      snapPoints={["55vh", "85vh"]}
+      defaultSnapPoint="55vh"
+      showSwipeHandle
+    >
+      <DrawerContent className="max-h-[85vh] rounded-t-[28px] bg-white dark:bg-slate-900 sm:mx-auto sm:max-w-[390px] ">
         {/* Header */}
-        <DrawerHeader className="border-b border-slate-100 pb-3 dark:border-slate-800">
+        <DrawerHeader className="border-b border-slate-100 pb-3 dark:border-slate-800 pt-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <SlidersHorizontal className="h-4 w-4 text-blue-600" />
