@@ -1,0 +1,41 @@
+[
+  {
+    "id": "b1",
+    "venueId": "v1",
+    "venueName": "Sân Pickleball 291",
+    "category": "Pickleball",
+    "imageUrl": "https://images.unsplash.com/photo-1626248801379-51a0748a5f96?w=800&auto=format&fit=crop&q=80",
+    "status": "confirmed",
+    "statusText": "Đã xác nhận",
+    "date": "2025-07-28",
+    "dateText": "Thứ 2, 28/07/2025",
+    "timeText": "07:00 - 08:00",
+    "address": "142/5A Hoàng Dư Khương, Q.10, TP.HCM"
+  },
+  {
+    "id": "b2",
+    "venueId": "v2",
+    "venueName": "Sân cầu lông Riverside",
+    "category": "Cầu lông",
+    "imageUrl": "https://images.unsplash.com/photo-1626225967045-944088226228?w=800&auto=format&fit=crop&q=80",
+    "status": "confirmed",
+    "statusText": "Đã xác nhận",
+    "date": "2025-07-30",
+    "dateText": "Thứ 4, 30/07/2025",
+    "timeText": "19:00 - 20:00",
+    "address": "239/10 Nguyễn Duy Trinh, Q.2, TP.HCM"
+  },
+  {
+    "id": "b3",
+    "venueId": "v3",
+    "venueName": "Sân bóng rổ 3×3 Hoops",
+    "category": "Bóng rổ",
+    "imageUrl": "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&auto=format&fit=crop&q=80",
+    "status": "confirmed",
+    "statusText": "Đã xác nhận",
+    "date": "2025-07-31",
+    "dateText": "Thứ 5, 31/07/2025",
+    "timeText": "14:00 - 16:00",
+    "address": "90 Song Hành, Tp.Thủ Đức, TP.HCM"
+  }
+]
