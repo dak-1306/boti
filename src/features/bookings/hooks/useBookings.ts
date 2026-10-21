@@ -1,10 +1,6 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import {
-  BookingItem,
-  BookingTab,
-  BookingFilterState,
-} from "../types/bookings.types";
+import { BookingItem, BookingFilterState } from "../types/bookings.types";
 import rawBookingsMock from "../data/bookings.mock.json";
 
 export const useBookings = () => {
@@ -19,15 +15,12 @@ export const useBookings = () => {
   });
 
   const [isDateDrawerOpen, setIsDateDrawerOpen] = useState(false);
-  const initialBookings = rawBookingsMock as BookingItem[];
+  const initialBookings = rawBookingsMock as unknown as BookingItem[];
 
   // LOGIC LỌC TỔNG HỢP THEO TAB + (NGÀY / THÁNG / NĂM)
   const filteredBookings = useMemo(() => {
     return initialBookings.filter((booking) => {
-      // 1. Lọc theo Tab Status
       if (booking.status !== filters.tab) return false;
-
-      // 2. Lọc theo Thời gian
       if (filters.filterMode === "all") return true;
 
       const [bYear, bMonth, bDay] = booking.date.split("-").map(Number);
@@ -82,6 +75,11 @@ export const useBookings = () => {
     return null;
   }, [filters]);
 
+  // HÀM CHUYỂN TRANG CHI TIẾT THEO ID ĐƠN ĐẶT
+  const handleSelectBooking = (id: string) => {
+    router.push(`/bookings/${id}`);
+  };
+
   return {
     filters,
     setFilters,
@@ -94,5 +92,6 @@ export const useBookings = () => {
     clearDateFilter: () =>
       setFilters((prev) => ({ ...prev, filterMode: "all" })),
     handleNavigateToHome: () => router.push("/home"),
+    handleSelectBooking,
   };
 };

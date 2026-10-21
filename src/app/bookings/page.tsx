@@ -23,6 +23,7 @@ export default function BookingsPage() {
     closeDateDrawer,
     clearDateFilter,
     handleNavigateToHome,
+    handleSelectBooking,
   } = useBookings();
 
   const currentTabLabel =
@@ -48,7 +49,10 @@ export default function BookingsPage() {
       {/* DANH SÁCH CUỘN ĐỘC LẬP */}
       <div className="flex-1 overflow-y-auto no-scrollbar">
         {hasBookings ? (
-          <BookingList bookings={bookings} />
+          <BookingList
+            bookings={bookings}
+            onSelectBooking={(booking) => handleSelectBooking(booking.id)}
+          />
         ) : (
           <BookingEmptyState onBookNow={handleNavigateToHome} />
         )}
