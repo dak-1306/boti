@@ -7,6 +7,7 @@ import {
   getDefaultClassNames,
   type DayButton,
   type Locale,
+  type DropdownProps,
 } from "react-day-picker";
 
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -20,7 +21,7 @@ function Calendar({
   className,
   classNames,
   showOutsideDays = true,
-  captionLayout = "label",
+  captionLayout = "dropdown",
   buttonVariant = "ghost",
   locale,
   formatters,
@@ -55,7 +56,7 @@ function Calendar({
         ),
         month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
         nav: cn(
-          "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
+          "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1 z-10",
           defaultClassNames.nav,
         ),
         button_previous: cn(
@@ -73,22 +74,15 @@ function Calendar({
           defaultClassNames.month_caption,
         ),
         dropdowns: cn(
-          "flex h-(--cell-size) w-full items-center justify-center gap-2 text-xs font-medium",
+          "flex h-(--cell-size) w-full items-center justify-center gap-2 text-xs font-semibold z-20",
           defaultClassNames.dropdowns,
         ),
         dropdown_root: cn(
-          "relative flex items-center rounded-xl border border-slate-200/80 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/60 px-2.5 py-1 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800",
+          "relative flex items-center",
           defaultClassNames.dropdown_root,
         ),
-        dropdown: cn(
-          "absolute inset-0 bg-popover opacity-0",
-          defaultClassNames.dropdown,
-        ),
         caption_label: cn(
-          "font-medium select-none",
-          captionLayout === "label"
-            ? "text-sm"
-            : "flex items-center gap-1 rounded-(--cell-radius) text-sm [&>svg]:size-3.5 [&>svg]:text-muted-foreground",
+          "font-medium select-none text-xs",
           defaultClassNames.caption_label,
         ),
         month_grid: cn("w-full border-collapse", defaultClassNames.month_grid),
@@ -98,29 +92,9 @@ function Calendar({
           defaultClassNames.weekday,
         ),
         week: cn("mt-2 flex w-full", defaultClassNames.week),
-        week_number_header: cn(
-          "w-(--cell-size) select-none",
-          defaultClassNames.week_number_header,
-        ),
-        week_number: cn(
-          "text-[0.8rem] text-muted-foreground select-none",
-          defaultClassNames.week_number,
-        ),
         day: cn(
-          "group/day relative aspect-square h-full w-full rounded-(--cell-radius) p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-(--cell-radius)",
-          props.showWeekNumber
-            ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-(--cell-radius)"
-            : "[&:first-child[data-selected=true]_button]:rounded-l-(--cell-radius)",
+          "group/day relative aspect-square h-full w-full rounded-(--cell-radius) p-0 text-center select-none",
           defaultClassNames.day,
-        ),
-        range_start: cn(
-          "relative isolate z-0 rounded-l-(--cell-radius) bg-muted after:absolute after:inset-y-0 after:right-0 after:w-4 after:bg-muted",
-          defaultClassNames.range_start,
-        ),
-        range_middle: cn("rounded-none", defaultClassNames.range_middle),
-        range_end: cn(
-          "relative isolate z-0 rounded-r-(--cell-radius) bg-muted after:absolute after:inset-y-0 after:left-0 after:w-4 after:bg-muted",
-          defaultClassNames.range_end,
         ),
         today: cn(
           "rounded-(--cell-radius) bg-muted text-foreground data-[selected=true]:rounded-none",
@@ -138,16 +112,14 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        Root: ({ className, rootRef, ...props }) => {
-          return (
-            <div
-              data-slot="calendar"
-              ref={rootRef}
-              className={cn(className)}
-              {...props}
-            />
-          );
-        },
+        Root: ({ className, rootRef, ...props }) => (
+          <div
+            data-slot="calendar"
+            ref={rootRef}
+            className={cn(className)}
+            {...props}
+          />
+        ),
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
             return (
@@ -165,25 +137,98 @@ function Calendar({
           }
 
           return (
-            <ChevronDownIcon className={cn("size-4", className)} {...props} />
+            <ChevronDownIcon
+              className={cn("size-3.5 opacity-70", className)}
+              {...props}
+            />
           );
         },
+        Dropdown: CustomCalendarDropdown,
         DayButton: ({ ...props }) => (
           <CalendarDayButton locale={locale} {...props} />
         ),
-        WeekNumber: ({ children, ...props }) => {
-          return (
-            <td {...props}>
-              <div className="flex size-(--cell-size) items-center justify-center text-center">
-                {children}
-              </div>
-            </td>
-          );
-        },
         ...components,
       }}
       {...props}
     />
+  );
+}
+
+/* CUSTOM REACT DROPDOWN POPUP 100% DOM - KHÔNG DÙNG NATIVE SELECT */
+function CustomCalendarDropdown({ value, onChange, options }: DropdownProps) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const selectedOption = options?.find(
+    (opt) => String(opt.value) === String(value),
+  );
+
+  // Đóng Menu khi click ra ngoài
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative inline-block" ref={containerRef} data-vaul-no-drag>
+      {/* Nút Trigger Chip */}
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/80 px-2.5 py-1 text-xs font-bold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 shadow-2xs"
+      >
+        <span>{selectedOption?.label ?? value}</span>
+        <ChevronDownIcon
+          className={cn(
+            "size-3.5 text-slate-400 transition-transform duration-200",
+            isOpen && "rotate-180 text-blue-600",
+          )}
+        />
+      </button>
+
+      {/* DANH SÁCH SỔ RA (CUSTOM POPUP 100%) */}
+      {isOpen && (
+        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 z-50 max-h-48 w-32 overflow-y-auto no-scrollbar rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 p-1.5 shadow-xl backdrop-blur-md animate-in fade-in-0 zoom-in-95">
+          {options?.map((option) => {
+            const isSelected = String(option.value) === String(value);
+            return (
+              <button
+                key={option.value}
+                type="button"
+                disabled={option.disabled}
+                onClick={() => {
+                  if (onChange) {
+                    const syntheticEvent = {
+                      target: { value: String(option.value) },
+                      currentTarget: { value: String(option.value) },
+                    } as React.ChangeEvent<HTMLSelectElement>;
+                    onChange(syntheticEvent);
+                  }
+                  setIsOpen(false);
+                }}
+                className={cn(
+                  "w-full text-left px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors",
+                  isSelected
+                    ? "bg-blue-600 text-white font-bold"
+                    : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800",
+                  option.disabled && "opacity-40 cursor-not-allowed",
+                )}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
 

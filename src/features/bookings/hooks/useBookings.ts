@@ -7,84 +7,92 @@ import {
 } from "../types/bookings.types";
 import rawBookingsMock from "../data/bookings.mock.json";
 
-// Hàm hỗ trợ format Date object sang YYYY-MM-DD local
-const formatToYMD = (d: Date): string => {
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
-
 export const useBookings = () => {
   const router = useRouter();
 
-  // 1. STATE QUẢN LÝ TẬP TRUNG TOÀN BỘ FILTER
   const [filters, setFilters] = useState<BookingFilterState>({
     tab: "confirmed",
-    selectedDate: undefined,
+    filterMode: "all",
+    selectedDate: new Date(),
+    selectedMonth: new Date().getMonth(),
+    selectedYear: new Date().getFullYear(),
   });
 
   const [isDateDrawerOpen, setIsDateDrawerOpen] = useState(false);
   const initialBookings = rawBookingsMock as BookingItem[];
 
-  // 2. LOGIC LỌC ĐỒNG BỘ NĂNG ĐỘNG (TAB + NGÀY CHỌN)
+  // LOGIC LỌC TỔNG HỢP THEO TAB + (NGÀY / THÁNG / NĂM)
   const filteredBookings = useMemo(() => {
     return initialBookings.filter((booking) => {
-      // Khớp theo Tab (Status)
-      const matchesTab = booking.status === filters.tab;
+      // 1. Lọc theo Tab Status
+      if (booking.status !== filters.tab) return false;
 
-      // Khớp theo Ngày (Nếu người dùng có chọn ngày trên Lịch)
-      let matchesDate = true;
-      if (filters.selectedDate) {
-        const targetDateStr = formatToYMD(filters.selectedDate);
-        matchesDate = booking.date === targetDateStr;
+      // 2. Lọc theo Thời gian
+      if (filters.filterMode === "all") return true;
+
+      const [bYear, bMonth, bDay] = booking.date.split("-").map(Number);
+
+      if (filters.filterMode === "day" && filters.selectedDate) {
+        return (
+          bYear === filters.selectedDate.getFullYear() &&
+          bMonth === filters.selectedDate.getMonth() + 1 &&
+          bDay === filters.selectedDate.getDate()
+        );
       }
 
-      return matchesTab && matchesDate;
+      if (filters.filterMode === "month") {
+        return (
+          bYear === filters.selectedYear &&
+          bMonth === (filters.selectedMonth ?? 0) + 1
+        );
+      }
+
+      if (filters.filterMode === "year") {
+        return bYear === filters.selectedYear;
+      }
+
+      return true;
     });
   }, [filters, initialBookings]);
 
-  // Text hiển thị trên Chip chọn ngày
-  const selectedDateText = filters.selectedDate
-    ? filters.selectedDate.toLocaleDateString("vi-VN", {
+  // Chuỗi Text hiển thị trên Chip Filter ngoài Header
+  const selectedDateText = useMemo(() => {
+    if (filters.filterMode === "all") return null;
+
+    if (filters.filterMode === "day" && filters.selectedDate) {
+      return filters.selectedDate.toLocaleDateString("vi-VN", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
-      })
-    : null;
+      });
+    }
 
-  // Handlers cập nhật state tập trung
-  const handleTabChange = (tab: BookingTab) => {
-    setFilters((prev) => ({ ...prev, tab }));
-  };
+    if (filters.filterMode === "month") {
+      const monthStr = String((filters.selectedMonth ?? 0) + 1).padStart(
+        2,
+        "0",
+      );
+      return `Tháng ${monthStr}/${filters.selectedYear}`;
+    }
 
-  const handleDateSelect = (date?: Date) => {
-    setFilters((prev) => ({ ...prev, selectedDate: date }));
-  };
+    if (filters.filterMode === "year") {
+      return `Năm ${filters.selectedYear}`;
+    }
 
-  const handleClearDateFilter = () => {
-    setFilters((prev) => ({ ...prev, selectedDate: undefined }));
-  };
+    return null;
+  }, [filters]);
 
   return {
-    // Filter State & Setters
-    activeTab: filters.tab,
-    onTabChange: handleTabChange,
-    selectedDate: filters.selectedDate,
-    onSelectDate: handleDateSelect,
-    onClearDateFilter: handleClearDateFilter,
+    filters,
+    setFilters,
     selectedDateText,
-
-    // Result Data
     bookings: filteredBookings,
     hasBookings: filteredBookings.length > 0,
-
-    // Drawer State
     isDateDrawerOpen,
     openDateDrawer: () => setIsDateDrawerOpen(true),
     closeDateDrawer: () => setIsDateDrawerOpen(false),
-
-    // Navigation
+    clearDateFilter: () =>
+      setFilters((prev) => ({ ...prev, filterMode: "all" })),
     handleNavigateToHome: () => router.push("/home"),
   };
 };

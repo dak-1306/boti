@@ -1,5 +1,6 @@
 export type BookingStatus = "confirmed" | "cancelled" | "rescheduled";
 export type BookingTab = "confirmed" | "cancelled" | "rescheduled";
+export type DateFilterMode = "all" | "day" | "month" | "year";
 
 export interface BookingItem {
   id: string;
@@ -9,14 +10,16 @@ export interface BookingItem {
   imageUrl: string;
   status: BookingStatus;
   statusText: string;
-  date: string; // Dùng để so sánh chuẩn xác: "2025-07-28"
-  dateText: string; // Dùng để hiển thị UI: "Thứ 2, 28/07/2025"
+  date: string; // ISO format: "2025-07-28"
+  dateText: string;
   timeText: string;
   address: string;
 }
 
-// State quản lý chung toàn bộ Bộ lọc Lịch đặt
 export interface BookingFilterState {
   tab: BookingTab;
-  selectedDate?: Date;
+  filterMode: DateFilterMode;
+  selectedDate?: Date; // Dùng cho mode "day"
+  selectedMonth?: number; // 0 - 11, dùng cho mode "month"
+  selectedYear?: number; // e.g. 2025, dùng cho mode "month" & "year"
 }
