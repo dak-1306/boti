@@ -17,7 +17,7 @@
       "name": "Nguyễn Văn A",
       "phone": "0901 234 567",
       "playerCount": 4,
-      "notes": "Không có"
+      "notes": "Cần hỗ trợ 2 đôi vợt thuê tại sân"
     },
     "payment": {
       "method": "Ví điện tử (ZaloPay)",
@@ -35,7 +35,7 @@
     "id": "b2",
     "bookingCode": "#PB20261018002",
     "venueId": "v2",
-    "venueName": "Sân cầu lông Riverside",
+    "venueName": "Sân cầu lông Riverside Club",
     "category": "Cầu lông",
     "imageUrl": "https://images.unsplash.com/photo-1626225967045-944088226228?w=800&auto=format&fit=crop&q=80",
     "status": "confirmed",
@@ -49,7 +49,7 @@
       "name": "Nguyễn Văn A",
       "phone": "0901 234 567",
       "playerCount": 2,
-      "notes": "Cần mượn thêm 2 vợt"
+      "notes": "Đặt sân số 3 gần khu vực quạt mát"
     },
     "payment": {
       "method": "Thẻ ATM Nội địa",
@@ -57,10 +57,74 @@
       "statusText": "Đã thanh toán",
       "transactionId": "#ATM202610171122",
       "paidAt": "20:15 - 17/10/2026",
-      "courtFee": 300000,
+      "courtFee": 320000,
       "discountFee": 20000,
       "serviceFee": 0,
-      "totalFee": 280000
+      "totalFee": 300000
+    }
+  },
+  {
+    "id": "b3",
+    "bookingCode": "#PB20261005009",
+    "venueId": "v3",
+    "venueName": "Sân bóng rổ 3x3 Hoops Center",
+    "category": "Bóng rổ",
+    "imageUrl": "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&auto=format&fit=crop&q=80",
+    "status": "rescheduled",
+    "statusText": "Đã dời lịch",
+    "date": "2026-10-25",
+    "dateText": "Chủ nhật, 25/10/2026",
+    "timeText": "17:00 - 19:00 (2 giờ)",
+    "address": "90 Song Hành, P. An Phú, Q.2, TP.HCM",
+    "qrCodeUrl": "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=PB20261005009",
+    "customer": {
+      "name": "Nguyễn Văn A",
+      "phone": "0901 234 567",
+      "playerCount": 6,
+      "notes": "Đã dời lịch từ ngày 05/10 sang 25/10"
+    },
+    "payment": {
+      "method": "Ví điện tử (ZaloPay)",
+      "status": "paid",
+      "statusText": "Đã thanh toán",
+      "transactionId": "#ZLP202610045511",
+      "paidAt": "09:12 - 04/10/2026",
+      "courtFee": 700000,
+      "discountFee": 50000,
+      "serviceFee": 0,
+      "totalFee": 650000
+    }
+  },
+  {
+    "id": "b4",
+    "bookingCode": "#PB20260930004",
+    "venueId": "v4",
+    "venueName": "Sân bóng đá cỏ nhân tạo Phước Long",
+    "category": "Bóng đá",
+    "imageUrl": "https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=800&auto=format&fit=crop&q=80",
+    "status": "cancelled",
+    "statusText": "Đã hủy",
+    "date": "2026-09-30",
+    "dateText": "Thứ 4, 30/09/2026",
+    "timeText": "18:00 - 19:30 (1.5 giờ)",
+    "address": "18A Đỗ Xuân Hợp, Q.9, TP.HCM",
+    "qrCodeUrl": "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=PB20260930004",
+    "customer": {
+      "name": "Nguyễn Văn A",
+      "phone": "0901 234 567",
+      "playerCount": 10,
+      "notes": "Hủy do thời tiết mưa lớn"
+    },
+    "payment": {
+      "method": "Ví điện tử (ZaloPay)",
+      "status": "refunded",
+      "statusText": "Đã hoàn tiền",
+      "transactionId": "#ZLP202609298833",
+      "paidAt": "14:00 - 29/09/2026",
+      "courtFee": 675000,
+      "discountFee": 0,
+      "serviceFee": 0,
+      "totalFee": 675000
     }
   }
 ]

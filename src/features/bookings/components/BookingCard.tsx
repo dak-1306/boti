@@ -1,9 +1,8 @@
 "use client";
-
-import React, { useState } from "react";
-import Image from "next/image";
-import { Calendar, Clock, MapPin, ImageOff } from "lucide-react";
+import { Calendar, Clock, MapPin } from "lucide-react";
+import { SafeImage } from "@/components/common/safe-image";
 import { BookingItem } from "../types/bookings.types";
+import { BookingStatusBadge } from "./BookingStatusBadge";
 
 interface BookingCardProps {
   booking: BookingItem;
@@ -11,8 +10,6 @@ interface BookingCardProps {
 }
 
 export function BookingCard({ booking, onClick }: BookingCardProps) {
-  const [imageError, setImageError] = useState(false);
-
   return (
     <div
       onClick={onClick}
@@ -20,30 +17,27 @@ export function BookingCard({ booking, onClick }: BookingCardProps) {
     >
       {/* 1. Hình ảnh sân bên trái */}
       <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-        {!imageError && booking.imageUrl ? (
-          <Image
-            src={booking.imageUrl}
-            alt={booking.venueName}
-            fill
-            className="object-cover"
-            sizes="96px"
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <ImageOff className="h-5 w-5 text-slate-400" />
-        )}
+        <SafeImage
+          src={booking.imageUrl}
+          alt={booking.venueName}
+          fill
+          className="object-cover"
+          sizes="96px"
+        />
       </div>
 
       {/* 2. Thông tin đặt sân bên phải */}
       <div className="flex flex-1 flex-col justify-between min-w-0 space-y-1">
-        {/* Hàng 1: Tên sân & Tag trạng thái */}
+        {/* Hàng 1: Tên sân & Tag trạng thái động */}
         <div className="flex items-start justify-between gap-1">
           <h3 className="line-clamp-1 text-xs font-bold text-slate-800 dark:text-slate-100">
             {booking.venueName}
           </h3>
-          <span className="shrink-0 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
-            {booking.statusText}
-          </span>
+          <BookingStatusBadge
+            status={booking.status}
+            statusText={booking.statusText}
+            size="sm"
+          />
         </div>
 
         {/* Hàng 2: Pill bộ môn */}

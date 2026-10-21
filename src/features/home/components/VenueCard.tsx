@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
-import Image from "next/image";
-import { Star, MapPin, Clock, ImageOff } from "lucide-react";
+import { Star, MapPin, Clock} from "lucide-react";
 import { Venue } from "../types/home.types";
 import { HOME_TEXTS } from "../constants/home.constants";
+import { SafeImage } from "@/components/common/safe-image";
 
 interface VenueCardProps {
   venue: Venue;
@@ -12,7 +11,6 @@ interface VenueCardProps {
 }
 
 export function VenueCard({ venue, onClick }: VenueCardProps) {
-  const [imageError, setImageError] = useState(false);
 
   return (
     <div
@@ -21,22 +19,13 @@ export function VenueCard({ venue, onClick }: VenueCardProps) {
     >
       {/* 1. Khung Ảnh Sân (Xử lý Fallback khi ảnh lỗi) */}
       <div className="relative h-28 w-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-        {!imageError && (venue.images?.[0] || venue.imageUrl) ? (
-          <Image
+        <SafeImage
             src={venue.images?.[0] || venue.imageUrl || ""}
             alt={venue.name}
             fill
             className="object-cover"
-            onError={() => setImageError(true)}
+            
           />
-        ) : (
-          <div className="flex flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500">
-            <ImageOff className="h-6 w-6 stroke-[1.5]" />
-            <span className="text-[9px] font-medium text-slate-400">
-              Không có ảnh
-            </span>
-          </div>
-        )}
 
         {/* Badge khoảng cách GPS */}
         {venue.distanceText && (
