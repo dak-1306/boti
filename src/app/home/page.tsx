@@ -1,15 +1,31 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 import { BottomNav } from "@/components/common/bottom-nav";
 import { HomeHeader } from "@/features/home/components/HomeHeader";
 import { CategoryList } from "@/features/home/components/CategoryList";
 import { VenueSectionHeader } from "@/features/home/components/VenueSectionHeader";
 import { VenueGrid } from "@/features/home/components/VenueGrid";
-import { VenueMapView } from "@/features/home/components/map/VenueMapView";
 import { FilterDrawer } from "@/features/home/components/drawer-filter/FilterDrawer";
 import { VenueDetailDrawer } from "@/features/home/components/detail-drawer/VenueDetailDrawer";
 import { useHome } from "@/features/home/hooks/useHome";
+
+// Dynamic import tắt SSR để bảo đảm Next.js 16 build Prerender 100% không lỗi window/Leaflet
+const VenueMapView = dynamic(
+  () =>
+    import("@/features/home/components/map/VenueMapView").then(
+      (mod) => mod.VenueMapView,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-full w-full items-center justify-center bg-muted text-xs font-medium text-muted-foreground">
+        Đang tải bản đồ...
+      </div>
+    ),
+  },
+);
 
 export default function HomePage() {
   const {
@@ -36,6 +52,7 @@ export default function HomePage() {
     detailVenue,
     openDetailDrawer,
     closeDetailDrawer,
+    handleNavigateToBooking,
   } = useHome();
 
   return (
@@ -66,6 +83,7 @@ export default function HomePage() {
             <VenueGrid
               venues={venues}
               onSelectVenue={openDetailDrawer}
+              onBookVenue={handleNavigateToBooking}
               onResetFilters={handleResetFilters}
             />
           ) : (
@@ -97,6 +115,7 @@ export default function HomePage() {
         venue={detailVenue}
         isOpen={!!detailVenue}
         onClose={closeDetailDrawer}
+        onBook={handleNavigateToBooking}
       />
     </div>
   );

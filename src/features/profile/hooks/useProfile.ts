@@ -1,5 +1,5 @@
 import { useState } from "react";
-import rawUserMock from "../data/user.mock.json";
+import rawUserMock from "@/data/user.mock.json";
 import { UserProfile } from "../types/profile.types";
 import { PROFILE_TEXTS } from "../constants/profile.constants";
 

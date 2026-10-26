@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import {
   CATEGORIES_DATA,
   DEFAULT_FILTER_STATE,
@@ -10,15 +11,15 @@ import {
   formatDistanceText,
 } from "../utils/distance";
 
-import rawVenuesMock from "../data/venues.mock.json";
+import rawVenuesMock from "@/data/venues.mock.json";
 
 export const useHome = () => {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
 
   const [detailVenue, setDetailVenue] = useState<Venue | null>(null);
-
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTER_STATE);
 
@@ -116,6 +117,11 @@ export const useHome = () => {
     setFilters(DEFAULT_FILTER_STATE);
   };
 
+  const handleNavigateToBooking = (venueId: string) => {
+    setDetailVenue(null);
+    router.push(`/bookings/create?venueId=${venueId}`);
+  };
+
   return {
     searchQuery,
     setSearchQuery,
@@ -141,5 +147,6 @@ export const useHome = () => {
     detailVenue,
     openDetailDrawer: (venue: Venue) => setDetailVenue(venue),
     closeDetailDrawer: () => setDetailVenue(null),
+    handleNavigateToBooking,
   };
 };

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { NewsItem } from "../types/news.types";
-import rawNewsMock from "../data/news.mock.json";
+import rawNewsMock from "@/data/news.mock.json";
 
 export function useNewsDetail(id?: string) {
   const targetId = id || "n_01";

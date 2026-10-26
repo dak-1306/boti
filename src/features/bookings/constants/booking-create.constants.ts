@@ -1,0 +1,16 @@
+export const BOOKING_CREATE_TEXTS = {
+  headerTitle: "Đặt lịch sân",
+  selectCourtLabel: "Chọn sân",
+  timeSlotsLabel: "Khung giờ khả dụng",
+  statusAvailable: "Trống",
+  statusSelected: "Đang chọn",
+  customerSectionTitle: "Thông tin người đặt",
+  labelFullName: "Họ và tên",
+  labelPhone: "Số điện thoại",
+  labelNotes: "Ghi chú cho chủ sân",
+  placeholderNotes: "VD: Cần thuê thêm 2 vợt...",
+  totalLabel: "Tổng cộng",
+  btnSubmit: "Xác nhận đặt lịch",
+  loadingFallback: "Đang tải thông tin đặt sân...",
+  alertSuccessTitle: "Đặt sân thành công!",
+} as const;

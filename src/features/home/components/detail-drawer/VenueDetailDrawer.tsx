@@ -16,6 +16,7 @@ interface VenueDetailDrawerProps {
   venue: Venue | null;
   isOpen: boolean;
   onClose: () => void;
+  onBook: (venueId: string) => void;
 }
 
 type TabType = "info" | "price" | "gallery" | "rules";
@@ -24,6 +25,7 @@ export function VenueDetailDrawer({
   venue,
   isOpen,
   onClose,
+  onBook,
 }: VenueDetailDrawerProps) {
   const [activeTab, setActiveTab] = useState<TabType>("info");
 
@@ -82,7 +84,10 @@ export function VenueDetailDrawer({
           </div>
 
           <div className="shrink-0 border-t border-border p-3 bg-card">
-            <Button className="h-11 w-full rounded-full bg-primary text-xs font-bold text-primary-foreground transition hover:bg-primary/90 active:scale-95 shadow-md">
+            <Button
+              onClick={() => onBook(venue.id)}
+              className="h-11 w-full rounded-full bg-primary text-xs font-bold text-primary-foreground transition hover:bg-primary/90 active:scale-95 shadow-md"
+            >
               {HOME_TEXTS.bookBtn}
             </Button>
           </div>

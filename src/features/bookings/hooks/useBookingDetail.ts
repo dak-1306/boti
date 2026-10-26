@@ -1,20 +1,22 @@
 import { useState, useMemo } from "react";
 import { BookingItem } from "../types/bookings.types";
-import rawBookingsMock from "../data/bookings.mock.json";
+import rawBookingsMock from "@/data/bookings.mock.json";
 
 export function useBookingDetail(id?: string) {
   const targetId = id || "b_01";
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [isRescheduleDrawerOpen, setIsRescheduleDrawerOpen] = useState(false);
 
-  const booking = useMemo<BookingItem>(() => {
+  const booking = useMemo<BookingItem | null>(() => {
     const list = rawBookingsMock as unknown as BookingItem[];
     const found = list.find((b) => b.id === targetId);
-    return found || list[0];
+    return found || null;
   }, [targetId]);
 
   const handleShare = async () => {
-    if (navigator.share) {
+    if (!booking) return;
+
+    if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
           title: `Lịch chơi tại ${booking.venueName}`,
@@ -24,7 +26,7 @@ export function useBookingDetail(id?: string) {
       } catch {
         // Hủy chia sẻ
       }
-    } else {
+    } else if (typeof navigator !== "undefined" && navigator.clipboard) {
       navigator.clipboard.writeText(window.location.href);
       alert("Đã sao chép liên kết đơn đặt sân!");
     }

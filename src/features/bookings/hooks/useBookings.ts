@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { BookingItem, BookingFilterState } from "../types/bookings.types";
-import rawBookingsMock from "../data/bookings.mock.json";
+import rawBookingsMock from "@/data/bookings.mock.json";
 
 export const useBookings = () => {
   const router = useRouter();
@@ -9,9 +9,9 @@ export const useBookings = () => {
   const [filters, setFilters] = useState<BookingFilterState>({
     tab: "confirmed",
     filterMode: "all",
-    selectedDate: new Date(),
-    selectedMonth: new Date().getMonth(),
-    selectedYear: new Date().getFullYear(),
+    selectedDate: undefined,
+    selectedMonth: undefined,
+    selectedYear: undefined,
   });
 
   const [isDateDrawerOpen, setIsDateDrawerOpen] = useState(false);
@@ -35,14 +35,17 @@ export const useBookings = () => {
         );
       }
 
-      if (filters.filterMode === "month") {
+      if (
+        filters.filterMode === "month" &&
+        filters.selectedYear !== undefined
+      ) {
         return (
           bYear === filters.selectedYear &&
           bMonth === (filters.selectedMonth ?? 0) + 1
         );
       }
 
-      if (filters.filterMode === "year") {
+      if (filters.filterMode === "year" && filters.selectedYear !== undefined) {
         return bYear === filters.selectedYear;
       }
 
@@ -61,7 +64,7 @@ export const useBookings = () => {
       });
     }
 
-    if (filters.filterMode === "month") {
+    if (filters.filterMode === "month" && filters.selectedYear !== undefined) {
       const monthStr = String((filters.selectedMonth ?? 0) + 1).padStart(
         2,
         "0",
@@ -69,12 +72,23 @@ export const useBookings = () => {
       return `Tháng ${monthStr}/${filters.selectedYear}`;
     }
 
-    if (filters.filterMode === "year") {
+    if (filters.filterMode === "year" && filters.selectedYear !== undefined) {
       return `Năm ${filters.selectedYear}`;
     }
 
     return null;
   }, [filters]);
+
+  const handleOpenDateDrawer = () => {
+    const now = new Date();
+    setFilters((prev) => ({
+      ...prev,
+      selectedDate: prev.selectedDate ?? now,
+      selectedMonth: prev.selectedMonth ?? now.getMonth(),
+      selectedYear: prev.selectedYear ?? now.getFullYear(),
+    }));
+    setIsDateDrawerOpen(true);
+  };
 
   const handleSelectBooking = (id: string) => {
     router.push(`/bookings/${id}`);
@@ -87,7 +101,7 @@ export const useBookings = () => {
     bookings: filteredBookings,
     hasBookings: filteredBookings.length > 0,
     isDateDrawerOpen,
-    openDateDrawer: () => setIsDateDrawerOpen(true),
+    openDateDrawer: handleOpenDateDrawer,
     closeDateDrawer: () => setIsDateDrawerOpen(false),
     clearDateFilter: () =>
       setFilters((prev) => ({ ...prev, filterMode: "all" })),

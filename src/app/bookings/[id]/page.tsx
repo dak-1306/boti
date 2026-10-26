@@ -14,13 +14,27 @@ interface BookingDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
-function BookingDetailContent({ id }: { id: string }) {
-  const {
-    booking,
-    handleShare,
-    openCancelDialog,
-    openRescheduleDrawer,
-  } = useBookingDetail(id);
+function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params);
+
+  const { booking, handleShare, openCancelDialog, openRescheduleDrawer } =
+    useBookingDetail(resolvedParams.id);
+
+  // Guard Clause: Xử lý trường hợp không tìm thấy đơn đặt
+  if (!booking) {
+    return (
+      <div className="flex h-full w-full flex-col bg-background text-foreground">
+        <PageHeader
+          title={BOOKING_TEXTS.detailHeaderTitle}
+          showBack
+          variant="gradient"
+        />
+        <div className="flex flex-1 items-center justify-center p-4 text-center text-xs text-muted-foreground font-medium">
+          Không tìm thấy thông tin đơn đặt sân.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
@@ -49,8 +63,6 @@ function BookingDetailContent({ id }: { id: string }) {
 }
 
 export default function BookingDetailPage({ params }: BookingDetailPageProps) {
-  const resolvedParams = use(params);
-
   return (
     <Suspense
       fallback={
@@ -59,7 +71,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
         </div>
       }
     >
-      <BookingDetailContent id={resolvedParams.id} />
+      <BookingDetailContent params={params} />
     </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { NewsItem, NewsCategoryFilter } from "../types/news.types";
-import rawNewsMock from "../data/news.mock.json";
+import rawNewsMock from "@/data/news.mock.json";
 
 export function useNews() {
   const [searchQuery, setSearchQuery] = useState("");

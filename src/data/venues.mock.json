@@ -70,6 +70,31 @@
           "Hủy sân trước 12 giờ được hỗ trợ dời lịch chơi sang ngày khác."
         ]
       }
+    ],
+    "courts": [
+      {
+        "id": "c1_1",
+        "name": "Sân 1 (Trong nhà)",
+        "category": "Pickleball",
+        "slots": [
+          { "id": "s1_1", "startTime": "06:00", "endTime": "07:00", "price": 150000, "isAvailable": true },
+          { "id": "s1_2", "startTime": "07:00", "endTime": "08:00", "price": 150000, "isAvailable": false },
+          { "id": "s1_3", "startTime": "08:00", "endTime": "09:00", "price": 150000, "isAvailable": true },
+          { "id": "s1_4", "startTime": "17:00", "endTime": "18:00", "price": 240000, "isAvailable": true },
+          { "id": "s1_5", "startTime": "18:00", "endTime": "19:00", "price": 240000, "isAvailable": true },
+          { "id": "s1_6", "startTime": "19:00", "endTime": "20:00", "price": 240000, "isAvailable": false }
+        ]
+      },
+      {
+        "id": "c1_2",
+        "name": "Sân 2 (VIP)",
+        "category": "Pickleball",
+        "slots": [
+          { "id": "s1_7", "startTime": "06:00", "endTime": "07:00", "price": 180000, "isAvailable": true },
+          { "id": "s1_8", "startTime": "07:00", "endTime": "08:00", "price": 180000, "isAvailable": true },
+          { "id": "s1_9", "startTime": "17:00", "endTime": "18:00", "price": 280000, "isAvailable": true }
+        ]
+      }
     ]
   },
   {
@@ -124,6 +149,27 @@
           "Giữ vệ sinh chung, bỏ rác đúng nơi quy định."
         ]
       }
+    ],
+    "courts": [
+      {
+        "id": "c2_1",
+        "name": "Sân Cầu Lông A1",
+        "category": "Cầu lông",
+        "slots": [
+          { "id": "s2_1", "startTime": "06:00", "endTime": "07:00", "price": 90000, "isAvailable": true },
+          { "id": "s2_2", "startTime": "07:00", "endTime": "08:00", "price": 90000, "isAvailable": true },
+          { "id": "s2_3", "startTime": "18:00", "endTime": "19:00", "price": 160000, "isAvailable": true }
+        ]
+      },
+      {
+        "id": "c2_2",
+        "name": "Sân Cầu Lông A2",
+        "category": "Cầu lông",
+        "slots": [
+          { "id": "s2_4", "startTime": "08:00", "endTime": "09:00", "price": 90000, "isAvailable": true },
+          { "id": "s2_5", "startTime": "19:00", "endTime": "20:00", "price": 160000, "isAvailable": false }
+        ]
+      }
     ]
   },
   {
@@ -175,6 +221,17 @@
         "items": [
           "Nghiêm cấm hành vi đu người lên vành rổ.",
           "Sử dụng bóng thi đấu đúng kích thước quy định."
+        ]
+      }
+    ],
+    "courts": [
+      {
+        "id": "c3_1",
+        "name": "Sân Rổ 3x3 Indoor 1",
+        "category": "Bóng rổ",
+        "slots": [
+          { "id": "s3_1", "startTime": "08:00", "endTime": "09:00", "price": 200000, "isAvailable": true },
+          { "id": "s3_2", "startTime": "17:00", "endTime": "18:00", "price": 350000, "isAvailable": true }
         ]
       }
     ]
@@ -233,6 +290,25 @@
         "items": [
           "Chỉ sử dụng giày đinh TF hoặc IC, không dùng đinh FG trên sân cỏ nhân tạo.",
           "Tự bảo quản tài sản cá nhân tại khu vực ghế chờ."
+        ]
+      }
+    ],
+    "courts": [
+      {
+        "id": "c4_1",
+        "name": "Sân 5A (Cỏ nhân tạo)",
+        "category": "Bóng đá",
+        "slots": [
+          { "id": "s4_1", "startTime": "06:00", "endTime": "07:30", "price": 300000, "isAvailable": true },
+          { "id": "s4_2", "startTime": "17:30", "endTime": "19:00", "price": 450000, "isAvailable": true }
+        ]
+      },
+      {
+        "id": "c4_2",
+        "name": "Sân 7A (Khung thành to)",
+        "category": "Bóng đá",
+        "slots": [
+          { "id": "s4_3", "startTime": "18:00", "endTime": "19:30", "price": 650000, "isAvailable": true }
         ]
       }
     ]

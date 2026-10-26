@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type L from "leaflet";
 import { Venue, LocationState } from "../types/home.types";
 import { CATEGORIES_DATA } from "../constants/home.constants";
 import { autoFitMapBounds, flyToCoordinates } from "../utils/mapCamera";
@@ -13,7 +14,7 @@ interface UseLeafletMapProps {
   selectedVenue: Venue | null;
   onSelectVenue: (venue: Venue) => void;
   userLocation: LocationState | null;
-  onRequestLocation: () => void;
+  onRequestLocation?: () => void;
 }
 
 export function useLeafletMap({
@@ -29,6 +30,7 @@ export function useLeafletMap({
 
   const [isMapReady, setIsMapReady] = useState(false);
 
+  // 1. Khởi tạo Leaflet Map (chỉ chạy 1 lần duy nhất ở Client)
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
@@ -80,6 +82,7 @@ export function useLeafletMap({
     };
   }, []);
 
+  // 2. Render marker vị trí người dùng
   useEffect(() => {
     if (!isMapReady || !mapInstanceRef.current || !userLocation) return;
 
@@ -104,6 +107,7 @@ export function useLeafletMap({
     });
   }, [isMapReady, userLocation]);
 
+  // 3. Render các Marker sân bóng
   useEffect(() => {
     if (!isMapReady || !mapInstanceRef.current || !venueMarkersLayerRef.current)
       return;
@@ -142,10 +146,15 @@ export function useLeafletMap({
 
         venueMarkersLayerRef.current?.addLayer(marker);
       });
-
-      autoFitMapBounds(mapInstanceRef.current, venues);
     });
   }, [isMapReady, venues, selectedVenue, onSelectVenue]);
+
+  // 4. Chỉ tự động fit camera khi danh sách venues thay đổi (ví dụ khi lọc)
+  useEffect(() => {
+    if (isMapReady && mapInstanceRef.current && venues.length > 0) {
+      autoFitMapBounds(mapInstanceRef.current, venues);
+    }
+  }, [isMapReady, venues]);
 
   const handleRecenterToUser = () => {
     if (userLocation && mapInstanceRef.current) {

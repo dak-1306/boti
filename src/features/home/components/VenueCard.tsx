@@ -11,9 +11,10 @@ import { Button } from "@/components/ui/button";
 interface VenueCardProps {
   venue: Venue;
   onClick: () => void;
+  onBook?: (venueId: string) => void;
 }
 
-export function VenueCard({ venue, onClick }: VenueCardProps) {
+export function VenueCard({ venue, onClick, onBook }: VenueCardProps) {
   return (
     <div
       onClick={onClick}
@@ -67,7 +68,11 @@ export function VenueCard({ venue, onClick }: VenueCardProps) {
         <Button
           onClick={(e) => {
             e.stopPropagation();
-            onClick();
+            if (onBook) {
+              onBook(venue.id);
+            } else {
+              onClick();
+            }
           }}
           className="mt-3 h-11 w-full rounded-xl bg-primary text-xs font-bold text-primary-foreground transition hover:bg-primary/90 active:scale-95 shadow-xs"
         >

@@ -1,68 +1,49 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
-import { SearchX } from "lucide-react";
 import { Venue } from "../types/home.types";
 import { VenueCard } from "./VenueCard";
-import { HOME_TEXTS } from "../constants/home.constants";
 import { Button } from "@/components/ui/button";
-import {
-  gridContainerVariants,
-  gridItemVariants,
-} from "../constants/home.motion";
 
 interface VenueGridProps {
   venues: Venue[];
   onSelectVenue: (venue: Venue) => void;
-  onResetFilters?: () => void;
+  onBookVenue?: (venueId: string) => void;
+  onResetFilters: () => void;
 }
 
 export function VenueGrid({
   venues,
   onSelectVenue,
+  onBookVenue,
   onResetFilters,
 }: VenueGridProps) {
   if (venues.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="flex h-64 flex-col items-center justify-center p-6 text-center"
-      >
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-          <SearchX className="h-6 w-6 text-muted-foreground" />
-        </div>
-        <h3 className="mt-3 text-sm font-bold text-foreground">
-          {HOME_TEXTS.emptyGridTitle}
-        </h3>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {HOME_TEXTS.emptyGridSubtitle}
+      <div className="flex h-64 flex-col items-center justify-center p-4 text-center">
+        <p className="text-xs text-muted-foreground">
+          Không tìm thấy sân phù hợp với bộ lọc.
         </p>
-        {onResetFilters && (
-          <Button
-            onClick={onResetFilters}
-            className="mt-4 h-11 rounded-full bg-muted px-4 text-xs font-bold text-primary hover:bg-muted/80 transition"
-          >
-            {HOME_TEXTS.clearFilterBtn}
-          </Button>
-        )}
-      </motion.div>
+        <Button
+          onClick={onResetFilters}
+          className="mt-3 h-11 rounded-full bg-muted px-4 text-xs font-bold text-primary hover:bg-muted/80"
+        >
+          Xóa bộ lọc
+        </Button>
+      </div>
     );
   }
 
   return (
-    <motion.div
-      variants={gridContainerVariants}
-      initial="hidden"
-      animate="visible"
-      className="grid grid-cols-2 gap-3 px-4"
-    >
+    <div className="grid grid-cols-2 gap-3 px-4 pb-4">
       {venues.map((venue) => (
-        <motion.div key={venue.id} variants={gridItemVariants}>
-          <VenueCard venue={venue} onClick={() => onSelectVenue(venue)} />
-        </motion.div>
+        <VenueCard
+          key={venue.id}
+          venue={venue}
+          onClick={() => onSelectVenue(venue)}
+          onBook={onBookVenue}
+        />
       ))}
-    </motion.div>
+    </div>
   );
 }

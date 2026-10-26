@@ -1,4 +1,4 @@
-import L from "leaflet";
+import type L from "leaflet";
 import { Venue, LocationState } from "../types/home.types";
 
 /**
@@ -16,12 +16,12 @@ export function autoFitMapBounds(map: L.Map, venues: Venue[]) {
     return;
   }
 
-  // Trường hợp từ 2 sân trở lên: Tạo LatLngBounds để bao trọn tất cả marker
-  const bounds = L.latLngBounds(
-    venues.map((v) => [v.location.lat, v.location.lng]),
+  // Trường hợp từ 2 sân trở lên: Truyền trực tiếp mảng mảng tọa độ [[lat, lng], ...] vào fitBounds
+  const boundsCoordinates = venues.map(
+    (v) => [v.location.lat, v.location.lng] as [number, number],
   );
 
-  map.fitBounds(bounds, {
+  map.fitBounds(boundsCoordinates, {
     paddingTopLeft: [40, 40],
     paddingBottomRight: [40, 140], // Dành khoảng trống 140px phía dưới cho Floating Card & Bottom Nav
     maxZoom: 15,

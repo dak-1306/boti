@@ -1,4 +1,5 @@
 import { StaticImageData } from "next/image";
+import { CourtOption } from "@/features/bookings/types/booking-create.types";
 
 export interface Category {
   id: string;
@@ -48,6 +49,7 @@ export interface Venue {
   preparationNotes?: string[];
   priceTable?: PriceSlot[];
   rules?: (string | VenueRuleSection)[];
+  courts?: CourtOption[];
 }
 
 export type ViewMode = "grid" | "map";
