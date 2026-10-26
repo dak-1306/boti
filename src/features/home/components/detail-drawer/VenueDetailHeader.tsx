@@ -73,6 +73,16 @@ export function VenueDetailHeader({ venue, onClose }: VenueDetailHeaderProps) {
                   </span>
                 </div>
               </div>
+              <div className="mt-1 flex items-center gap-1 text-[10px] text-slate-500 dark:text-slate-400">
+                <MapPin className="h-3 w-3 shrink-0 text-primary" />
+                <span className="truncate">{venue.address}</span>
+              </div>
+              {venue.phone && (
+                <div className="mt-1 flex items-center gap-1 text-[10px] text-slate-500 dark:text-slate-400">
+                  <Phone className="h-3 w-3 shrink-0 text-primary" />
+                  <span className="truncate">{venue.phone}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

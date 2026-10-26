@@ -1,30 +1,37 @@
 "use client";
 
-import React, { Suspense } from "react";
-import { BookingDetailHeader } from "@/features/bookings/components/detail/BookingDetailHeader";
+import React, { Suspense, use } from "react";
+import { PageHeader } from "@/components/common/page-header";
+import { useBookingDetail } from "@/features/bookings/hooks/useBookingDetail";
 import { BookingSummaryCard } from "@/features/bookings/components/detail/BookingSummaryCard";
 import { BookingQRCard } from "@/features/bookings/components/detail/BookingQRCard";
 import { BookingCustomerCard } from "@/features/bookings/components/detail/BookingCustomerCard";
 import { BookingPaymentCard } from "@/features/bookings/components/detail/BookingPaymentCard";
 import { BookingBottomActions } from "@/features/bookings/components/detail/BookingBottomActions";
-import { useBookingDetail } from "@/features/bookings/hooks/useBookingDetail";
+import { BOOKING_TEXTS } from "@/features/bookings/constants/bookings.constants";
 
-function BookingDetailContent() {
+interface BookingDetailPageProps {
+  params: Promise<{ id: string }>;
+}
+
+function BookingDetailContent({ id }: { id: string }) {
   const {
     booking,
     handleShare,
     openCancelDialog,
     openRescheduleDrawer,
-  } = useBookingDetail();
+  } = useBookingDetail(id);
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden bg-slate-50 dark:bg-slate-950">
-      {/* 1. STICKY HEADER CỐ ĐỊNH BAN ĐẦU */}
-      <BookingDetailHeader />
+    <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+      <PageHeader
+        title={BOOKING_TEXTS.detailHeaderTitle}
+        showBack
+        variant="gradient"
+      />
 
-      {/* 2. KHUNG NỘI DUNG CUỘN ĐỘC LẬP VỚI PADDING CHUẨN */}
-      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-6 no-scrollbar">
-        <div className="space-y-3.5 sm:mx-auto sm:max-w-[390px]">
+      <div className="flex-1 overflow-y-auto px-4 py-4 no-scrollbar">
+        <div className="space-y-3.5 sm:mx-auto sm:max-w-[390px] w-full">
           <BookingSummaryCard booking={booking} />
           <BookingQRCard qrCodeUrl={booking.qrCodeUrl} />
           <BookingCustomerCard customer={booking.customer} />
@@ -32,7 +39,6 @@ function BookingDetailContent() {
         </div>
       </div>
 
-      {/* 3. STICKY BOTTOM ACTIONS (3 NÚT CHỨC NĂNG) */}
       <BookingBottomActions
         onShare={handleShare}
         onCancel={openCancelDialog}
@@ -42,16 +48,18 @@ function BookingDetailContent() {
   );
 }
 
-export default function BookingDetailPage() {
+export default function BookingDetailPage({ params }: BookingDetailPageProps) {
+  const resolvedParams = use(params);
+
   return (
     <Suspense
       fallback={
-        <div className="flex h-full w-full items-center justify-center bg-slate-50 dark:bg-slate-950">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+        <div className="flex h-full w-full items-center justify-center bg-background text-xs font-bold text-muted-foreground">
+          Đang tải chi tiết đơn đặt...
         </div>
       }
     >
-      <BookingDetailContent />
+      <BookingDetailContent id={resolvedParams.id} />
     </Suspense>
   );
 }

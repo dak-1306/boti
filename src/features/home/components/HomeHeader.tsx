@@ -47,14 +47,6 @@ export function HomeHeader({
               className="w-full bg-transparent text-xs text-slate-800 placeholder-slate-400 focus:outline-none dark:text-slate-100"
             />
           </div>
-
-          {/* Icon Filter mở Drawer trực tiếp trên thanh Search */}
-          <button
-            onClick={onOpenFilterDrawer}
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
-          >
-            <SlidersHorizontal className="h-3.5 w-3.5" />
-          </button>
         </div>
       </div>
 

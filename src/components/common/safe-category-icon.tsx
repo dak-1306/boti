@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import { Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { COMMON_TEXTS } from "@/constants/common.constants";
 
 interface SafeCategoryIconProps {
   icon?: StaticImageData | string | null;
@@ -14,13 +15,12 @@ interface SafeCategoryIconProps {
 
 export function SafeCategoryIcon({
   icon,
-  alt = "Category Icon",
+  alt = COMMON_TEXTS.categoryFallbackAlt,
   size = 16,
   className,
 }: SafeCategoryIconProps) {
   const [hasError, setHasError] = useState(false);
 
-  // Fallback icon khi không có file hoặc tải file thất bại
   if (!icon || hasError) {
     return (
       <Trophy

@@ -17,13 +17,15 @@ export const useBookings = () => {
   const [isDateDrawerOpen, setIsDateDrawerOpen] = useState(false);
   const initialBookings = rawBookingsMock as unknown as BookingItem[];
 
-  // LOGIC LỌC TỔNG HỢP THEO TAB + (NGÀY / THÁNG / NĂM)
   const filteredBookings = useMemo(() => {
     return initialBookings.filter((booking) => {
       if (booking.status !== filters.tab) return false;
       if (filters.filterMode === "all") return true;
+      if (!booking.date || typeof booking.date !== "string") return false;
 
-      const [bYear, bMonth, bDay] = booking.date.split("-").map(Number);
+      const parts = booking.date.split("-").map(Number);
+      if (parts.length !== 3 || parts.some(isNaN)) return false;
+      const [bYear, bMonth, bDay] = parts;
 
       if (filters.filterMode === "day" && filters.selectedDate) {
         return (
@@ -48,7 +50,6 @@ export const useBookings = () => {
     });
   }, [filters, initialBookings]);
 
-  // Chuỗi Text hiển thị trên Chip Filter ngoài Header
   const selectedDateText = useMemo(() => {
     if (filters.filterMode === "all") return null;
 
@@ -75,7 +76,6 @@ export const useBookings = () => {
     return null;
   }, [filters]);
 
-  // HÀM CHUYỂN TRANG CHI TIẾT THEO ID ĐƠN ĐẶT
   const handleSelectBooking = (id: string) => {
     router.push(`/bookings/${id}`);
   };
@@ -91,7 +91,7 @@ export const useBookings = () => {
     closeDateDrawer: () => setIsDateDrawerOpen(false),
     clearDateFilter: () =>
       setFilters((prev) => ({ ...prev, filterMode: "all" })),
-    handleNavigateToHome: () => router.push("/home"),
+    handleNavigateToHome: () => router.push("/"),
     handleSelectBooking,
   };
 };

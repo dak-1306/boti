@@ -1,23 +1,17 @@
 import { useState, useMemo } from "react";
-import { useParams } from "next/navigation";
 import { BookingItem } from "../types/bookings.types";
 import rawBookingsMock from "../data/bookings.mock.json";
 
-export function useBookingDetail() {
-  const params = useParams();
-  const bookingId = (params?.id as string) || "b1";
-
+export function useBookingDetail(id?: string) {
+  const targetId = id || "b_01";
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [isRescheduleDrawerOpen, setIsRescheduleDrawerOpen] = useState(false);
 
-  // Selector thuần: Lấy dữ liệu từ JSON Mock Layer
   const booking = useMemo<BookingItem>(() => {
     const list = rawBookingsMock as unknown as BookingItem[];
-    const found = list.find((b) => b.id === bookingId);
-
-    // Trả về item tìm thấy hoặc item đầu tiên trong danh sách
+    const found = list.find((b) => b.id === targetId);
     return found || list[0];
-  }, [bookingId]);
+  }, [targetId]);
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -28,7 +22,7 @@ export function useBookingDetail() {
           url: window.location.href,
         });
       } catch {
-        // User cancelled share
+        // Hủy chia sẻ
       }
     } else {
       navigator.clipboard.writeText(window.location.href);

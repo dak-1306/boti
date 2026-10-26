@@ -1,20 +1,8 @@
+"use client";
+
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-const MONTH_NAMES = [
-  "Thg 1",
-  "Thg 2",
-  "Thg 3",
-  "Thg 4",
-  "Thg 5",
-  "Thg 6",
-  "Thg 7",
-  "Thg 8",
-  "Thg 9",
-  "Thg 10",
-  "Thg 11",
-  "Thg 12",
-];
+import { MONTH_NAMES, BOOKING_TEXTS } from "../../constants/bookings.constants";
 
 interface MonthFilterViewProps {
   tempMonth: number;
@@ -31,28 +19,26 @@ export function MonthFilterView({
 }: MonthFilterViewProps) {
   return (
     <div className="flex w-full flex-col gap-4">
-      {/* Header chuyển Năm */}
-      <div className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-1.5 dark:bg-slate-800/50">
+      <div className="flex h-11 items-center justify-between rounded-xl bg-muted px-3">
         <button
           type="button"
           onClick={() => onChangeYear(tempYear - 1)}
-          className="p-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition"
+          className="flex h-11 w-11 items-center justify-center text-muted-foreground hover:text-foreground transition"
         >
-          <ChevronLeft className="size-4" />
+          <ChevronLeft className="h-5 w-5" />
         </button>
-        <span className="text-sm font-extrabold text-slate-800 dark:text-slate-100">
-          Năm {tempYear}
+        <span className="text-sm font-extrabold text-foreground">
+          {BOOKING_TEXTS.labelYearPrefix} {tempYear}
         </span>
         <button
           type="button"
           onClick={() => onChangeYear(tempYear + 1)}
-          className="p-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition"
+          className="flex h-11 w-11 items-center justify-center text-muted-foreground hover:text-foreground transition"
         >
-          <ChevronRight className="size-4" />
+          <ChevronRight className="h-5 w-5" />
         </button>
       </div>
 
-      {/* Grid 12 Tháng */}
       <div className="grid grid-cols-3 gap-2.5">
         {MONTH_NAMES.map((name, idx) => {
           const isSelected = tempMonth === idx;
@@ -61,10 +47,10 @@ export function MonthFilterView({
               key={name}
               type="button"
               onClick={() => onSelectMonth(idx)}
-              className={`rounded-2xl py-3 text-xs font-bold transition ${
+              className={`h-11 rounded-2xl text-xs font-bold transition ${
                 isSelected
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
-                  : "border border-slate-200/80 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300"
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "border border-border bg-card text-foreground hover:bg-muted"
               }`}
             >
               {name}

@@ -1,9 +1,10 @@
 "use client";
 
-import { Star, MapPin, Clock} from "lucide-react";
+import { Star, MapPin, Clock } from "lucide-react";
 import { Venue } from "../types/home.types";
 import { HOME_TEXTS } from "../constants/home.constants";
 import { SafeImage } from "@/components/common/safe-image";
+import { Badge } from "@/components/ui/badge";
 
 interface VenueCardProps {
   venue: Venue;
@@ -11,7 +12,6 @@ interface VenueCardProps {
 }
 
 export function VenueCard({ venue, onClick }: VenueCardProps) {
-
   return (
     <div
       onClick={onClick}
@@ -20,12 +20,11 @@ export function VenueCard({ venue, onClick }: VenueCardProps) {
       {/* 1. Khung Ảnh Sân (Xử lý Fallback khi ảnh lỗi) */}
       <div className="relative h-28 w-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
         <SafeImage
-            src={venue.images?.[0] || venue.imageUrl || ""}
-            alt={venue.name}
-            fill
-            className="object-cover"
-            
-          />
+          src={venue.images?.[0] || venue.imageUrl || ""}
+          alt={venue.name}
+          fill
+          className="object-cover"
+        />
 
         {/* Badge khoảng cách GPS */}
         {venue.distanceText && (
@@ -40,9 +39,9 @@ export function VenueCard({ venue, onClick }: VenueCardProps) {
         <div className="space-y-1">
           {/* Loại môn & Đánh giá */}
           <div className="flex items-center justify-between gap-1">
-            <span className="truncate text-[10px] font-semibold text-blue-600 dark:text-blue-400">
-              {venue.category}
-            </span>
+            <Badge variant="sky" size="sm">
+              {venue.categorySlug}
+            </Badge>
             <div className="flex items-center gap-0.5 shrink-0 text-amber-500">
               <Star className="h-3 w-3 fill-amber-500" />
               <span className="text-[11px] font-bold">{venue.rating}</span>
@@ -56,13 +55,13 @@ export function VenueCard({ venue, onClick }: VenueCardProps) {
 
           {/* Địa chỉ */}
           <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
-            <MapPin className="h-3 w-3 shrink-0 text-slate-400" />
+            <MapPin className="h-3 w-3 shrink-0 text-primary" />
             <p className="line-clamp-1 text-[10px]">{venue.address}</p>
           </div>
 
           {/* Giờ mở cửa */}
-          <div className="flex items-center gap-1 text-slate-400">
-            <Clock className="h-3 w-3 shrink-0" />
+          <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+            <Clock className="h-3 w-3 shrink-0 text-primary" />
             <span className="text-[9px] font-medium truncate">
               {venue.openTime}
             </span>

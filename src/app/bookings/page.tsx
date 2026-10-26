@@ -7,7 +7,7 @@ import { BookingSectionHeader } from "@/features/bookings/components/BookingSect
 import { BookingDateDrawer } from "@/features/bookings/components/date-drawer/BookingDateDrawer";
 import { BookingList } from "@/features/bookings/components/BookingList";
 import { BookingEmptyState } from "@/features/bookings/components/BookingEmptyState";
-import { BottomNav } from "@/components/common/BottomNav";
+import { BottomNav } from "@/components/common/bottom-nav";
 import { useBookings } from "@/features/bookings/hooks/useBookings";
 import { BOOKING_TABS } from "@/features/bookings/constants/bookings.constants";
 

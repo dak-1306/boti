@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image, { ImageProps } from "next/image";
 import { ImageOff, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { COMMON_TEXTS } from "@/constants/common.constants";
 
 interface SafeImageProps extends Omit<ImageProps, "onError"> {
   fallbackIcon?: LucideIcon;
@@ -22,12 +23,11 @@ export function SafeImage({
 }: SafeImageProps) {
   const [hasError, setHasError] = useState(false);
 
-  // Nếu không có src hoặc bị lỗi tải ảnh
   if (!src || hasError) {
     return (
       <div
         className={cn(
-          "flex h-full w-full items-center justify-center bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500",
+          "flex h-full w-full items-center justify-center bg-muted text-muted-foreground",
           containerClassName,
         )}
       >
@@ -39,7 +39,7 @@ export function SafeImage({
   return (
     <Image
       src={src}
-      alt={alt || "Image"}
+      alt={alt || COMMON_TEXTS.imageFallbackAlt}
       className={className}
       onError={() => setHasError(true)}
       {...props}

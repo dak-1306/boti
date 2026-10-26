@@ -4,7 +4,11 @@
   "phone": "0901 234 567",
   "email": "nguyenvana@gmail.com",
   "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
-  "membershipTier": "Hội viên Vàng",
-  "totalBookings": 18,
-  "rewardPoints": 850
+  "isZaloVerified": true,
+  "bankInfo": {
+    "bankName": "MB Bank (Ngân hàng Quân Đội)",
+    "bankCode": "MB",
+    "accountNumber": "0901234567",
+    "accountHolder": "NGUYEN VAN A"
+  }
 }

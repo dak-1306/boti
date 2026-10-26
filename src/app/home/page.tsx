@@ -8,7 +8,7 @@ import { VenueGrid } from "@/features/home/components/VenueGrid";
 import { VenueMapView } from "@/features/home/components/map/VenueMapView";
 import { FilterDrawer } from "@/features/home/components/drawer-filter/FilterDrawer";
 import { VenueDetailDrawer } from "@/features/home/components/detail-drawer/VenueDetailDrawer";
-import { BottomNav } from "@/components/common/BottomNav";
+import { BottomNav } from "@/components/common/bottom-nav";
 import { useHome } from "@/features/home/hooks/useHome";
 import { viewSwitchVariants } from "@/features/home/constants/home.motion";
 
