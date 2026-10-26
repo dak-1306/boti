@@ -1,0 +1,60 @@
+[
+  {
+    "id": "n_01",
+    "title": "Giải Pickleball Boti Open 2026 chính thức mở đăng ký vé tham gia",
+    "slug": "giai-pickleball-boti-open-2026",
+    "summary": "Giải đấu hấp dẫn nhất mùa thu 2026 với tổng giải thưởng lên tới 100.000.000 VNĐ chính thức khởi động tại TP.HCM.",
+    "content": [
+      "Giải đấu Pickleball Boti Open 2026 quy tụ hơn 200 vận động viên bán chuyên và chuyên nghiệp trên toàn quốc.",
+      "Người chơi đăng ký sớm qua ứng dụng Boti trước ngày 15/11/2026 sẽ nhận ngay voucher giảm 20% phí thuê sân luyện tập.",
+      "Mọi thông tin chi tiết về thể thức thi đấu và lịch trình sẽ được cập nhật liên tục trên Mini App Boti."
+    ],
+    "category": "Giải đấu",
+    "categorySlug": "tournament",
+    "imageUrl": "https://images.unsplash.com/photo-1626248801379-51a0748a5f96?w=800&auto=format&fit=crop&q=80",
+    "author": "Ban Tổ Chức Boti",
+    "publishedAt": "24/10/2026",
+    "readTime": "3 phút",
+    "views": 1420,
+    "isFeatured": true,
+    "tags": ["Pickleball", "Tournament", "BotiOpen"]
+  },
+  {
+    "id": "n_02",
+    "title": "Ưu đãi hoàn tiền 15% khi thanh toán đặt sân qua ZaloPay",
+    "slug": "uu-dai-hoan-tien-zalopay",
+    "summary": "Nhận ngay hoàn tiền trực tiếp vào tài khoản ngân hàng khi hoàn tất đơn đặt sân vào khung giờ vàng từ 14h - 17h.",
+    "content": [
+      "Boti phối hợp cùng ZaloPay tung chương trình tri ân khách hàng đặt lịch sân thể thao hàng tuần.",
+      "Chương trình áp dụng cho tất cả bộ môn bao gồm Cầu lông, Pickleball, Bóng đá và Quần vợt."
+    ],
+    "category": "Khuyến mãi",
+    "categorySlug": "promotion",
+    "imageUrl": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&auto=format&fit=crop&q=80",
+    "author": "Boti Marketing",
+    "publishedAt": "22/10/2026",
+    "readTime": "2 phút",
+    "views": 980,
+    "isFeatured": false,
+    "tags": ["ZaloPay", "KhuyenMai", "HoanTien"]
+  },
+  {
+    "id": "n_03",
+    "title": "5 bí quyết chọn vợt cầu lông phù hợp cho người mới bắt đầu",
+    "slug": "bi-quyet-chon-vot-cau-long",
+    "summary": "Hướng dẫn chi tiết chọn điểm cân bằng, độ cứng thân vợt và trọng lượng chuẩn U giúp nâng cao hiệu suất đánh.",
+    "content": [
+      "Đối với người mới chơi, chọn một cây vợt có độ dẻo vừa phải và điểm cân bằng công thủ toàn diện sẽ hỗ trợ kiểm soát cầu tốt hơn.",
+      "Hãy tham khảo ý kiến huấn luyện viên tại sân trước khi quyết định đầu tư thiết bị thi đấu."
+    ],
+    "category": "Mẹo & Kinh nghiệm",
+    "categorySlug": "tips",
+    "imageUrl": "https://images.unsplash.com/photo-1626225967045-944088226228?w=800&auto=format&fit=crop&q=80",
+    "author": "HLV Minh Tuấn",
+    "publishedAt": "20/10/2026",
+    "readTime": "5 phút",
+    "views": 2150,
+    "isFeatured": false,
+    "tags": ["CauLong", "KinhNghiem"]
+  }
+]

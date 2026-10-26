@@ -52,7 +52,7 @@ export function PageHeader({
       )}
     >
       {(title || showBack || rightAction) && (
-        <div className="flex h-14 items-center justify-between px-4 sm:mx-auto sm:max-w-[390px]">
+        <div className="flex h-14 items-end justify-between px-4 sm:mx-auto sm:max-w-[390px]">
           {showBack ? (
             <Button
               variant="ghost"
