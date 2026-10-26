@@ -16,6 +16,7 @@ interface VenueMapViewProps {
   onRequestLocation: () => void;
   isLoadingLocation: boolean;
   onOpenDetail: (venue: Venue) => void;
+  isVisible: boolean;
 }
 
 export function VenueMapView({
@@ -26,13 +27,14 @@ export function VenueMapView({
   onRequestLocation,
   isLoadingLocation,
   onOpenDetail,
+  isVisible,
 }: VenueMapViewProps) {
   const { mapContainerRef, handleRecenterToUser } = useLeafletMap({
     venues,
     selectedVenue,
     onSelectVenue,
     userLocation,
-    onRequestLocation,
+    isVisible,
   });
 
   return (

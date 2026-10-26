@@ -10,8 +10,8 @@ import { VenueGrid } from "@/features/home/components/VenueGrid";
 import { FilterDrawer } from "@/features/home/components/drawer-filter/FilterDrawer";
 import { VenueDetailDrawer } from "@/features/home/components/detail-drawer/VenueDetailDrawer";
 import { useHome } from "@/features/home/hooks/useHome";
+import { cn } from "@/lib/utils";
 
-// Dynamic import tắt SSR để bảo đảm Next.js 16 build Prerender 100% không lỗi window/Leaflet
 const VenueMapView = dynamic(
   () =>
     import("@/features/home/components/map/VenueMapView").then(
@@ -55,8 +55,11 @@ export default function HomePage() {
     handleNavigateToBooking,
   } = useHome();
 
+  const isMapView = viewMode === "map";
+
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+      {/* HEADER CỐ ĐỊNH PHÍA TRÊN */}
       <HomeHeader
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -66,42 +69,65 @@ export default function HomePage() {
         hasLocation={hasLocation}
       />
 
-      <div className="flex-1 overflow-y-auto pb-20 no-scrollbar">
-        <div className="sm:mx-auto sm:max-w-[390px] w-full h-full flex flex-col">
-          <CategoryList
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onSelectCategory={handleSelectCategory}
-          />
-
-          <VenueSectionHeader
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
-          />
-
-          {viewMode === "grid" ? (
-            <VenueGrid
-              venues={venues}
-              onSelectVenue={openDetailDrawer}
-              onBookVenue={handleNavigateToBooking}
-              onResetFilters={handleResetFilters}
+      {/* KHU VỰC NỘI DUNG: Khóa cuộn linh hoạt khi ở chế độ Map */}
+      <main
+        className={cn(
+          "flex-1 w-full flex flex-col min-h-0",
+          isMapView ? "overflow-hidden" : "overflow-y-auto pb-20 no-scrollbar",
+        )}
+      >
+        <div className="sm:mx-auto sm:max-w-[390px] w-full flex-1 flex flex-col min-h-0">
+          {/* Category List luôn ghim cố định ở đầu */}
+          <div className="shrink-0">
+            <CategoryList
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onSelectCategory={handleSelectCategory}
             />
-          ) : (
-            <div className="relative flex-1 min-h-[400px]">
-              <VenueMapView
+          </div>
+
+          {/* Section Header (Thanh chuyển Grid/Map) ghim cố định */}
+          <div className="shrink-0">
+            <VenueSectionHeader
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+            />
+          </div>
+
+          {/* 1. CHẾ ĐỘ DANH SÁCH (GRID) */}
+          {!isMapView && (
+            <div className="flex-1">
+              <VenueGrid
                 venues={venues}
-                selectedVenue={selectedVenueOnMap}
-                onSelectVenue={setSelectedVenueOnMap}
-                userLocation={userLocation}
-                onRequestLocation={onRequestLocation}
-                isLoadingLocation={isLoadingLocation}
-                onOpenDetail={openDetailDrawer}
+                onSelectVenue={openDetailDrawer}
+                onBookVenue={handleNavigateToBooking}
+                onResetFilters={handleResetFilters}
               />
             </div>
           )}
-        </div>
-      </div>
 
+          {/* 2. CHẾ ĐỘ BẢN ĐỒ (MAP): Dãn trọn vẹn flex-1 min-h-0, không bao giờ bị cuộn trôi */}
+          <div
+            className={cn(
+              "relative flex-1 w-full min-h-0 overflow-hidden touch-none",
+              !isMapView && "hidden",
+            )}
+          >
+            <VenueMapView
+              venues={venues}
+              selectedVenue={selectedVenueOnMap}
+              onSelectVenue={setSelectedVenueOnMap}
+              userLocation={userLocation}
+              onRequestLocation={onRequestLocation}
+              isLoadingLocation={isLoadingLocation}
+              onOpenDetail={openDetailDrawer}
+              isVisible={isMapView}
+            />
+          </div>
+        </div>
+      </main>
+
+      {/* BOTTOM NAV CỐ ĐỊNH Ở ĐÁY */}
       <BottomNav activeTab="home" />
 
       <FilterDrawer

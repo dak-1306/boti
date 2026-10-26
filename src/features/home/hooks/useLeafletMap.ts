@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import type L from "leaflet";
 import { Venue, LocationState } from "../types/home.types";
 import { CATEGORIES_DATA } from "../constants/home.constants";
@@ -9,12 +9,15 @@ import {
   createVenuePinHtml,
 } from "../utils/mapMarkerTemplates";
 
+// Import CSS Leaflet bắt buộc để Marker không bị vỡ layout
+import "leaflet/dist/leaflet.css";
+
 interface UseLeafletMapProps {
   venues: Venue[];
   selectedVenue: Venue | null;
   onSelectVenue: (venue: Venue) => void;
   userLocation: LocationState | null;
-  onRequestLocation?: () => void;
+  isVisible: boolean; // Trạng thái hiển thị view map
 }
 
 export function useLeafletMap({
@@ -22,22 +25,33 @@ export function useLeafletMap({
   selectedVenue,
   onSelectVenue,
   userLocation,
+  isVisible,
 }: UseLeafletMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
-  const venueMarkersLayerRef = useRef<L.LayerGroup | null>(null);
+  const leafletRef = useRef<typeof L | null>(null); // Lưu module Leaflet dùng chung
+  const venueLayerRef = useRef<L.LayerGroup | null>(null);
   const userMarkerRef = useRef<L.Marker | null>(null);
 
   const [isMapReady, setIsMapReady] = useState(false);
 
-  // 1. Khởi tạo Leaflet Map (chỉ chạy 1 lần duy nhất ở Client)
+  // Ref lưu callback để tránh re-trigger useEffect khi callback thay đổi
+  const onSelectVenueRef = useRef(onSelectVenue);
+  useEffect(() => {
+    onSelectVenueRef.current = onSelectVenue;
+  }, [onSelectVenue]);
+
+  // 1. Khởi tạo Map DUY NHẤT 1 LẦN ở Client
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
-    let resizeObserver: ResizeObserver | null = null;
+    let isMounted = true;
 
     import("leaflet").then((L) => {
-      if (mapInstanceRef.current || !mapContainerRef.current) return;
+      if (!isMounted || mapInstanceRef.current || !mapContainerRef.current)
+        return;
+
+      leafletRef.current = L;
 
       const initialLat =
         userLocation?.lat || selectedVenue?.location?.lat || 10.778;
@@ -48,32 +62,20 @@ export function useLeafletMap({
         center: [initialLat, initialLng],
         zoom: 13,
         zoomControl: false,
+        attributionControl: false,
       });
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map);
 
-      venueMarkersLayerRef.current = L.layerGroup().addTo(map);
+      venueLayerRef.current = L.layerGroup().addTo(map);
       mapInstanceRef.current = map;
       setIsMapReady(true);
-
-      setTimeout(() => {
-        map.invalidateSize();
-      }, 200);
-
-      resizeObserver = new ResizeObserver(() => {
-        map.invalidateSize();
-      });
-      resizeObserver.observe(mapContainerRef.current);
     });
 
     return () => {
-      if (resizeObserver) {
-        resizeObserver.disconnect();
-      }
+      isMounted = false;
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
@@ -82,17 +84,31 @@ export function useLeafletMap({
     };
   }, []);
 
-  // 2. Render marker vị trí người dùng
+  // 2. Tự động tính lại khung hình (invalidateSize) khi Viewport/Visibility thay đổi
   useEffect(() => {
-    if (!isMapReady || !mapInstanceRef.current || !userLocation) return;
+    if (isMapReady && mapInstanceRef.current && isVisible) {
+      const timer = setTimeout(() => {
+        mapInstanceRef.current?.invalidateSize({ animate: false });
+        if (venues.length > 0) {
+          autoFitMapBounds(mapInstanceRef.current!, venues);
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isMapReady, isVisible, venues]);
 
-    import("leaflet").then((L) => {
-      if (!mapInstanceRef.current) return;
+  // 3. Cập nhật Marker vị trí Người dùng (Đồng bộ)
+  useEffect(() => {
+    const L = leafletRef.current;
+    const map = mapInstanceRef.current;
+    if (!isMapReady || !map || !L) return;
 
-      if (userMarkerRef.current) {
-        userMarkerRef.current.remove();
-      }
+    if (userMarkerRef.current) {
+      userMarkerRef.current.remove();
+      userMarkerRef.current = null;
+    }
 
+    if (userLocation) {
       const userIcon = L.divIcon({
         className: "user-location-pin",
         html: createUserPinHtml(),
@@ -103,64 +119,57 @@ export function useLeafletMap({
       userMarkerRef.current = L.marker([userLocation.lat, userLocation.lng], {
         icon: userIcon,
         zIndexOffset: 1000,
-      }).addTo(mapInstanceRef.current);
-    });
+      }).addTo(map);
+    }
   }, [isMapReady, userLocation]);
 
-  // 3. Render các Marker sân bóng
+  // 4. Cập nhật Marker Danh sách Sân (Đồng bộ 100%, không bị Race Condition)
   useEffect(() => {
-    if (!isMapReady || !mapInstanceRef.current || !venueMarkersLayerRef.current)
-      return;
+    const L = leafletRef.current;
+    const map = mapInstanceRef.current;
+    const venueLayer = venueLayerRef.current;
 
-    import("leaflet").then((L) => {
-      if (!venueMarkersLayerRef.current || !mapInstanceRef.current) return;
+    if (!isMapReady || !map || !L || !venueLayer) return;
 
-      venueMarkersLayerRef.current.clearLayers();
+    venueLayer.clearLayers();
 
-      venues.forEach((venue) => {
-        const isSelected = selectedVenue?.id === venue.id;
+    venues.forEach((venue) => {
+      const isSelected = selectedVenue?.id === venue.id;
 
-        const categoryObj = CATEGORIES_DATA.find(
-          (c) =>
-            c.name.toLowerCase() === venue.category.toLowerCase() ||
-            c.id.toLowerCase() === venue.category.toLowerCase(),
-        );
+      const categoryObj = CATEGORIES_DATA.find(
+        (c) =>
+          c.name.toLowerCase() === venue.category.toLowerCase() ||
+          c.id.toLowerCase() === venue.category.toLowerCase(),
+      );
 
-        const iconSrc = getIconUrl(categoryObj?.icon);
+      const iconSrc = getIconUrl(categoryObj?.icon);
 
-        const customIcon = L.divIcon({
-          className: "custom-map-pin-clean",
-          html: createVenuePinHtml(venue, isSelected, iconSrc),
-          iconSize: [80, 58],
-          iconAnchor: [40, 22],
-        });
-
-        const marker = L.marker([venue.location.lat, venue.location.lng], {
-          icon: customIcon,
-        });
-
-        marker.on("click", () => {
-          onSelectVenue(venue);
-          flyToCoordinates(mapInstanceRef.current!, venue.location, 15);
-        });
-
-        venueMarkersLayerRef.current?.addLayer(marker);
+      const customIcon = L.divIcon({
+        className: "custom-map-pin-clean",
+        html: createVenuePinHtml(venue, isSelected, iconSrc),
+        iconSize: [80, 58],
+        iconAnchor: [40, 22],
       });
+
+      const marker = L.marker([venue.location.lat, venue.location.lng], {
+        icon: customIcon,
+        zIndexOffset: isSelected ? 500 : 0,
+      });
+
+      marker.on("click", () => {
+        onSelectVenueRef.current(venue);
+        flyToCoordinates(map, venue.location, 15);
+      });
+
+      venueLayer.addLayer(marker);
     });
-  }, [isMapReady, venues, selectedVenue, onSelectVenue]);
+  }, [isMapReady, venues, selectedVenue]);
 
-  // 4. Chỉ tự động fit camera khi danh sách venues thay đổi (ví dụ khi lọc)
-  useEffect(() => {
-    if (isMapReady && mapInstanceRef.current && venues.length > 0) {
-      autoFitMapBounds(mapInstanceRef.current, venues);
-    }
-  }, [isMapReady, venues]);
-
-  const handleRecenterToUser = () => {
+  const handleRecenterToUser = useCallback(() => {
     if (userLocation && mapInstanceRef.current) {
       flyToCoordinates(mapInstanceRef.current, userLocation, 15);
     }
-  };
+  }, [userLocation]);
 
   return {
     mapContainerRef,
