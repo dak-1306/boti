@@ -3,6 +3,7 @@
 import React from "react";
 import { PageHeader } from "@/components/common/page-header";
 import { BottomNav } from "@/components/common/bottom-nav";
+import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { ProfileHeader } from "@/features/profile/components/ProfileHeader";
 import { ProfileBankCard } from "@/features/profile/components/ProfileBankCard";
 import { ProfileMenuList } from "@/features/profile/components/ProfileMenuList";
@@ -16,11 +17,14 @@ export default function ProfilePage() {
     isEditDrawerOpen,
     openEditDrawer,
     closeEditDrawer,
+    isLogoutDialogOpen,
+    openLogoutDialog,
+    closeLogoutDialog,
+    handleConfirmLogout,
     handleUpdateProfile,
     handleChangeAvatar,
     notificationsEnabled,
     handleToggleNotifications,
-    handleLogout,
   } = useProfile();
 
   return (
@@ -40,14 +44,14 @@ export default function ProfilePage() {
       />
 
       <div className="flex-1 overflow-y-auto px-4 py-4 no-scrollbar">
-        <div className="space-y-3.5 sm:mx-auto sm:max-w-[390px] w-full">
+        <div className="w-full space-y-3.5 sm:mx-auto sm:max-w-[390px]">
           <ProfileBankCard bankInfo={user.bankInfo} onEdit={openEditDrawer} />
 
           <ProfileMenuList
             onOpenEditDrawer={openEditDrawer}
             notificationsEnabled={notificationsEnabled}
             onToggleNotifications={handleToggleNotifications}
-            onLogout={handleLogout}
+            onLogout={openLogoutDialog}
           />
         </div>
       </div>
@@ -59,6 +63,17 @@ export default function ProfilePage() {
         onClose={closeEditDrawer}
         user={user}
         onSave={handleUpdateProfile}
+      />
+
+      <ConfirmDialog
+        isOpen={isLogoutDialogOpen}
+        onClose={closeLogoutDialog}
+        onConfirm={handleConfirmLogout}
+        title={PROFILE_TEXTS.logoutDialogTitle || "Đăng xuất tài khoản"}
+        description={PROFILE_TEXTS.logoutConfirm}
+        confirmText="Đăng xuất"
+        cancelText="Hủy"
+        variant="destructive"
       />
     </div>
   );

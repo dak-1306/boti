@@ -2,12 +2,14 @@
 
 import React, { Suspense, use } from "react";
 import { PageHeader } from "@/components/common/page-header";
+import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { useBookingDetail } from "@/features/bookings/hooks/useBookingDetail";
 import { BookingSummaryCard } from "@/features/bookings/components/detail/BookingSummaryCard";
 import { BookingQRCard } from "@/features/bookings/components/detail/BookingQRCard";
 import { BookingCustomerCard } from "@/features/bookings/components/detail/BookingCustomerCard";
 import { BookingPaymentCard } from "@/features/bookings/components/detail/BookingPaymentCard";
 import { BookingBottomActions } from "@/features/bookings/components/detail/BookingBottomActions";
+import { BookingRescheduleDrawer } from "@/features/bookings/components/reschedule/BookingRescheduleDrawer";
 import { BOOKING_TEXTS } from "@/features/bookings/constants/bookings.constants";
 
 interface BookingDetailPageProps {
@@ -17,10 +19,19 @@ interface BookingDetailPageProps {
 function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
 
-  const { booking, handleShare, openCancelDialog, openRescheduleDrawer } =
-    useBookingDetail(resolvedParams.id);
+  const {
+    booking,
+    handleShare,
+    isCancelDialogOpen,
+    openCancelDialog,
+    closeCancelDialog,
+    handleConfirmCancel,
+    isRescheduleDrawerOpen,
+    openRescheduleDrawer,
+    closeRescheduleDrawer,
+    handleConfirmReschedule,
+  } = useBookingDetail(resolvedParams.id);
 
-  // Guard Clause: Xử lý trường hợp không tìm thấy đơn đặt
   if (!booking) {
     return (
       <div className="flex h-full w-full flex-col bg-background text-foreground">
@@ -29,7 +40,7 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
           showBack
           variant="gradient"
         />
-        <div className="flex flex-1 items-center justify-center p-4 text-center text-xs text-muted-foreground font-medium">
+        <div className="flex flex-1 items-center justify-center p-4 text-center text-xs font-medium text-muted-foreground">
           Không tìm thấy thông tin đơn đặt sân.
         </div>
       </div>
@@ -38,7 +49,6 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
-      {/* PAGE HEADER VỚI BOOKING SUMMARY CARD ĐÈ NỔI 50/50 */}
       <PageHeader
         title={BOOKING_TEXTS.detailHeaderTitle}
         showBack
@@ -48,9 +58,8 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
         bottomExtension={<BookingSummaryCard booking={booking} />}
       />
 
-      {/* DANH SÁCH CÁC THẺ NỘI DUNG CUỘN ĐỘC LẬP */}
-      <div className="flex-1 overflow-y-auto px-4 p-4 no-scrollbar">
-        <div className="space-y-3.5 sm:mx-auto sm:max-w-[390px] w-full">
+      <div className="flex-1 overflow-y-auto px-4 pt-16 pb-20 no-scrollbar">
+        <div className="w-full space-y-3.5 sm:mx-auto sm:max-w-[390px]">
           <BookingQRCard qrCodeUrl={booking.qrCodeUrl} />
           <BookingCustomerCard customer={booking.customer} />
           <BookingPaymentCard payment={booking.payment} />
@@ -61,6 +70,26 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
         onShare={handleShare}
         onCancel={openCancelDialog}
         onReschedule={openRescheduleDrawer}
+      />
+
+      {/* Drawer Dời Lịch */}
+      <BookingRescheduleDrawer
+        booking={booking}
+        isOpen={isRescheduleDrawerOpen}
+        onClose={closeRescheduleDrawer}
+        onConfirmReschedule={handleConfirmReschedule}
+      />
+
+      {/* Dialog Xác Nhận Hủy Đơn */}
+      <ConfirmDialog
+        isOpen={isCancelDialogOpen}
+        onClose={closeCancelDialog}
+        onConfirm={handleConfirmCancel}
+        title="Xác nhận hủy đơn đặt sân"
+        description="Bạn có chắc chắn muốn hủy đơn đặt sân này? Hành động này không thể hoàn tác."
+        confirmText="Hủy đặt sân"
+        cancelText="Giữ lại"
+        variant="destructive"
       />
     </div>
   );

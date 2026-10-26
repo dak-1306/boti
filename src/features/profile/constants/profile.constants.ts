@@ -5,6 +5,7 @@ export const PROFILE_TEXTS = {
   zaloVerifiedBadge: "Zalo Verified",
   editProfileTitle: "Chỉnh sửa hồ sơ",
   changeAvatarTitle: "Đổi ảnh đại diện",
+  changeAvatarSuccess: "Đã đổi ảnh đại diện thành công!",
   promptAvatarUrl: "Nhập URL hình ảnh avatar mới:",
   bankCardTitle: "Tài khoản nhận hoàn tiền",
   bankCardEditBtn: "Thay đổi",
@@ -13,6 +14,7 @@ export const PROFILE_TEXTS = {
   labelBank: "Ngân hàng:",
   labelAccountNo: "Số tài khoản:",
   labelAccountHolder: "Chủ tài khoản:",
+  logoutDialogTitle: "Xác nhận đăng xuất",
   drawerTitle: "Cập nhật Hồ sơ & Ngân hàng",
   drawerSectionRefund: "Tài khoản nhận tiền khi hủy lịch",
   labelFullName: "Họ và tên",
@@ -25,6 +27,7 @@ export const PROFILE_TEXTS = {
   termsAlert: "Boti Sports Platform v1.0.0 - Điều khoản dịch vụ & Bảo mật.",
   logoutConfirm: "Bạn có chắc chắn muốn đăng xuất khỏi Zalo Mini App?",
   logoutSuccessAlert: "Đã đăng xuất thành công!",
+  updateSuccessToast: "Cập nhật thông tin thành công!",
 } as const;
 
 export const POPULAR_BANKS = [

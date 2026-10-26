@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import { MobileContainer } from "@/components/layout/MobileContainer";
 import { APP_CONFIG } from "@/constants/appConfig";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const beVietnamPro = Be_Vietnam_Pro({
@@ -31,6 +32,7 @@ export default function RootLayout({
   return (
     <html lang="vi" className={`${beVietnamPro.variable} h-full antialiased`}>
       <body className="h-full min-h-screen overflow-hidden bg-slate-200 antialiased dark:bg-zinc-950 font-sans">
+        <Toaster />
         <MobileContainer>{children}</MobileContainer>
       </body>
     </html>

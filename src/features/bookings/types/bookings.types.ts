@@ -46,3 +46,29 @@ export interface BookingFilterState {
   selectedMonth?: number;
   selectedYear?: number;
 }
+
+export interface RescheduleSlotOption {
+  slotId: string;
+  courtId: string;
+  courtName: string;
+  startTime: string;
+  endTime: string;
+  price: number;
+  isAvailable: boolean;
+  isSamePrice: boolean;
+}
+
+export interface RescheduleDateOption {
+  date: string; // ISO format (YYYY-MM-DD)
+  dayName: string; // Thứ hai, Thứ ba...
+  displayDate: string; // 24/10
+  isToday?: boolean;
+}
+
+export interface ReschedulePayload {
+  bookingId: string;
+  newDate: string;
+  newDateText: string;
+  newTimeText: string;
+  slotId: string;
+}

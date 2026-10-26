@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   PROFILE_MENU_GROUPS,
   PROFILE_TEXTS,
@@ -36,10 +37,10 @@ export function ProfileMenuList({
         onToggleNotifications();
         break;
       case "support":
-        alert(PROFILE_TEXTS.zaloSupportAlert);
+        toast.info(PROFILE_TEXTS.zaloSupportAlert);
         break;
       case "terms":
-        alert(PROFILE_TEXTS.termsAlert);
+        toast.info(PROFILE_TEXTS.termsAlert);
         break;
       case "logout":
         onLogout();

@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { BookingCustomer, CourtOption } from "../types/booking-create.types";
 import { BOOKING_CREATE_TEXTS } from "../constants/booking-create.constants";
 import { Venue } from "@/features/home/types/home.types";
@@ -18,7 +19,6 @@ export function useBookingCreate(venueIdParam?: string) {
     return venue.courts || [];
   }, [venue]);
 
-  // Lazy initialize Date để tương thích Next.js 16 Prerendering
   const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
   const [selectedCourtId, setSelectedCourtId] = useState<string>("");
   const [selectedSlotIds, setSelectedSlotIds] = useState<string[]>([]);
@@ -30,7 +30,6 @@ export function useBookingCreate(venueIdParam?: string) {
     notes: "",
   });
 
-  // Đảm bảo activeCourt luôn thuộc venue hiện tại
   const activeCourt = useMemo(() => {
     if (!courts.length) return null;
     return courts.find((c) => c.id === selectedCourtId) || courts[0];
@@ -59,9 +58,9 @@ export function useBookingCreate(venueIdParam?: string) {
   };
 
   const handleSubmit = () => {
-    alert(
-      `${BOOKING_CREATE_TEXTS.alertSuccessTitle}\nSân: ${venue.name}\nTổng tiền: ${totalPrice.toLocaleString("vi-VN")} đ`,
-    );
+    toast.success(BOOKING_CREATE_TEXTS.alertSuccessTitle, {
+      description: `Sân: ${venue.name} • Tổng tiền: ${totalPrice.toLocaleString("vi-VN")}đ`,
+    });
     router.push("/bookings");
   };
 

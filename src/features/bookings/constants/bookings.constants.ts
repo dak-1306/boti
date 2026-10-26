@@ -59,8 +59,25 @@ export const BOOKING_TEXTS = {
   alertDownloadedQR: "Đã tải mã QR về máy!",
   summaryCodeLabel: "Mã đặt:",
   summaryCopyTooltip: "Sao chép mã",
+  shareSuccessToast: "Đã sao chép liên kết đơn đặt sân!",
   detailHeaderTitle: "Chi tiết đặt sân",
   actionShare: "Chia sẻ",
   actionCancel: "Hủy lịch",
   actionReschedule: "Dời lịch",
 } as const;
+
+export const RESCHEDULE_TEXTS = {
+  drawerTitle: "Dời lịch đặt sân",
+  drawerSubtitle: "Chỉ áp dụng các khung giờ đồng giá với lịch cũ",
+  samePriceBadge: "Đồng giá",
+  selectDateLabel: "1. Chọn ngày chơi mới",
+  selectSlotLabel: "2. Chọn khung giờ khả dụng",
+  differentPriceLabel: "Khác giá",
+  bookedLabel: "Đã đặt",
+  oldScheduleLabel: "Lịch cũ:",
+  newScheduleLabel: "Lịch mới:",
+  confirmBtn: "Xác nhận dời lịch",
+  noSlotsAvailable: "Không có khung giờ đồng giá nào còn trống trong ngày này.",
+  selectSlotWarning: "Vui lòng chọn khung giờ muốn dời sang.",
+  successToast: "Đã dời lịch thành công!",
+};

@@ -105,7 +105,7 @@ export const useBookings = () => {
     closeDateDrawer: () => setIsDateDrawerOpen(false),
     clearDateFilter: () =>
       setFilters((prev) => ({ ...prev, filterMode: "all" })),
-    handleNavigateToHome: () => router.push("/"),
+    handleNavigateToHome: () => router.push("/home"),
     handleSelectBooking,
   };
 };

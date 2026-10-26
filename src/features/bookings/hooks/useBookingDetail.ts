@@ -1,46 +1,74 @@
-import { useState, useMemo } from "react";
-import { BookingItem } from "../types/bookings.types";
+import { useState, useCallback } from "react";
+import { toast } from "sonner";
 import rawBookingsMock from "@/data/bookings.mock.json";
+import { BookingItem } from "../types/bookings.types";
+import {
+  RESCHEDULE_TEXTS,
+  BOOKING_TEXTS,
+} from "../constants/bookings.constants";
 
-export function useBookingDetail(id?: string) {
-  const targetId = id || "b_01";
-  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+export function useBookingDetail(bookingId: string) {
+  const [booking, setBooking] = useState<BookingItem | null>(() => {
+    const found = rawBookingsMock.find((b) => b.id === bookingId);
+    return (found as BookingItem) || (rawBookingsMock[0] as BookingItem);
+  });
+
   const [isRescheduleDrawerOpen, setIsRescheduleDrawerOpen] = useState(false);
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
-  const booking = useMemo<BookingItem | null>(() => {
-    const list = rawBookingsMock as unknown as BookingItem[];
-    const found = list.find((b) => b.id === targetId);
-    return found || null;
-  }, [targetId]);
-
-  const handleShare = async () => {
-    if (!booking) return;
-
-    if (typeof navigator !== "undefined" && navigator.share) {
-      try {
-        await navigator.share({
-          title: `Lịch chơi tại ${booking.venueName}`,
-          text: `Mã đặt sân: ${booking.bookingCode} | ${booking.dateText}`,
+  const handleShare = useCallback(() => {
+    if (navigator.share && booking) {
+      navigator
+        .share({
+          title: `Đặt sân ${booking.venueName}`,
+          text: `Mã đặt sân: ${booking.bookingCode}`,
           url: window.location.href,
-        });
-      } catch {
-        // Hủy chia sẻ
-      }
-    } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+        })
+        .catch(() => {});
+    } else {
       navigator.clipboard.writeText(window.location.href);
-      alert("Đã sao chép liên kết đơn đặt sân!");
+      toast.success(
+        BOOKING_TEXTS.shareSuccessToast || "Đã sao chép liên kết đơn đặt sân!",
+      );
     }
-  };
+  }, [booking]);
 
-  const handleCancelBooking = () => {
-    alert("Yêu cầu hủy lịch đã được gửi thành công!");
-    setIsCancelDialogOpen(false);
-  };
+  const handleConfirmCancel = useCallback(() => {
+    setBooking((prev) =>
+      prev
+        ? {
+            ...prev,
+            status: "cancelled",
+            statusText: "Đã hủy",
+          }
+        : null,
+    );
+    toast.error("Đã hủy đơn đặt sân thành công.");
+  }, []);
 
-  const handleRescheduleBooking = () => {
-    alert("Yêu cầu dời lịch đã được gửi thành công!");
-    setIsRescheduleDrawerOpen(false);
-  };
+  const handleConfirmReschedule = useCallback(
+    ({
+      newDateText,
+      newTimeText,
+    }: {
+      newDateText: string;
+      newTimeText: string;
+    }) => {
+      setBooking((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: "rescheduled",
+              statusText: "Đã dời lịch",
+              dateText: newDateText,
+              timeText: newTimeText,
+            }
+          : null,
+      );
+      toast.success(RESCHEDULE_TEXTS.successToast);
+    },
+    [],
+  );
 
   return {
     booking,
@@ -48,10 +76,10 @@ export function useBookingDetail(id?: string) {
     isCancelDialogOpen,
     openCancelDialog: () => setIsCancelDialogOpen(true),
     closeCancelDialog: () => setIsCancelDialogOpen(false),
-    handleCancelBooking,
+    handleConfirmCancel,
     isRescheduleDrawerOpen,
     openRescheduleDrawer: () => setIsRescheduleDrawerOpen(true),
     closeRescheduleDrawer: () => setIsRescheduleDrawerOpen(false),
-    handleRescheduleBooking,
+    handleConfirmReschedule,
   };
 }
