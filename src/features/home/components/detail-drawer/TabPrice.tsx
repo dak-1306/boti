@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Venue } from "../../types/home.types";
+import { HOME_TEXTS } from "../../constants/home.constants";
 
 interface TabPriceProps {
   venue: Venue;
@@ -10,50 +11,43 @@ interface TabPriceProps {
 export function TabPrice({ venue }: TabPriceProps) {
   if (!venue.priceTable || venue.priceTable.length === 0) {
     return (
-      <p className="py-4 text-center text-xs text-slate-400">
-        Chưa có thông tin bảng giá.
+      <p className="py-4 text-center text-xs text-muted-foreground">
+        {HOME_TEXTS.noPriceText}
       </p>
     );
   }
 
   return (
     <div className="text-xs">
-      <h4 className="font-bold text-slate-800 dark:text-slate-100 mb-2">
-        Bảng giá sân
+      <h4 className="font-bold text-foreground mb-2">
+        {HOME_TEXTS.priceTableTitle}
       </h4>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
         <table className="w-full text-center border-collapse">
           <thead>
-            <tr className="bg-slate-50 font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-800">
-              <th className="p-2 border-r border-slate-200 dark:border-slate-800">
-                Thẻ
+            <tr className="bg-muted font-bold text-foreground border-b border-border">
+              <th className="p-2 border-r border-border">
+                {HOME_TEXTS.thDays}
               </th>
-              <th className="p-2 border-r border-slate-200 dark:border-slate-800">
-                Khung giờ
+              <th className="p-2 border-r border-border">
+                {HOME_TEXTS.thTimeSlot}
               </th>
-              <th className="p-2 border-r border-slate-200 dark:border-slate-800">
-                Cố định
+              <th className="p-2 border-r border-border">
+                {HOME_TEXTS.thFixedPrice}
               </th>
-              <th className="p-2">Vãng lai</th>
+              <th className="p-2">{HOME_TEXTS.thCasualPrice}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
+          <tbody className="divide-y divide-border text-muted-foreground">
             {venue.priceTable.map((row, idx) => (
-              <tr
-                key={idx}
-                className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50"
-              >
-                <td className="p-2 font-medium border-r border-slate-200 dark:border-slate-800">
+              <tr key={idx} className="hover:bg-muted/50">
+                <td className="p-2 font-medium border-r border-border text-foreground">
                   {row.days}
                 </td>
-                <td className="p-2 border-r border-slate-200 dark:border-slate-800">
-                  {row.timeSlot}
-                </td>
-                <td className="p-2 border-r border-slate-200 dark:border-slate-800">
-                  {row.fixedPrice}
-                </td>
-                <td className="p-2 font-semibold text-blue-600 dark:text-blue-400">
+                <td className="p-2 border-r border-border">{row.timeSlot}</td>
+                <td className="p-2 border-r border-border">{row.fixedPrice}</td>
+                <td className="p-2 font-semibold text-primary">
                   {row.casualPrice}
                 </td>
               </tr>

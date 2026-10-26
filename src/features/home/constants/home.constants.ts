@@ -16,6 +16,9 @@ export const HOME_TEXTS = {
   viewMap: "Bản đồ",
   bookBtn: "Đặt lịch",
   reviewsText: "đánh giá",
+  emptyGridTitle: "Không tìm thấy sân phù hợp",
+  emptyGridSubtitle: "Thử thay đổi từ khóa hoặc thiết lập lại bộ lọc nâng cao.",
+  clearFilterBtn: "Xóa bộ lọc",
 
   // Filter Drawer Texts
   drawerTitle: "Bộ lọc tìm kiếm",
@@ -33,6 +36,30 @@ export const HOME_TEXTS = {
   locating: "Đang lấy vị trí...",
   locationDenied: "Chưa cấp quyền vị trí",
   locationSuccess: "Đã sắp xếp theo vị trí gần nhất",
+
+  // Venue Detail Texts
+  galleryTitle: "Hình ảnh sân",
+  noGalleryText: "Chưa có hình ảnh.",
+  introTitle: "Giới thiệu sân",
+  noDescriptionText: "Chưa có thông tin mô tả chi tiết.",
+  amenitiesTitle: "Tiện ích tại sân",
+  prepTitle: "Trước khi đến sân",
+  priceTableTitle: "Bảng giá sân",
+  noPriceText: "Chưa có thông tin bảng giá.",
+  thDays: "Thẻ",
+  thTimeSlot: "Khung giờ",
+  thFixedPrice: "Cố định",
+  thCasualPrice: "Vãng lai",
+  rulesTitle: "Điều khoản & dịch vụ",
+  noRulesText: "Chưa có điều khoản & quy định cụ thể.",
+  tabDetailInfo: "Thông tin",
+  tabDetailPrice: "Bảng giá",
+  tabDetailGallery: "Hình ảnh",
+  tabDetailRules: "Quy định",
+
+  locationInCityLabel: "Khu vực tại",
+
+  ratingAll: "Tất cả",
 } as const;
 
 export const DEFAULT_FILTER_STATE: FilterState = {

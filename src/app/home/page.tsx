@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { BottomNav } from "@/components/common/bottom-nav";
 import { HomeHeader } from "@/features/home/components/HomeHeader";
 import { CategoryList } from "@/features/home/components/CategoryList";
 import { VenueSectionHeader } from "@/features/home/components/VenueSectionHeader";
@@ -8,9 +9,7 @@ import { VenueGrid } from "@/features/home/components/VenueGrid";
 import { VenueMapView } from "@/features/home/components/map/VenueMapView";
 import { FilterDrawer } from "@/features/home/components/drawer-filter/FilterDrawer";
 import { VenueDetailDrawer } from "@/features/home/components/detail-drawer/VenueDetailDrawer";
-import { BottomNav } from "@/components/common/bottom-nav";
 import { useHome } from "@/features/home/hooks/useHome";
-import { viewSwitchVariants } from "@/features/home/constants/home.motion";
 
 export default function HomePage() {
   const {
@@ -34,80 +33,59 @@ export default function HomePage() {
     onRequestLocation,
     isLoadingLocation,
     hasLocation,
-    // Detail Drawer State & Handlers
     detailVenue,
     openDetailDrawer,
     closeDetailDrawer,
   } = useHome();
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden bg-slate-50 dark:bg-slate-950">
-      {/* FIXED TOP HEADER */}
-      <div className="shrink-0">
-        <HomeHeader
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          onOpenFilterDrawer={openFilterDrawer}
-          onRequestLocation={onRequestLocation}
-          isLoadingLocation={isLoadingLocation}
-          hasLocation={hasLocation}
-        />
-        <CategoryList
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onSelectCategory={handleSelectCategory}
-        />
-        <VenueSectionHeader
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-        />
-      </div>
+    <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+      <HomeHeader
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onOpenFilterDrawer={openFilterDrawer}
+        onRequestLocation={onRequestLocation}
+        isLoadingLocation={isLoadingLocation}
+        hasLocation={hasLocation}
+      />
 
-      {/* CONTENT AREA VỚI FRAMER MOTION VIEW SWITCH */}
-      <div className="relative flex-1 overflow-hidden">
-        <AnimatePresence mode="wait">
+      <div className="flex-1 overflow-y-auto pb-20 no-scrollbar">
+        <div className="sm:mx-auto sm:max-w-[390px] w-full h-full flex flex-col">
+          <CategoryList
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onSelectCategory={handleSelectCategory}
+          />
+
+          <VenueSectionHeader
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+          />
+
           {viewMode === "grid" ? (
-            <motion.div
-              key="grid-view"
-              variants={viewSwitchVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="h-full overflow-y-auto pb-4 no-scrollbar"
-            >
-              <VenueGrid
-                venues={venues}
-                onSelectVenue={openDetailDrawer}
-                onResetFilters={handleResetFilters}
-              />
-            </motion.div>
+            <VenueGrid
+              venues={venues}
+              onSelectVenue={openDetailDrawer}
+              onResetFilters={handleResetFilters}
+            />
           ) : (
-            <motion.div
-              key="map-view"
-              variants={viewSwitchVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="h-full w-full"
-            >
+            <div className="relative flex-1 min-h-[400px]">
               <VenueMapView
                 venues={venues}
                 selectedVenue={selectedVenueOnMap}
                 onSelectVenue={setSelectedVenueOnMap}
-                onOpenDetail={openDetailDrawer}
                 userLocation={userLocation}
                 onRequestLocation={onRequestLocation}
                 isLoadingLocation={isLoadingLocation}
+                onOpenDetail={openDetailDrawer}
               />
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
+        </div>
       </div>
 
-      {/* FIXED BOTTOM NAVIGATION */}
       <BottomNav activeTab="home" />
 
-      {/* SHADCN FILTER DRAWER */}
       <FilterDrawer
         isOpen={isFilterDrawerOpen}
         onClose={closeFilterDrawer}
@@ -115,7 +93,6 @@ export default function HomePage() {
         onApplyFilters={setFilters}
       />
 
-      {/* VENUE DETAIL DRAWER */}
       <VenueDetailDrawer
         venue={detailVenue}
         isOpen={!!detailVenue}

@@ -16,7 +16,7 @@ export function RatingFilterSection({
 
   return (
     <div>
-      <label className="mb-2 block font-bold text-slate-800 dark:text-slate-100">
+      <label className="mb-2 block font-bold text-foreground">
         {HOME_TEXTS.ratingLabel}
       </label>
       <div className="flex gap-2">
@@ -26,13 +26,13 @@ export function RatingFilterSection({
             <button
               key={stars}
               onClick={() => onSelectRating(stars)}
-              className={`flex-1 rounded-xl py-2 text-xs font-medium transition active:scale-95 ${
+              className={`h-11 flex-1 rounded-xl text-xs font-semibold transition active:scale-95 ${
                 isSelected
-                  ? "bg-blue-600 text-white shadow-sm"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
               }`}
             >
-              {stars === 0 ? "Tất cả" : `${stars}+ ⭐`}
+              {stars === 0 ? HOME_TEXTS.ratingAll : `${stars}+ ⭐`}
             </button>
           );
         })}

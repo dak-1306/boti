@@ -1,16 +1,163 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Check } from "lucide-react";
+import { User as UserIcon, Phone, CreditCard, Hash } from "lucide-react";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerFooter,
+} from "@/components/ui/drawer";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { UserProfile } from "../types/profile.types";
-import { VIETNAM_BANKS, PROFILE_TEXTS } from "../constants/profile.constants";
+import { PROFILE_TEXTS } from "../constants/profile.constants";
+import { BankSelector } from "./BankSelector";
 
 interface EditProfileDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   user: UserProfile;
-  onSave: (updated: Partial<UserProfile>) => void;
+  onSave: (updatedUser: Partial<UserProfile>) => void;
+}
+
+function EditProfileForm({
+  user,
+  onClose,
+  onSave,
+}: Omit<EditProfileDrawerProps, "isOpen">) {
+  const [formData, setFormData] = useState({
+    name: user?.name ?? "",
+    phone: user?.phone ?? "",
+    bankCode: user?.bankInfo?.bankCode ?? "MB",
+    bankName: user?.bankInfo?.bankName ?? "MB Bank",
+    accountNumber: user?.bankInfo?.accountNumber ?? "",
+    accountHolder: user?.bankInfo?.accountHolder ?? "",
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave({
+      name: formData.name,
+      phone: formData.phone,
+      bankInfo: {
+        bankCode: formData.bankCode,
+        bankName: formData.bankName,
+        accountNumber: formData.accountNumber,
+        accountHolder: formData.accountHolder,
+      },
+    });
+    onClose();
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col max-h-[85vh]">
+      <DrawerHeader className="border-b border-border pb-3 pt-4 px-4">
+        <DrawerTitle className="text-center text-sm font-extrabold uppercase tracking-wider text-foreground">
+          {PROFILE_TEXTS.drawerTitle}
+        </DrawerTitle>
+      </DrawerHeader>
+
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs no-scrollbar">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+            <UserIcon className="h-3.5 w-3.5 text-primary" />
+            {PROFILE_TEXTS.labelFullName}
+          </Label>
+          <Input
+            type="text"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, name: e.target.value }))
+            }
+            className="h-11 rounded-xl bg-muted/50 border-border text-xs font-semibold text-foreground focus-visible:ring-primary"
+            required
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+            <Phone className="h-3.5 w-3.5 text-primary" />
+            {PROFILE_TEXTS.labelPhone}
+          </Label>
+          <Input
+            type="tel"
+            value={formData.phone}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, phone: e.target.value }))
+            }
+            className="h-11 rounded-xl bg-muted/50 border-border text-xs font-semibold text-foreground focus-visible:ring-primary"
+            required
+          />
+        </div>
+
+        <BankSelector
+          selectedBankCode={formData.bankCode}
+          selectedBankName={formData.bankName}
+          onSelectBank={(bankCode, bankName) =>
+            setFormData((prev) => ({ ...prev, bankCode, bankName }))
+          }
+        />
+
+        <div className="space-y-1.5">
+          <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+            <Hash className="h-3.5 w-3.5 text-primary" />
+            {PROFILE_TEXTS.labelAccountNo}
+          </Label>
+          <Input
+            type="text"
+            value={formData.accountNumber}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                accountNumber: e.target.value,
+              }))
+            }
+            className="h-11 rounded-xl bg-muted/50 border-border text-xs font-semibold text-foreground focus-visible:ring-primary font-mono"
+            required
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+            <CreditCard className="h-3.5 w-3.5 text-primary" />
+            {PROFILE_TEXTS.labelAccountHolder}
+          </Label>
+          <Input
+            type="text"
+            value={formData.accountHolder}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                accountHolder: e.target.value.toUpperCase(),
+              }))
+            }
+            className="h-11 rounded-xl bg-muted/50 border-border text-xs font-semibold text-foreground uppercase focus-visible:ring-primary"
+            required
+          />
+        </div>
+      </div>
+
+      <DrawerFooter className="flex flex-row gap-3 border-t border-border p-4">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onClose}
+          className="h-11 flex-1 rounded-xl border-border bg-card text-xs font-semibold text-foreground hover:bg-muted"
+        >
+          {PROFILE_TEXTS.btnCancel}
+        </Button>
+        <Button
+          type="submit"
+          className="h-11 flex-1 rounded-xl bg-primary text-xs font-semibold text-primary-foreground hover:bg-primary/90 shadow-md"
+        >
+          {PROFILE_TEXTS.btnSave}
+        </Button>
+      </DrawerFooter>
+    </form>
+  );
 }
 
 export function EditProfileDrawer({
@@ -19,160 +166,22 @@ export function EditProfileDrawer({
   user,
   onSave,
 }: EditProfileDrawerProps) {
-  const [name, setName] = useState(user.name);
-  const [phone, setPhone] = useState(user.phone);
-  const [email, setEmail] = useState(user.email);
-  const [bankName, setBankName] = useState(user.bankInfo.bankName);
-  const [accountNumber, setAccountNumber] = useState(
-    user.bankInfo.accountNumber,
-  );
-  const [accountHolder, setAccountHolder] = useState(
-    user.bankInfo.accountHolder,
-  );
-
-  if (!isOpen) return null;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSave({
-      name,
-      phone,
-      email,
-      bankInfo: {
-        ...user.bankInfo,
-        bankName,
-        accountNumber,
-        accountHolder: accountHolder.toUpperCase(),
-      },
-    });
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-background/80 backdrop-blur-xs transition-opacity">
-      <div className="w-full max-w-[430px] rounded-t-3xl bg-card p-5 text-card-foreground shadow-2xl border-t border-border sm:mx-auto">
-        <div className="flex items-center justify-between border-b border-border pb-3">
-          <h3 className="text-sm font-extrabold text-foreground">
-            {PROFILE_TEXTS.drawerTitle}
-          </h3>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="h-11 w-11 rounded-full text-muted-foreground hover:bg-muted"
-          >
-            <X className="h-5 w-5" />
-          </Button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="mt-4 space-y-3.5 text-xs">
-          <div>
-            <label className="mb-1 block font-bold text-foreground">
-              {PROFILE_TEXTS.labelFullName}
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="h-11 w-full rounded-xl border border-border bg-muted px-3 font-medium text-foreground outline-none focus:ring-2 focus:ring-ring"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-2.5">
-            <div>
-              <label className="mb-1 block font-bold text-foreground">
-                {PROFILE_TEXTS.labelPhone}
-              </label>
-              <input
-                type="text"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-                className="h-11 w-full rounded-xl border border-border bg-muted px-3 font-medium text-foreground outline-none focus:ring-2 focus:ring-ring"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block font-bold text-foreground">
-                {PROFILE_TEXTS.labelEmail}
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-11 w-full rounded-xl border border-border bg-muted px-3 font-medium text-foreground outline-none focus:ring-2 focus:ring-ring"
-              />
-            </div>
-          </div>
-
-          <div className="my-2 border-t border-dashed border-border" />
-
-          <h4 className="font-extrabold uppercase tracking-wider text-muted-foreground text-[10px]">
-            {PROFILE_TEXTS.drawerSectionRefund}
-          </h4>
-
-          <div>
-            <label className="mb-1 block font-bold text-foreground">
-              {PROFILE_TEXTS.labelSelectBank}
-            </label>
-            <select
-              value={bankName}
-              onChange={(e) => setBankName(e.target.value)}
-              className="h-11 w-full rounded-xl border border-border bg-muted px-3 font-medium text-foreground outline-none focus:ring-2 focus:ring-ring"
-            >
-              {VIETNAM_BANKS.map((bank) => (
-                <option key={bank.code} value={bank.name}>
-                  {bank.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2.5">
-            <div>
-              <label className="mb-1 block font-bold text-foreground">
-                {PROFILE_TEXTS.labelAccountNo}
-              </label>
-              <input
-                type="text"
-                value={accountNumber}
-                onChange={(e) => setAccountNumber(e.target.value)}
-                required
-                className="h-11 w-full rounded-xl border border-border bg-muted px-3 font-mono font-bold text-foreground outline-none focus:ring-2 focus:ring-ring"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block font-bold text-foreground">
-                {PROFILE_TEXTS.labelAccountHolder}
-              </label>
-              <input
-                type="text"
-                value={accountHolder}
-                onChange={(e) => setAccountHolder(e.target.value.toUpperCase())}
-                required
-                className="h-11 w-full rounded-xl border border-border bg-muted px-3 font-bold uppercase text-foreground outline-none focus:ring-2 focus:ring-ring"
-              />
-            </div>
-          </div>
-
-          <div className="mt-5 flex items-center gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              className="h-11 flex-1 rounded-xl text-xs font-bold"
-            >
-              {PROFILE_TEXTS.btnCancel}
-            </Button>
-            <Button
-              type="submit"
-              className="h-11 flex-[1.5] rounded-xl bg-primary text-xs font-bold text-primary-foreground shadow-md hover:bg-primary/90"
-            >
-              <Check className="mr-1.5 h-4 w-4" />
-              {PROFILE_TEXTS.btnSave}
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <Drawer
+      open={isOpen}
+      onOpenChange={(open) => !open && onClose()}
+      showSwipeHandle
+    >
+      <DrawerContent className="sm:mx-auto sm:max-w-[390px] w-full rounded-t-[28px] border-none bg-card p-0 pt-4 shadow-2xl text-card-foreground">
+        {isOpen && user && (
+          <EditProfileForm
+            key={`${user?.phone ?? ""}-${user?.bankInfo?.accountNumber ?? ""}`}
+            user={user}
+            onClose={onClose}
+            onSave={onSave}
+          />
+        )}
+      </DrawerContent>
+    </Drawer>
   );
 }

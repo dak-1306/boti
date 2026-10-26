@@ -36,18 +36,15 @@ export function VenueMapView({
   });
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
-      {/* Container bản đồ có lớp nền chống giật/trắng hình khi load */}
+    <div className="relative h-full w-full overflow-hidden bg-background">
       <div ref={mapContainerRef} className="h-full w-full z-0" />
 
-      {/* Nút định vị GPS */}
       <LocationButton
         onClick={handleRecenterToUser}
         isLoading={isLoadingLocation}
         hasLocation={!!userLocation}
       />
 
-      {/* Floating Card sân được chọn */}
       <AnimatePresence mode="wait">
         {selectedVenue && (
           <motion.div
@@ -56,7 +53,7 @@ export function VenueMapView({
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="absolute bottom-4 left-4 right-4 z-10"
+            className="absolute bottom-4 left-4 right-4 z-10 sm:mx-auto sm:max-w-[390px]"
           >
             <VenueMapCard
               venue={selectedVenue}

@@ -1,7 +1,11 @@
 "use client";
 
 import React from "react";
-import { CITIES_DATA, DISTRICTS_BY_CITY } from "../../constants/home.constants";
+import {
+  CITIES_DATA,
+  DISTRICTS_BY_CITY,
+  HOME_TEXTS,
+} from "../../constants/home.constants";
 
 interface LocationFilterSectionProps {
   selectedCity: string;
@@ -16,17 +20,15 @@ export function LocationFilterSection({
   selectedDistrict,
   onSelectDistrict,
 }: LocationFilterSectionProps) {
-  // Lấy danh sách quận/huyện tương ứng với thành phố hiện tại
   const currentDistricts = DISTRICTS_BY_CITY[selectedCity] || [
     "Tất cả Quận/Huyện",
   ];
 
   return (
     <div className="space-y-4">
-      {/* 1. Chọn Thành phố */}
       <div>
-        <label className="mb-2 block font-bold text-slate-800 dark:text-slate-100">
-          Thành phố
+        <label className="mb-2 block font-bold text-foreground">
+          {HOME_TEXTS.locationLabel}
         </label>
         <div className="flex flex-wrap gap-2">
           {CITIES_DATA.map((city) => {
@@ -35,10 +37,10 @@ export function LocationFilterSection({
               <button
                 key={city}
                 onClick={() => onSelectCity(city)}
-                className={`rounded-xl px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
+                className={`h-11 rounded-xl px-4 text-xs font-semibold transition active:scale-95 ${
                   isSelected
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+                    ? "bg-primary text-primary-foreground shadow-xs"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 }`}
               >
                 {city}
@@ -48,12 +50,11 @@ export function LocationFilterSection({
         </div>
       </div>
 
-      {/* 2. Chọn Quận / Huyện (Thay đổi động) */}
       <div>
-        <label className="mb-2 block font-bold text-slate-800 dark:text-slate-100">
-          Khu vực tại {selectedCity}
+        <label className="mb-2 block font-bold text-foreground">
+          {HOME_TEXTS.locationInCityLabel} {selectedCity}
         </label>
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-2">
           {currentDistricts.map((dist) => {
             const targetValue = dist === "Tất cả Quận/Huyện" ? "" : dist;
             const isSelected = selectedDistrict === targetValue;
@@ -61,10 +62,10 @@ export function LocationFilterSection({
               <button
                 key={dist}
                 onClick={() => onSelectDistrict(targetValue)}
-                className={`rounded-lg px-2.5 py-1.5 text-[11px] font-medium transition active:scale-95 ${
+                className={`h-11 rounded-lg px-3 text-[11px] font-semibold transition active:scale-95 ${
                   isSelected
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+                    ? "bg-primary text-primary-foreground shadow-xs"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 }`}
               >
                 {dist}

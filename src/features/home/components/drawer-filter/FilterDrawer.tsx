@@ -9,6 +9,7 @@ import {
   DrawerTitle,
   DrawerFooter,
 } from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 import { FilterState } from "../../types/home.types";
 import {
   HOME_TEXTS,
@@ -47,12 +48,11 @@ export function FilterDrawer({
     });
   };
 
-  // Tự động reset Quận/Huyện khi thay đổi Thành phố
   const handleCityChange = (newCity: string) => {
     setTempFilters((prev) => ({
       ...prev,
       city: newCity,
-      district: "", // Reset về Tất cả Quận/Huyện của TP mới
+      district: "",
     }));
   };
 
@@ -73,35 +73,30 @@ export function FilterDrawer({
       defaultSnapPoint="55vh"
       showSwipeHandle
     >
-      <DrawerContent className="max-h-[85vh] rounded-t-[28px] bg-white dark:bg-slate-900 sm:mx-auto sm:max-w-[390px] ">
-        {/* Header */}
-        <DrawerHeader className="border-b border-slate-100 pb-3 dark:border-slate-800 pt-5">
+      <DrawerContent className="max-h-[85vh] rounded-t-[28px] bg-card p-0 text-card-foreground sm:mx-auto sm:max-w-[390px]">
+        <DrawerHeader className="border-b border-border pb-3 pt-5 px-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <SlidersHorizontal className="h-4 w-4 text-blue-600" />
-              <DrawerTitle className="text-base font-bold text-slate-800 dark:text-slate-100">
+              <SlidersHorizontal className="h-4 w-4 text-primary" />
+              <DrawerTitle className="text-base font-bold text-foreground">
                 {HOME_TEXTS.drawerTitle}
               </DrawerTitle>
             </div>
             <button
               onClick={handleReset}
-              className="flex items-center gap-1 text-xs font-medium text-slate-400 transition hover:text-slate-600"
+              className="flex h-11 items-center gap-1 text-xs font-medium text-muted-foreground transition hover:text-foreground"
             >
-              <RotateCcw className="h-3 w-3" />
+              <RotateCcw className="h-3.5 w-3.5" />
               {HOME_TEXTS.resetBtn}
             </button>
           </div>
         </DrawerHeader>
 
-        {/* Body Sections */}
         <div className="space-y-6 overflow-y-auto p-4 text-xs no-scrollbar">
-          {/* 1. Chọn Bộ môn có Icon (Hàng ngang) */}
           <SportFilterSection
             selectedSports={tempFilters.selectedSports}
             onToggleSport={handleToggleSport}
           />
-
-          {/* 2. Chọn Địa điểm Flex-wrap Chips (Động theo Thành phố) */}
           <LocationFilterSection
             selectedCity={tempFilters.city}
             onSelectCity={handleCityChange}
@@ -110,16 +105,12 @@ export function FilterDrawer({
               setTempFilters((prev) => ({ ...prev, district }))
             }
           />
-
-          {/* 3. Chọn Đánh giá */}
           <RatingFilterSection
             selectedRating={tempFilters.ratingMin}
             onSelectRating={(ratingMin) =>
               setTempFilters((prev) => ({ ...prev, ratingMin }))
             }
           />
-
-          {/* 4. Toggle Trạng thái mở cửa */}
           <OpenNowFilterSection
             openNow={tempFilters.openNow}
             onToggleOpenNow={() =>
@@ -131,14 +122,13 @@ export function FilterDrawer({
           />
         </div>
 
-        {/* Footer */}
-        <DrawerFooter className="border-t border-slate-100 pt-3 dark:border-slate-800">
-          <button
+        <DrawerFooter className="border-t border-border p-4">
+          <Button
             onClick={handleApply}
-            className="w-full rounded-full bg-blue-600 py-3 text-xs font-bold text-white transition hover:bg-blue-700 active:scale-98"
+            className="h-11 w-full rounded-full bg-primary text-xs font-bold text-primary-foreground shadow-md hover:bg-primary/90 active:scale-95"
           >
             {HOME_TEXTS.applyBtn}
-          </button>
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

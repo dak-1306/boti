@@ -1,8 +1,11 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import { Search, SlidersHorizontal, MapPin, Loader2 } from "lucide-react";
 import { HOME_TEXTS } from "../constants/home.constants";
 import Banner from "@/assets/images/banner.png";
+import { Button } from "@/components/ui/button";
 
 interface HomeHeaderProps {
   searchQuery: string;
@@ -23,61 +26,59 @@ export function HomeHeader({
 }: HomeHeaderProps) {
   return (
     <div className="w-full">
-      {/* 1. Khung Banner Ảnh */}
       <div className="relative h-26 w-full overflow-hidden rounded-b-[28px]">
         <Image
           src={Banner}
           alt="Sports Banner"
           fill
           priority
+          sizes="100vw"
           className="object-cover"
         />
       </div>
 
-      {/* 2. Thanh Tìm Kiếm + Icon Filter */}
       <div className="relative z-10 -mt-5 px-4">
-        <div className="flex h-10 items-center justify-between rounded-full bg-white px-3.5 shadow-md border border-slate-100/80 dark:bg-slate-900 dark:border-slate-800">
+        <div className="flex h-11 items-center justify-between rounded-full bg-card px-3.5 shadow-md border border-border">
           <div className="flex flex-1 items-center mr-2">
-            <Search className="mr-2 h-4 w-4 shrink-0 text-slate-400" />
+            <Search className="mr-2 h-4 w-4 shrink-0 text-muted-foreground" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder={HOME_TEXTS.searchPlaceholder}
-              className="w-full bg-transparent text-xs text-slate-800 placeholder-slate-400 focus:outline-none dark:text-slate-100"
+              className="w-full bg-transparent text-xs text-foreground placeholder-muted-foreground focus:outline-hidden"
             />
           </div>
         </div>
       </div>
 
-      {/* 3. Bộ lọc nhanh & Tìm kiếm nâng cao */}
       <div className="mt-3 flex justify-end gap-2 px-4">
-        {/* Nút Sân gần nhất (Gọi Geolocation GPS) */}
-        <button
+        <Button
+          type="button"
           onClick={onRequestLocation}
           disabled={isLoadingLocation}
-          className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-medium transition ${
+          className={`h-11 rounded-full px-3 text-[11px] font-medium transition ${
             hasLocation
-              ? "bg-blue-600 text-white"
-              : "bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300"
+              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+              : "bg-muted text-primary hover:bg-muted/80"
           }`}
         >
           {isLoadingLocation ? (
-            <Loader2 className="h-3 w-3 animate-spin" />
+            <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
           ) : (
-            <MapPin className="h-3 w-3" />
+            <MapPin className="mr-1 h-3.5 w-3.5" />
           )}
           {isLoadingLocation ? HOME_TEXTS.locating : HOME_TEXTS.filterNearest}
-        </button>
+        </Button>
 
-        {/* Nút Tìm kiếm nâng cao (Mở Drawer) */}
-        <button
+        <Button
+          type="button"
           onClick={onOpenFilterDrawer}
-          className="flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1.5 text-[11px] font-medium text-blue-600 transition hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300"
+          className="h-11 rounded-full bg-muted px-3 text-[11px] font-medium text-primary hover:bg-muted/80 transition"
         >
-          <SlidersHorizontal className="h-3 w-3" />
+          <SlidersHorizontal className="mr-1 h-3.5 w-3.5" />
           {HOME_TEXTS.advancedSearch}
-        </button>
+        </Button>
       </div>
     </div>
   );

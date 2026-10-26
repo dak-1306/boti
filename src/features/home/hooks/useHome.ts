@@ -27,7 +27,6 @@ export const useHome = () => {
 
   const initialVenues = rawVenuesMock as Venue[];
 
-  // 1. Lọc và tính khoảng cách đồng bộ
   const filteredVenues = useMemo(() => {
     return initialVenues
       .map((venue) => {
@@ -50,7 +49,6 @@ export const useHome = () => {
         const venueCity = venue.city || "";
         const venueAddress = venue.address.toLowerCase();
 
-        // Khớp Thành phố linh hoạt
         const matchesCity = filters.city
           ? venueCity.toLowerCase() === filters.city.toLowerCase() ||
             venueAddress.includes(filters.city.toLowerCase()) ||
@@ -58,17 +56,14 @@ export const useHome = () => {
               venueAddress.includes("tp.hcm"))
           : true;
 
-        // Tìm kiếm theo tên/địa chỉ
         const matchesSearch =
           venue.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           venueAddress.includes(searchQuery.toLowerCase());
 
-        // Category chọn nhanh
         const matchesCategory = selectedCategory
           ? venue.category.toLowerCase() === selectedCategory.toLowerCase()
           : true;
 
-        // Môn thể thao chọn trong Drawer
         const matchesSports =
           filters.selectedSports.length > 0
             ? filters.selectedSports.some(
@@ -76,12 +71,10 @@ export const useHome = () => {
               )
             : true;
 
-        // Lọc theo Quận / Huyện
         const matchesDistrict = filters.district
           ? venueAddress.includes(filters.district.toLowerCase())
           : true;
 
-        // Lọc theo Đánh giá
         const matchesRating = venue.rating >= filters.ratingMin;
 
         return (
@@ -101,7 +94,6 @@ export const useHome = () => {
       });
   }, [searchQuery, selectedCategory, filters, userLocation, initialVenues]);
 
-  // 2. Quản lý ID sân được chọn trên bản đồ dạng Derived State (Bỏ hẳn useEffect sync)
   const [selectedVenueId, setSelectedVenueId] = useState<string | null>(null);
 
   const selectedVenueOnMap = useMemo(() => {
@@ -135,23 +127,17 @@ export const useHome = () => {
     venues: filteredVenues,
     selectedVenueOnMap,
     setSelectedVenueOnMap: handleSelectVenueOnMap,
-
-    // Filter Drawer
     isFilterDrawerOpen,
     openFilterDrawer: () => setIsFilterDrawerOpen(true),
     closeFilterDrawer: () => setIsFilterDrawerOpen(false),
     filters,
     setFilters,
     handleResetFilters,
-
-    // Location
     userLocation,
     onRequestLocation: requestLocation,
     isLoadingLocation,
     locationError,
     hasLocation: !!userLocation,
-
-    // Detail Drawer
     detailVenue,
     openDetailDrawer: (venue: Venue) => setDetailVenue(venue),
     closeDetailDrawer: () => setDetailVenue(null),

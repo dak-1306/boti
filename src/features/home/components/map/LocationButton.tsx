@@ -19,10 +19,10 @@ export function LocationButton({
       onClick={onClick}
       disabled={isLoading}
       title="Vị trí của tôi"
-      className={`absolute bottom-32 right-4 z-10 flex h-11 w-11 items-center justify-center rounded-full text-white shadow-md transition active:scale-90 ${
+      className={`absolute bottom-32 right-4 z-10 flex h-11 w-11 items-center justify-center rounded-full shadow-md transition active:scale-90 border border-border ${
         hasLocation
-          ? "bg-blue-600 hover:bg-blue-700"
-          : "bg-slate-800/90 hover:bg-slate-900"
+          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+          : "bg-card text-foreground hover:bg-muted"
       }`}
     >
       {isLoading ? (

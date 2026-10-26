@@ -17,11 +17,10 @@ export function SportFilterSection({
 }: SportFilterSectionProps) {
   return (
     <div>
-      <label className="mb-2.5 block font-bold text-slate-800 dark:text-slate-100">
+      <label className="mb-2.5 block font-bold text-foreground">
         {HOME_TEXTS.sportTypeLabel}
       </label>
 
-      {/* Dùng 2 cột với bố cục icon + text nằm ngang */}
       <div className="grid grid-cols-2 gap-2">
         {CATEGORIES_DATA.map((cat) => {
           const isSelected = selectedSports.includes(cat.name);
@@ -31,10 +30,10 @@ export function SportFilterSection({
             <button
               key={cat.id}
               onClick={() => onToggleSport(cat.name)}
-              className={`flex items-center justify-between rounded-xl p-2.5 transition-all active:scale-95 border ${
+              className={`flex h-11 items-center justify-between rounded-xl px-3 transition-all active:scale-95 border ${
                 isSelected
-                  ? "border-blue-600 bg-blue-50/80 text-blue-600 shadow-sm dark:bg-blue-950/50 dark:text-blue-300"
-                  : "border-slate-100 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300"
+                  ? "border-primary bg-primary/10 text-primary font-bold shadow-xs"
+                  : "border-border bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
               }`}
             >
               <div className="flex items-center gap-2 overflow-hidden pr-1">
@@ -59,7 +58,7 @@ export function SportFilterSection({
               </div>
 
               {isSelected && (
-                <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white">
+                <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
                   <Check className="h-2.5 w-2.5 stroke-[3]" />
                 </div>
               )}

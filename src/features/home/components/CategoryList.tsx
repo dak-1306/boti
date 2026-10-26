@@ -3,6 +3,7 @@
 import React from "react";
 import { Category } from "../types/home.types";
 import { SafeCategoryIcon } from "@/components/common/safe-category-icon";
+import { cn } from "@/lib/utils";
 
 interface CategoryListProps {
   categories: Category[];
@@ -16,36 +17,47 @@ export function CategoryList({
   onSelectCategory,
 }: CategoryListProps) {
   return (
-    <div className="no-scrollbar flex gap-3 overflow-x-auto px-4 py-3">
-      {categories.map((item) => {
-        const isSelected = selectedCategory === item.id;
-        return (
-          <button
-            key={item.id}
-            onClick={() => onSelectCategory(item.id)}
-            className="flex flex-col items-center gap-1.5 shrink-0 transition-transform active:scale-95"
-          >
-            <div
-              className={`flex h-14 w-14 items-center justify-center rounded-2xl p-1.5 shadow-2xs bg-white dark:bg-slate-800 transition-all ${
-                isSelected
-                  ? "ring-2 ring-blue-600 ring-offset-2 dark:ring-offset-slate-950"
-                  : "border border-slate-100 dark:border-slate-800"
-              }`}
+    <div className="w-full shrink-0 overflow-x-auto overflow-y-hidden py-3 px-4 no-scrollbar">
+      <div className="flex items-center gap-3.5 w-max">
+        {categories.map((item) => {
+          const isSelected = selectedCategory === item.id;
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => onSelectCategory(item.id)}
+              className="group flex flex-col items-center gap-1.5 shrink-0 transition-transform active:scale-95 focus:outline-hidden"
             >
-              <SafeCategoryIcon
-                icon={item.icon}
-                alt={item.name}
-                size={38}
-                className="h-9 w-9"
-              />
-            </div>
+              <div
+                className={cn(
+                  "flex h-12 w-12 items-center justify-center rounded-2xl p-2 bg-card shadow-xs transition-all",
+                  isSelected
+                    ? "ring-2 ring-primary ring-offset-2 ring-offset-background bg-primary/10"
+                    : "border border-border hover:border-primary/50",
+                )}
+              >
+                <SafeCategoryIcon
+                  icon={item.icon}
+                  alt={item.name}
+                  size={32}
+                  className="h-7 w-7"
+                />
+              </div>
 
-            <span className="text-[11px] font-medium text-slate-700 dark:text-slate-300">
-              {item.name}
-            </span>
-          </button>
-        );
-      })}
+              <span
+                className={cn(
+                  "text-[11px] whitespace-nowrap transition-colors",
+                  isSelected
+                    ? "font-bold text-primary"
+                    : "font-medium text-muted-foreground group-hover:text-foreground",
+                )}
+              >
+                {item.name}
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

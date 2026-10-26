@@ -27,16 +27,16 @@ export const PROFILE_TEXTS = {
   logoutSuccessAlert: "Đã đăng xuất thành công!",
 } as const;
 
-export const VIETNAM_BANKS = [
-  { code: "MB", name: "MB Bank (Ngân hàng Quân Đội)" },
-  { code: "VCB", name: "Vietcombank (Ngoại thương Việt Nam)" },
-  { code: "TCB", name: "Techcombank (Kỹ thương)" },
-  { code: "VPB", name: "VPBank (Việt Nam Thịnh Vượng)" },
-  { code: "ACB", name: "ACB (Á Châu)" },
-  { code: "BIDV", name: "BIDV (Đầu tư và Phát triển)" },
-  { code: "CTG", name: "VietinBank (Công Thương Việt Nam)" },
-  { code: "TPB", name: "TPBank (Tiên Phong)" },
-];
+export const POPULAR_BANKS = [
+  { code: "MB", name: "MB Bank" },
+  { code: "VCB", name: "Vietcombank" },
+  { code: "TCB", name: "Techcombank" },
+  { code: "VPB", name: "VPBank" },
+  { code: "ACB", name: "ACB" },
+  { code: "BIDV", name: "BIDV" },
+  { code: "CTG", name: "VietinBank" },
+  { code: "TPB", name: "TPBank" },
+] as const;
 
 export const PROFILE_MENU_GROUPS: ProfileMenuGroup[] = [
   {

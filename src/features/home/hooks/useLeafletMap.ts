@@ -21,7 +21,6 @@ export function useLeafletMap({
   selectedVenue,
   onSelectVenue,
   userLocation,
-  onRequestLocation,
 }: UseLeafletMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -30,7 +29,6 @@ export function useLeafletMap({
 
   const [isMapReady, setIsMapReady] = useState(false);
 
-  // 1. Khởi tạo bản đồ & Tự động Recalculate Bounds khi Container thay đổi kích thước
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
@@ -60,12 +58,10 @@ export function useLeafletMap({
       mapInstanceRef.current = map;
       setIsMapReady(true);
 
-      // Kích hoạt ngay 1 lần invalidateSize để ép tile load kín khung
       setTimeout(() => {
         map.invalidateSize();
       }, 200);
 
-      // Lắng nghe thay đổi kích thước khung hình (Tránh ô trắng khi cuộn/mở drawer)
       resizeObserver = new ResizeObserver(() => {
         map.invalidateSize();
       });
@@ -84,7 +80,6 @@ export function useLeafletMap({
     };
   }, []);
 
-  // 2. Render User Location Marker (Pin xanh nhấp nháy)
   useEffect(() => {
     if (!isMapReady || !mapInstanceRef.current || !userLocation) return;
 
@@ -109,7 +104,6 @@ export function useLeafletMap({
     });
   }, [isMapReady, userLocation]);
 
-  // 3. Render Venue Markers & Auto Fit Bounds
   useEffect(() => {
     if (!isMapReady || !mapInstanceRef.current || !venueMarkersLayerRef.current)
       return;
@@ -153,12 +147,9 @@ export function useLeafletMap({
     });
   }, [isMapReady, venues, selectedVenue, onSelectVenue]);
 
-  // Bay tới vị trí người dùng
   const handleRecenterToUser = () => {
     if (userLocation && mapInstanceRef.current) {
       flyToCoordinates(mapInstanceRef.current, userLocation, 15);
-    } else {
-      onRequestLocation();
     }
   };
 
