@@ -38,15 +38,19 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+      {/* PAGE HEADER VỚI BOOKING SUMMARY CARD ĐÈ NỔI 50/50 */}
       <PageHeader
         title={BOOKING_TEXTS.detailHeaderTitle}
         showBack
         variant="gradient"
+        headerClassName="pb-16"
+        extensionClassName="-mt-12"
+        bottomExtension={<BookingSummaryCard booking={booking} />}
       />
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 no-scrollbar">
+      {/* DANH SÁCH CÁC THẺ NỘI DUNG CUỘN ĐỘC LẬP */}
+      <div className="flex-1 overflow-y-auto px-4 p-4 no-scrollbar">
         <div className="space-y-3.5 sm:mx-auto sm:max-w-[390px] w-full">
-          <BookingSummaryCard booking={booking} />
           <BookingQRCard qrCodeUrl={booking.qrCodeUrl} />
           <BookingCustomerCard customer={booking.customer} />
           <BookingPaymentCard payment={booking.payment} />

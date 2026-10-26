@@ -19,10 +19,10 @@ export function useProfile() {
     setIsEditDrawerOpen(false);
   };
 
-  const handleChangeAvatar = () => {
-    const newAvatar = prompt(PROFILE_TEXTS.promptAvatarUrl, user.avatarUrl);
-    if (newAvatar) {
-      setUser((prev) => ({ ...prev, avatarUrl: newAvatar }));
+  // Cập nhật nhận trực tiếp đường dẫn Blob URL hoặc Base64 từ file chọn
+  const handleChangeAvatar = (newAvatarUrl: string) => {
+    if (newAvatarUrl) {
+      setUser((prev) => ({ ...prev, avatarUrl: newAvatarUrl }));
     }
   };
 

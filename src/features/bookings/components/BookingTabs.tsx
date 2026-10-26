@@ -12,26 +12,25 @@ interface BookingTabsProps {
 
 export function BookingTabs({ activeTab, onTabChange }: BookingTabsProps) {
   return (
-    <div className="p-4 bg-background">
-      <div className="grid grid-cols-3 gap-2 rounded-2xl bg-muted p-1.5 border border-border">
-        {BOOKING_TABS.map((tab) => {
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => onTabChange(tab.id)}
-              className={cn(
-                "h-11 rounded-xl text-xs font-bold transition-all active:scale-95",
-                isActive
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>
+    <div className="grid grid-cols-3 gap-1.5 rounded-2xl bg-card p-1.5 shadow-md border border-border/80">
+      {BOOKING_TABS.map((tab) => {
+        const isActive = activeTab === tab.id;
+        return (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => onTabChange(tab.id)}
+            className={cn(
+              "h-10 rounded-xl text-xs font-semibold transition-all duration-200 active:scale-95 select-none",
+              isActive
+                ? "bg-primary text-primary-foreground font-bold shadow-xs"
+                : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+            )}
+          >
+            {tab.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

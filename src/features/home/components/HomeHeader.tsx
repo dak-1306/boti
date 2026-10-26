@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { Search, SlidersHorizontal, MapPin, Loader2 } from "lucide-react";
 import { HOME_TEXTS } from "../constants/home.constants";
 import Banner from "@/assets/images/banner.png";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/common/page-header";
 
 interface HomeHeaderProps {
   searchQuery: string;
@@ -25,34 +25,26 @@ export function HomeHeader({
   hasLocation,
 }: HomeHeaderProps) {
   return (
-    <div className="w-full">
-      <div className="relative h-26 w-full overflow-hidden rounded-b-[28px]">
-        <Image
-          src={Banner}
-          alt="Sports Banner"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-      </div>
-
-      <div className="relative z-10 -mt-5 px-4">
-        <div className="flex h-11 items-center justify-between rounded-full bg-card px-3.5 shadow-md border border-border">
-          <div className="flex flex-1 items-center mr-2">
-            <Search className="mr-2 h-4 w-4 shrink-0 text-muted-foreground" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder={HOME_TEXTS.searchPlaceholder}
-              className="w-full bg-transparent text-xs text-foreground placeholder-muted-foreground focus:outline-hidden"
-            />
-          </div>
+    <PageHeader
+      variant="banner"
+      bannerImg={Banner}
+      className="min-h-[100px]"
+      bottomExtension={
+        /* Thanh Search nổi 50/50 qua viền Banner */
+        <div className="flex h-11 items-center rounded-full bg-card px-3.5 shadow-md border border-border">
+          <Search className="mr-2 h-4 w-4 shrink-0 text-muted-foreground" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder={HOME_TEXTS.searchPlaceholder}
+            className="w-full bg-transparent text-xs text-foreground placeholder-muted-foreground focus:outline-hidden"
+          />
         </div>
-      </div>
-
-      <div className="mt-3 flex justify-end gap-2 px-4">
+      }
+    >
+      {/* 2 nút phía dưới nằm trên nền trang trắng */}
+      <div className="mt-3 flex justify-end gap-2">
         <Button
           type="button"
           onClick={onRequestLocation}
@@ -80,6 +72,6 @@ export function HomeHeader({
           {HOME_TEXTS.advancedSearch}
         </Button>
       </div>
-    </div>
+    </PageHeader>
   );
 }

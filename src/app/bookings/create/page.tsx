@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Suspense, use } from "react";
-import { BookingHeader } from "@/features/bookings/components/create/BookingHeader";
+import { BookingHeader } from "@/features/bookings/components/create/BookingCreateHeader";
 import { BookingDateStrip } from "@/features/bookings/components/create/BookingDateStrip";
 import { CourtSelector } from "@/features/bookings/components/create/CourtSelector";
 import { TimeSlotGrid } from "@/features/bookings/components/create/TimeSlotGrid";

@@ -31,19 +31,23 @@ export default function BookingsPage() {
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-slate-50 dark:bg-slate-950">
-      {/* VÙNG HEADER CỐ ĐỊNH */}
+      {/* VÙNG HEADER CỐ ĐỊNH - TABS ĐÈ NỔI 50/50 */}
       <div className="shrink-0">
-        <BookingHeader />
-        <BookingTabs
-          activeTab={filters.tab}
-          onTabChange={(tab) => setFilters((prev) => ({ ...prev, tab }))}
-        />
-        <BookingSectionHeader
-          title={currentTabLabel}
-          selectedDateText={selectedDateText}
-          onOpenCalendar={openDateDrawer}
-          onClearDateFilter={clearDateFilter}
-        />
+        <BookingHeader
+          bottomExtension={
+            <BookingTabs
+              activeTab={filters.tab}
+              onTabChange={(tab) => setFilters((prev) => ({ ...prev, tab }))}
+            />
+          }
+        >
+          <BookingSectionHeader
+            title={currentTabLabel}
+            selectedDateText={selectedDateText}
+            onOpenCalendar={openDateDrawer}
+            onClearDateFilter={clearDateFilter}
+          />
+        </BookingHeader>
       </div>
 
       {/* DANH SÁCH CUỘN ĐỘC LẬP */}
@@ -60,7 +64,6 @@ export default function BookingsPage() {
 
       <BottomNav activeTab="bookings" />
 
-      {/* DRAWER LỌC THỜI GIAN ĐA NĂNG */}
       <BookingDateDrawer
         isOpen={isDateDrawerOpen}
         onClose={closeDateDrawer}

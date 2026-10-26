@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { Camera, Edit3, ShieldCheck } from "lucide-react";
 import { SafeImage } from "@/components/common/safe-image";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { PROFILE_TEXTS } from "../constants/profile.constants";
 interface ProfileHeaderProps {
   user: UserProfile;
   onEdit: () => void;
-  onChangeAvatar: () => void;
+  onChangeAvatar: (newAvatarUrl: string) => void;
 }
 
 export function ProfileHeader({
@@ -19,9 +19,35 @@ export function ProfileHeader({
   onEdit,
   onChangeAvatar,
 }: ProfileHeaderProps) {
+  // Ref để kích hoạt input file ẩn
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleCameraClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Tạo URL tạm thời từ File người dùng chọn
+      const imageUrl = URL.createObjectURL(file);
+      onChangeAvatar(imageUrl);
+    }
+  };
+
   return (
     <div className="relative rounded-3xl bg-card p-4 text-card-foreground shadow-sm border border-border">
+      {/* Input chọn ảnh ẩn dành cho thiết bị di động */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*"
+        className="hidden"
+      />
+
       <Button
+        type="button"
         variant="ghost"
         size="icon"
         onClick={onEdit}
@@ -44,8 +70,9 @@ export function ProfileHeader({
           </div>
 
           <Button
+            type="button"
             size="icon"
-            onClick={onChangeAvatar}
+            onClick={handleCameraClick}
             className="absolute -bottom-1 -right-1 h-9 w-9 rounded-full bg-primary text-primary-foreground shadow-md hover:bg-primary/90 active:scale-90"
             title={PROFILE_TEXTS.changeAvatarTitle}
           >

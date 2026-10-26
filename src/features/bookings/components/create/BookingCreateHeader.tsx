@@ -16,6 +16,7 @@ export function BookingHeader({ venueName, address }: BookingHeaderProps) {
         title={BOOKING_CREATE_TEXTS.headerTitle}
         showBack
         variant="gradient"
+        disableRounded
       />
       <div className="bg-gradient-to-r from-primary via-primary/95 to-primary/85 px-4 pb-4 pt-1 text-primary-foreground">
         <h1 className="line-clamp-1 text-sm font-extrabold">{venueName}</h1>

@@ -1,14 +1,16 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { APP_CONFIG } from "@/constants/appConfig";
+import logoSvg from "@/assets/icons/logo.svg";
 
 export function SplashScreen() {
   return (
     <div className="relative flex h-dvh w-full flex-col items-center justify-between bg-slate-950 p-8 text-white select-none overflow-hidden">
       {/* Background Gradient mờ ảo chìm phía sau */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-72 w-72 rounded-full bg-blue-600/20 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-72 w-72 rounded-full bg-blue-600/15 blur-3xl pointer-events-none" />
 
       {/* Khoảng trống cân bằng top */}
       <div className="h-8" />
@@ -18,28 +20,70 @@ export function SplashScreen() {
         initial={{ opacity: 0, scale: 0.92, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 flex flex-col items-center gap-4 text-center"
+        className="relative z-10 flex flex-col items-center gap-5 text-center"
       >
-        {/* Logo Container dạng Glassmorphism viền siêu mảnh */}
-        <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-white/[0.07] backdrop-blur-xl border border-white/10 shadow-2xl">
-          {/* Chữ B cách điệu với Gradient xanh mượt */}
-          <span className="bg-gradient-to-br from-blue-400 to-sky-300 bg-clip-text text-4xl font-black text-transparent tracking-tight">
-            {APP_CONFIG.name.charAt(0)}
-          </span>
+        {/* Logo Container Glassmorphism */}
+        <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl bg-white/[0.06] backdrop-blur-xl border border-white/10 shadow-2xl">
+          {/* Logo SVG từ Assets */}
+          <Image
+            src={logoSvg}
+            alt={APP_CONFIG.name}
+            width={48}
+            height={48}
+            className="h-12 w-12 object-contain relative z-10"
+            priority
+          />
+
+          {/* Vệt sáng mỏng tinh tế xẹt qua Icon Logo */}
+          <motion.div
+            initial={{ x: "-150%" }}
+            animate={{ x: "200%" }}
+            transition={{
+              repeat: Infinity,
+              repeatDelay: 2.2,
+              duration: 1.4,
+              ease: "easeInOut",
+            }}
+            className="absolute inset-0 z-20 -skew-x-25 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none"
+          />
         </div>
 
-        {/* Tên App & Slogan tối giản */}
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-widest uppercase text-slate-100">
+        {/* Tên App & Slogan: Shimmer trực tiếp vào nét chữ (Background Clip Text) */}
+        <div className="flex flex-col items-center gap-1">
+          <motion.h1
+            animate={{
+              backgroundPosition: ["200% 0", "-200% 0"],
+            }}
+            transition={{
+              repeat: Infinity,
+              repeatDelay: 2.2,
+              duration: 2,
+              ease: "easeInOut",
+            }}
+            className="bg-[linear-gradient(110deg,#cbd5e1,45%,#ffffff,55%,#cbd5e1)] bg-[length:200%_100%] bg-clip-text text-2xl font-black tracking-widest uppercase text-transparent"
+          >
             {APP_CONFIG.name}
-          </h1>
-          <p className="text-[11px] font-medium tracking-wide text-slate-400">
+          </motion.h1>
+
+          <motion.p
+            animate={{
+              backgroundPosition: ["200% 0", "-200% 0"],
+            }}
+            transition={{
+              repeat: Infinity,
+              repeatDelay: 2.2,
+              duration: 2,
+              delay: 0.1,
+              ease: "easeInOut",
+            }}
+            className="bg-[linear-gradient(110deg,#64748b,40%,#94a3b8,50%,#64748b)] bg-[length:200%_100%] bg-clip-text text-[11px] font-semibold tracking-widest text-transparent uppercase"
+          >
             SPORTS VENUE BOOKING
-          </p>
+          </motion.p>
         </div>
       </motion.div>
 
-      {/* FOOTER: THANH LOADING TRAM VỀ ĐÁY (MINIMAL LOADER) */}
+      {/* FOOTER: THANH LOADING TỐI GIẢN */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
