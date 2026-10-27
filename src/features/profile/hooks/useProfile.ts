@@ -1,35 +1,40 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { toast } from "sonner";
-import rawUserMock from "@/data/user.mock.json";
+import { useUserStore } from "@/stores/useUserStore";
 import { UserProfile } from "../types/profile.types";
 import { PROFILE_TEXTS } from "../constants/profile.constants";
+import { useState } from "react";
 
 export function useProfile() {
-  const [user, setUser] = useState<UserProfile>(rawUserMock as UserProfile);
+  const { user, isLoading, fetchProfile, updateProfile } = useUserStore();
+
   const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
-  const handleUpdateProfile = (updatedData: Partial<UserProfile>) => {
-    setUser((prev) => ({
-      ...prev,
-      ...updatedData,
-      bankInfo: updatedData.bankInfo
-        ? { ...prev.bankInfo, ...updatedData.bankInfo }
-        : prev.bankInfo,
-    }));
-    setIsEditDrawerOpen(false);
-    toast.success(
-      PROFILE_TEXTS.updateSuccessToast || "Cập nhật thông tin thành công!",
-    );
+  // Tự động load profile từ Store (Store sẽ gọi Service -> API/MockDB)
+  useEffect(() => {
+    if (!user) {
+      fetchProfile();
+    }
+  }, [user, fetchProfile]);
+
+  const handleUpdateProfile = async (updatedData: Partial<UserProfile>) => {
+    const success = await updateProfile(updatedData);
+    if (success) {
+      setIsEditDrawerOpen(false);
+      toast.success(PROFILE_TEXTS.updateSuccessToast);
+    } else {
+      toast.error("Cập nhật thông tin thất bại!");
+    }
   };
 
-  const handleChangeAvatar = (newAvatarUrl: string) => {
+  const handleChangeAvatar = async (newAvatarUrl: string) => {
     if (newAvatarUrl) {
-      setUser((prev) => ({ ...prev, avatarUrl: newAvatarUrl }));
-      toast.success(
-        PROFILE_TEXTS.changeAvatarSuccess || "Đã đổi ảnh đại diện thành công!",
-      );
+      const success = await updateProfile({ avatarUrl: newAvatarUrl });
+      if (success) {
+        toast.success(PROFILE_TEXTS.changeAvatarSuccess);
+      }
     }
   };
 
@@ -49,6 +54,7 @@ export function useProfile() {
 
   return {
     user,
+    isLoading,
     isEditDrawerOpen,
     openEditDrawer: () => setIsEditDrawerOpen(true),
     closeEditDrawer: () => setIsEditDrawerOpen(false),

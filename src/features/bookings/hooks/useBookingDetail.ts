@@ -1,20 +1,37 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import rawBookingsMock from "@/data/bookings.mock.json";
 import { BookingItem } from "../types/bookings.types";
 import {
   RESCHEDULE_TEXTS,
   BOOKING_TEXTS,
 } from "../constants/bookings.constants";
+import { useBookingStore } from "@/stores/useBookingStore";
 
 export function useBookingDetail(bookingId: string) {
-  const [booking, setBooking] = useState<BookingItem | null>(() => {
-    const found = rawBookingsMock.find((b) => b.id === bookingId);
-    return (found as BookingItem) || (rawBookingsMock[0] as BookingItem);
-  });
+  const { bookings, fetchMyBookings, cancelBooking, rescheduleBooking } =
+    useBookingStore();
 
   const [isRescheduleDrawerOpen, setIsRescheduleDrawerOpen] = useState(false);
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (!bookings.length) {
+      fetchMyBookings();
+    }
+  }, [bookings.length, fetchMyBookings]);
+
+  // Khớp linh hoạt theo b.id hoặc b.bookingCode
+  const booking = useMemo<BookingItem | null>(() => {
+    const target = decodeURIComponent(bookingId);
+    return (
+      bookings.find(
+        (b) =>
+          String(b.id) === String(bookingId) ||
+          String(b.id) === target ||
+          b.bookingCode === target,
+      ) || null
+    );
+  }, [bookings, bookingId]);
 
   const handleShare = useCallback(() => {
     if (navigator.share && booking) {
@@ -33,41 +50,40 @@ export function useBookingDetail(bookingId: string) {
     }
   }, [booking]);
 
-  const handleConfirmCancel = useCallback(() => {
-    setBooking((prev) =>
-      prev
-        ? {
-            ...prev,
-            status: "cancelled",
-            statusText: "Đã hủy",
-          }
-        : null,
-    );
-    toast.error("Đã hủy đơn đặt sân thành công.");
-  }, []);
+  const handleConfirmCancel = useCallback(async () => {
+    const idToUse = booking?.id || bookingId;
+    const success = await cancelBooking(idToUse);
+    if (success) {
+      setIsCancelDialogOpen(false);
+      toast.error("Đã hủy đơn đặt sân thành công.");
+    } else {
+      toast.error("Hủy đơn thất bại. Vui lòng thử lại.");
+    }
+  }, [booking?.id, bookingId, cancelBooking]);
 
   const handleConfirmReschedule = useCallback(
-    ({
+    async ({
       newDateText,
       newTimeText,
     }: {
       newDateText: string;
       newTimeText: string;
     }) => {
-      setBooking((prev) =>
-        prev
-          ? {
-              ...prev,
-              status: "rescheduled",
-              statusText: "Đã dời lịch",
-              dateText: newDateText,
-              timeText: newTimeText,
-            }
-          : null,
-      );
-      toast.success(RESCHEDULE_TEXTS.successToast);
+      const idToUse = booking?.id || bookingId;
+
+      const success = await rescheduleBooking(idToUse, {
+        newDateText,
+        newTimeText,
+      });
+
+      if (success) {
+        setIsRescheduleDrawerOpen(false);
+        toast.success(RESCHEDULE_TEXTS.successToast);
+      } else {
+        toast.error("Dời lịch thất bại. Vui lòng thử lại.");
+      }
     },
-    [],
+    [booking?.id, bookingId, rescheduleBooking],
   );
 
   return {

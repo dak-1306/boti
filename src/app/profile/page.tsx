@@ -14,6 +14,7 @@ import { PROFILE_TEXTS } from "@/features/profile/constants/profile.constants";
 export default function ProfilePage() {
   const {
     user,
+    isLoading,
     isEditDrawerOpen,
     openEditDrawer,
     closeEditDrawer,
@@ -27,6 +28,22 @@ export default function ProfilePage() {
     handleToggleNotifications,
   } = useProfile();
 
+  // Guard Clause: Hiển thị Skeleton UI khi dữ liệu user chưa tải xong
+  if (isLoading || !user) {
+    return (
+      <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+        <PageHeader title={PROFILE_TEXTS.pageTitle} variant="gradient" />
+        <div className="flex-1 space-y-4 p-4 animate-pulse">
+          <div className="h-28 w-full rounded-2xl bg-muted" />
+          <div className="h-20 w-full rounded-2xl bg-muted" />
+          <div className="h-40 w-full rounded-2xl bg-muted" />
+        </div>
+        <BottomNav activeTab="profile" />
+      </div>
+    );
+  }
+
+  // Từ đây trở xuống, TypeScript tự hiểu `user` chắc chắn khác null (UserProfile)
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
       <PageHeader

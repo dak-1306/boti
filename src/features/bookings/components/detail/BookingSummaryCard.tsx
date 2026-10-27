@@ -30,7 +30,7 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
   return (
     <div className="rounded-3xl border border-border bg-card p-4 text-card-foreground shadow-md">
       {/* Thanh Trạng thái & Mã Đặt Sân */}
-      <div className="flex items-center justify-between border-b border-border/80 pb-3">
+      <div className="flex  items-center justify-between border-b border-border/80 pb-3">
         <BookingStatusBadge
           status={booking.status}
           statusText={booking.statusText}
@@ -39,9 +39,6 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
         />
 
         <div className="flex items-center gap-1.5 text-xs">
-          <span className="text-muted-foreground text-[11px]">
-            {BOOKING_TEXTS.summaryCodeLabel}
-          </span>
           <span className="font-extrabold text-foreground tracking-wide">
             {booking.bookingCode}
           </span>

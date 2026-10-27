@@ -58,7 +58,7 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
         bottomExtension={<BookingSummaryCard booking={booking} />}
       />
 
-      <div className="flex-1 overflow-y-auto px-4 pt-16 pb-20 no-scrollbar">
+      <div className="flex-1 overflow-y-auto px-4 p-4 no-scrollbar">
         <div className="w-full space-y-3.5 sm:mx-auto sm:max-w-[390px]">
           <BookingQRCard qrCodeUrl={booking.qrCodeUrl} />
           <BookingCustomerCard customer={booking.customer} />

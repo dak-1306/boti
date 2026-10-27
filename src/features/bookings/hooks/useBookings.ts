@@ -1,13 +1,31 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { BookingItem, BookingFilterState } from "../types/bookings.types";
-import rawBookingsMock from "@/data/bookings.mock.json";
+import {
+  BookingItem,
+  BookingFilterState,
+  BookingTab,
+  DateFilterMode,
+} from "../types/bookings.types";
+import { useBookingStore } from "@/stores/useBookingStore";
+
+interface LocalDateFilterState {
+  filterMode: DateFilterMode;
+  selectedDate?: Date;
+  selectedMonth?: number;
+  selectedYear?: number;
+}
 
 export const useBookings = () => {
   const router = useRouter();
+  const {
+    bookings: storeBookings,
+    fetchMyBookings,
+    activeTab,
+    setActiveTab,
+  } = useBookingStore();
 
-  const [filters, setFilters] = useState<BookingFilterState>({
-    tab: "confirmed",
+  // Local state chỉ quản lý bộ lọc ngày/tháng/năm
+  const [dateFilters, setDateFilters] = useState<LocalDateFilterState>({
     filterMode: "all",
     selectedDate: undefined,
     selectedMonth: undefined,
@@ -15,83 +33,114 @@ export const useBookings = () => {
   });
 
   const [isDateDrawerOpen, setIsDateDrawerOpen] = useState(false);
-  const initialBookings = rawBookingsMock as unknown as BookingItem[];
+
+  useEffect(() => {
+    fetchMyBookings();
+  }, [fetchMyBookings]);
+
+  // Derived state: Hợp nhất activeTab từ Store và dateFilters từ Local State (Không dùng useEffect)
+  const filters: BookingFilterState = useMemo(
+    () => ({
+      tab: activeTab || "confirmed",
+      ...dateFilters,
+    }),
+    [activeTab, dateFilters]
+  );
+
+  // Hàm setFilters giữ nguyên Interface cũ để không làm hỏng UI Components
+  const setFilters = (
+    updater:
+      | BookingFilterState
+      | ((prev: BookingFilterState) => BookingFilterState)
+  ) => {
+    const next = typeof updater === "function" ? updater(filters) : updater;
+    
+    // Nếu tab thay đổi, ghi trực tiếp vào Zustand Store
+    if (next.tab !== activeTab) {
+      setActiveTab(next.tab as BookingTab);
+    }
+
+    // Cập nhật phần filter ngày cục bộ
+    setDateFilters({
+      filterMode: next.filterMode,
+      selectedDate: next.selectedDate,
+      selectedMonth: next.selectedMonth,
+      selectedYear: next.selectedYear,
+    });
+  };
 
   const filteredBookings = useMemo(() => {
-    return initialBookings.filter((booking) => {
-      if (booking.status !== filters.tab) return false;
-      if (filters.filterMode === "all") return true;
+    const list = storeBookings as unknown as BookingItem[];
+    return list.filter((booking) => {
+      if (booking.status !== activeTab) return false;
+      if (dateFilters.filterMode === "all") return true;
       if (!booking.date || typeof booking.date !== "string") return false;
 
       const parts = booking.date.split("-").map(Number);
       if (parts.length !== 3 || parts.some(isNaN)) return false;
       const [bYear, bMonth, bDay] = parts;
 
-      if (filters.filterMode === "day" && filters.selectedDate) {
+      if (dateFilters.filterMode === "day" && dateFilters.selectedDate) {
         return (
-          bYear === filters.selectedDate.getFullYear() &&
-          bMonth === filters.selectedDate.getMonth() + 1 &&
-          bDay === filters.selectedDate.getDate()
+          bYear === dateFilters.selectedDate.getFullYear() &&
+          bMonth === dateFilters.selectedDate.getMonth() + 1 &&
+          bDay === dateFilters.selectedDate.getDate()
         );
       }
 
       if (
-        filters.filterMode === "month" &&
-        filters.selectedYear !== undefined
+        dateFilters.filterMode === "month" &&
+        dateFilters.selectedYear !== undefined
       ) {
         return (
-          bYear === filters.selectedYear &&
-          bMonth === (filters.selectedMonth ?? 0) + 1
+          bYear === dateFilters.selectedYear &&
+          bMonth === (dateFilters.selectedMonth ?? 0) + 1
         );
       }
 
-      if (filters.filterMode === "year" && filters.selectedYear !== undefined) {
-        return bYear === filters.selectedYear;
+      if (dateFilters.filterMode === "year" && dateFilters.selectedYear !== undefined) {
+        return bYear === dateFilters.selectedYear;
       }
 
       return true;
     });
-  }, [filters, initialBookings]);
+  }, [activeTab, dateFilters, storeBookings]);
 
   const selectedDateText = useMemo(() => {
-    if (filters.filterMode === "all") return null;
+    if (dateFilters.filterMode === "all") return null;
 
-    if (filters.filterMode === "day" && filters.selectedDate) {
-      return filters.selectedDate.toLocaleDateString("vi-VN", {
+    if (dateFilters.filterMode === "day" && dateFilters.selectedDate) {
+      return dateFilters.selectedDate.toLocaleDateString("vi-VN", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
       });
     }
 
-    if (filters.filterMode === "month" && filters.selectedYear !== undefined) {
-      const monthStr = String((filters.selectedMonth ?? 0) + 1).padStart(
+    if (dateFilters.filterMode === "month" && dateFilters.selectedYear !== undefined) {
+      const monthStr = String((dateFilters.selectedMonth ?? 0) + 1).padStart(
         2,
-        "0",
+        "0"
       );
-      return `Tháng ${monthStr}/${filters.selectedYear}`;
+      return `Tháng ${monthStr}/${dateFilters.selectedYear}`;
     }
 
-    if (filters.filterMode === "year" && filters.selectedYear !== undefined) {
-      return `Năm ${filters.selectedYear}`;
+    if (dateFilters.filterMode === "year" && dateFilters.selectedYear !== undefined) {
+      return `Năm ${dateFilters.selectedYear}`;
     }
 
     return null;
-  }, [filters]);
+  }, [dateFilters]);
 
   const handleOpenDateDrawer = () => {
     const now = new Date();
-    setFilters((prev) => ({
+    setDateFilters((prev) => ({
       ...prev,
       selectedDate: prev.selectedDate ?? now,
       selectedMonth: prev.selectedMonth ?? now.getMonth(),
       selectedYear: prev.selectedYear ?? now.getFullYear(),
     }));
     setIsDateDrawerOpen(true);
-  };
-
-  const handleSelectBooking = (id: string) => {
-    router.push(`/bookings/${id}`);
   };
 
   return {
@@ -104,8 +153,8 @@ export const useBookings = () => {
     openDateDrawer: handleOpenDateDrawer,
     closeDateDrawer: () => setIsDateDrawerOpen(false),
     clearDateFilter: () =>
-      setFilters((prev) => ({ ...prev, filterMode: "all" })),
+      setDateFilters((prev) => ({ ...prev, filterMode: "all" })),
     handleNavigateToHome: () => router.push("/home"),
-    handleSelectBooking,
+    handleSelectBooking: (id: string) => router.push(`/bookings/${id}`),
   };
 };
