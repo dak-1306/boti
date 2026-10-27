@@ -10,7 +10,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 interface BookingDateStripProps {
   selectedDate: Date;
   onSelectDate: (date: Date) => void;
@@ -31,7 +31,7 @@ export function BookingDateStrip({
   return (
     <div className="flex items-center gap-2 px-4 py-3 bg-card border-b border-border">
       <div className="flex-1 overflow-x-auto overflow-y-hidden no-scrollbar touch-pan-x">
-        <div className="flex items-center gap-2 w-max">
+        <StaggerGroup className="flex items-center gap-2 w-max">
           {dateList.map((d) => {
             const isSelected = formatDateKey(d) === formatDateKey(selectedDate);
             const dayName = d.toLocaleDateString("vi-VN", { weekday: "short" });
@@ -57,7 +57,7 @@ export function BookingDateStrip({
               </button>
             );
           })}
-        </div>
+        </StaggerGroup>
       </div>
 
       <Popover>

@@ -8,6 +8,7 @@ import { TimeSlotGrid } from "@/features/bookings/components/create/TimeSlotGrid
 import { BookingCustomerForm } from "@/features/bookings/components/create/BookingCustomerForm";
 import { BookingBottomBar } from "@/features/bookings/components/create/BookingBottomBar";
 import { useBookingCreate } from "@/features/bookings/hooks/useBookingCreate";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 interface BookingCreatePageProps {
   searchParams: Promise<{ venueId?: string }>;
@@ -45,7 +46,7 @@ function BookingCreateContent({
       />
 
       <div className="flex-1 overflow-y-auto pb-24 no-scrollbar">
-        <div className="sm:mx-auto sm:max-w-[390px] w-full space-y-2">
+        <StaggerGroup className="sm:mx-auto sm:max-w-[390px] w-full space-y-2">
           <CourtSelector
             courts={courts}
             selectedCourtId={selectedCourtId}
@@ -61,7 +62,7 @@ function BookingCreateContent({
           )}
 
           <BookingCustomerForm form={form} />
-        </div>
+        </StaggerGroup>
       </div>
 
       <BookingBottomBar

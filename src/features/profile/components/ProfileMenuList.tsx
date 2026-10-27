@@ -9,6 +9,7 @@ import {
 } from "../constants/profile.constants";
 import { ProfileMenuItemType } from "../types/profile.types";
 import { ProfileMenuItem } from "./ProfileMenuItem";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 interface ProfileMenuListProps {
   onOpenEditDrawer: () => void;
@@ -51,7 +52,7 @@ export function ProfileMenuList({
   };
 
   return (
-    <div className="space-y-4">
+    <StaggerGroup className="space-y-4">
       {PROFILE_MENU_GROUPS.map((group, groupIdx) => (
         <div
           key={groupIdx}
@@ -75,6 +76,6 @@ export function ProfileMenuList({
           </div>
         </div>
       ))}
-    </div>
+    </StaggerGroup>
   );
 }

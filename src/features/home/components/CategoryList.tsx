@@ -4,6 +4,7 @@ import React from "react";
 import { Category } from "../types/home.types";
 import { SafeCategoryIcon } from "@/components/common/safe-category-icon";
 import { cn } from "@/lib/utils";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 interface CategoryListProps {
   categories: Category[];
@@ -18,7 +19,7 @@ export function CategoryList({
 }: CategoryListProps) {
   return (
     <div className="w-full shrink-0 overflow-x-auto overflow-y-hidden py-3 px-4 no-scrollbar">
-      <div className="flex items-center gap-3.5 w-max">
+      <StaggerGroup className="flex items-center gap-3.5 w-max">
         {categories.map((item) => {
           const isSelected = selectedCategory === item.id;
           return (
@@ -57,7 +58,7 @@ export function CategoryList({
             </button>
           );
         })}
-      </div>
+      </StaggerGroup>
     </div>
   );
 }

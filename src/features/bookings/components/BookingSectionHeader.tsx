@@ -3,6 +3,7 @@
 import React from "react";
 import { Calendar as CalendarIcon, X } from "lucide-react";
 import { BOOKING_TEXTS } from "../constants/bookings.constants";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 interface BookingSectionHeaderProps {
   title: string;
@@ -25,7 +26,7 @@ export function BookingSectionHeader({
       </h2>
 
       {/* Nút bộ lọc thời gian */}
-      <div className="flex items-center gap-1.5">
+      <StaggerGroup className="flex items-center gap-1.5">
         {selectedDateText ? (
           <div className="flex h-8 items-center gap-1.5 rounded-full bg-primary/10 border border-primary/25 px-3 text-[11px] font-bold text-primary shadow-2xs">
             <CalendarIcon className="h-3.5 w-3.5" />
@@ -49,7 +50,7 @@ export function BookingSectionHeader({
             <span>{BOOKING_TEXTS.viewAllBtn}</span>
           </button>
         )}
-      </div>
+      </StaggerGroup>
     </div>
   );
 }

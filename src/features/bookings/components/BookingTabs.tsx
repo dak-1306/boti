@@ -4,6 +4,7 @@ import React from "react";
 import { BookingTab } from "../types/bookings.types";
 import { BOOKING_TABS } from "../constants/bookings.constants";
 import { cn } from "@/lib/utils";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 interface BookingTabsProps {
   activeTab: BookingTab;

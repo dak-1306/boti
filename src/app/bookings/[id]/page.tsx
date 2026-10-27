@@ -11,6 +11,8 @@ import { BookingPaymentCard } from "@/features/bookings/components/detail/Bookin
 import { BookingBottomActions } from "@/features/bookings/components/detail/BookingBottomActions";
 import { BookingRescheduleDrawer } from "@/features/bookings/components/reschedule/BookingRescheduleDrawer";
 import { BOOKING_TEXTS } from "@/features/bookings/constants/bookings.constants";
+import { PageTransition } from "@/components/motion/PageTransition";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 interface BookingDetailPageProps {
   params: Promise<{ id: string }>;
@@ -48,7 +50,7 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
   }
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+    <PageTransition className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
       <PageHeader
         title={BOOKING_TEXTS.detailHeaderTitle}
         showBack
@@ -59,11 +61,11 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
       />
 
       <div className="flex-1 overflow-y-auto px-4 p-4 no-scrollbar">
-        <div className="w-full space-y-3.5 sm:mx-auto sm:max-w-[390px]">
+        <StaggerGroup className="w-full space-y-3.5 sm:mx-auto sm:max-w-[390px]">
           <BookingQRCard qrCodeUrl={booking.qrCodeUrl} />
           <BookingCustomerCard customer={booking.customer} />
           <BookingPaymentCard payment={booking.payment} />
-        </div>
+        </StaggerGroup>
       </div>
 
       <BookingBottomActions
@@ -72,7 +74,6 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
         onReschedule={openRescheduleDrawer}
       />
 
-      {/* Drawer Dời Lịch */}
       <BookingRescheduleDrawer
         booking={booking}
         isOpen={isRescheduleDrawerOpen}
@@ -80,7 +81,6 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
         onConfirmReschedule={handleConfirmReschedule}
       />
 
-      {/* Dialog Xác Nhận Hủy Đơn */}
       <ConfirmDialog
         isOpen={isCancelDialogOpen}
         onClose={closeCancelDialog}
@@ -91,7 +91,7 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
         cancelText="Giữ lại"
         variant="destructive"
       />
-    </div>
+    </PageTransition>
   );
 }
 

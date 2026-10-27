@@ -7,6 +7,7 @@ import { FeaturedNewsCard } from "./FeaturedNewsCard";
 import { NewsCard } from "./NewsCard";
 import { NEWS_TEXTS } from "../constants/news.constants";
 import { Button } from "@/components/ui/button";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 interface NewsListProps {
   featuredNews?: NewsItem;
@@ -61,7 +62,7 @@ export function NewsList({
         <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
           {NEWS_TEXTS.allNewsTitle}
         </h2>
-        <div className="space-y-2.5">
+        <StaggerGroup className="space-y-2.5">
           {newsList.map((item) => (
             <NewsCard
               key={item.id}
@@ -69,7 +70,7 @@ export function NewsList({
               onClick={() => onSelectNews(item)}
             />
           ))}
-        </div>
+        </StaggerGroup>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import React from "react";
 import { Venue } from "../types/home.types";
 import { VenueCard } from "./VenueCard";
 import { Button } from "@/components/ui/button";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 interface VenueGridProps {
   venues: Venue[];
@@ -35,7 +36,7 @@ export function VenueGrid({
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 px-4 pb-4">
+    <StaggerGroup className="grid grid-cols-2 gap-3 px-4 pb-4">
       {venues.map((venue) => (
         <VenueCard
           key={venue.id}
@@ -44,6 +45,6 @@ export function VenueGrid({
           onBook={onBookVenue}
         />
       ))}
-    </div>
+    </StaggerGroup>
   );
 }

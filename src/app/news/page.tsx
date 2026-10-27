@@ -7,6 +7,7 @@ import { NewsCategoryTabs } from "@/features/news/components/NewsCategoryTabs";
 import { NewsList } from "@/features/news/components/NewsList";
 import { NewsDetailDrawer } from "@/features/news/components/NewsDetailDrawer";
 import { useNews } from "@/features/news/hooks/useNews";
+import { PageTransition } from "@/components/motion/PageTransition";
 
 export default function NewsPage() {
   const {
@@ -23,7 +24,7 @@ export default function NewsPage() {
   } = useNews();
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+    <PageTransition className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
       <div className="shrink-0 z-10">
         <NewsHeader searchQuery={searchQuery} onSearchChange={setSearchQuery} />
         <NewsCategoryTabs
@@ -50,6 +51,6 @@ export default function NewsPage() {
         isOpen={!!detailNews}
         onClose={closeDetailDrawer}
       />
-    </div>
+    </PageTransition>
   );
 }

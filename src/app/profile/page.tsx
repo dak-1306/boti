@@ -10,6 +10,8 @@ import { ProfileMenuList } from "@/features/profile/components/ProfileMenuList";
 import { EditProfileDrawer } from "@/features/profile/components/EditProfileDrawer";
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import { PROFILE_TEXTS } from "@/features/profile/constants/profile.constants";
+import { PageTransition } from "@/components/motion/PageTransition";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 export default function ProfilePage() {
   const {
@@ -28,7 +30,6 @@ export default function ProfilePage() {
     handleToggleNotifications,
   } = useProfile();
 
-  // Guard Clause: Hiển thị Skeleton UI khi dữ liệu user chưa tải xong
   if (isLoading || !user) {
     return (
       <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
@@ -43,9 +44,8 @@ export default function ProfilePage() {
     );
   }
 
-  // Từ đây trở xuống, TypeScript tự hiểu `user` chắc chắn khác null (UserProfile)
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+    <PageTransition className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
       <PageHeader
         title={PROFILE_TEXTS.pageTitle}
         variant="gradient"
@@ -61,7 +61,7 @@ export default function ProfilePage() {
       />
 
       <div className="flex-1 overflow-y-auto px-4 py-4 no-scrollbar">
-        <div className="w-full space-y-3.5 sm:mx-auto sm:max-w-[390px]">
+        <StaggerGroup className="w-full space-y-3.5 sm:mx-auto sm:max-w-[390px]">
           <ProfileBankCard bankInfo={user.bankInfo} onEdit={openEditDrawer} />
 
           <ProfileMenuList
@@ -70,7 +70,7 @@ export default function ProfilePage() {
             onToggleNotifications={handleToggleNotifications}
             onLogout={openLogoutDialog}
           />
-        </div>
+        </StaggerGroup>
       </div>
 
       <BottomNav activeTab="profile" />
@@ -92,6 +92,6 @@ export default function ProfilePage() {
         cancelText="Hủy"
         variant="destructive"
       />
-    </div>
+    </PageTransition>
   );
 }

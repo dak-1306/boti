@@ -10,6 +10,7 @@ import { BookingEmptyState } from "@/features/bookings/components/BookingEmptySt
 import { BottomNav } from "@/components/common/bottom-nav";
 import { useBookings } from "@/features/bookings/hooks/useBookings";
 import { BOOKING_TABS } from "@/features/bookings/constants/bookings.constants";
+import { PageTransition } from "@/components/motion/PageTransition";
 
 export default function BookingsPage() {
   const {
@@ -31,7 +32,6 @@ export default function BookingsPage() {
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-slate-50 dark:bg-slate-950">
-      {/* VÙNG HEADER CỐ ĐỊNH - TABS ĐÈ NỔI 50/50 */}
       <div className="shrink-0">
         <BookingHeader
           bottomExtension={
@@ -50,8 +50,11 @@ export default function BookingsPage() {
         </BookingHeader>
       </div>
 
-      {/* DANH SÁCH CUỘN ĐỘC LẬP */}
-      <div className="flex-1 overflow-y-auto no-scrollbar">
+      {/* Animation chuyển Tab siêu mượt nhờ key={filters.tab} */}
+      <PageTransition
+        key={filters.tab}
+        className="flex-1 overflow-y-auto no-scrollbar"
+      >
         {hasBookings ? (
           <BookingList
             bookings={bookings}
@@ -60,7 +63,7 @@ export default function BookingsPage() {
         ) : (
           <BookingEmptyState onBookNow={handleNavigateToHome} />
         )}
-      </div>
+      </PageTransition>
 
       <BottomNav activeTab="bookings" />
 

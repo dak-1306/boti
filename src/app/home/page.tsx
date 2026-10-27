@@ -11,6 +11,7 @@ import { FilterDrawer } from "@/features/home/components/drawer-filter/FilterDra
 import { VenueDetailDrawer } from "@/features/home/components/detail-drawer/VenueDetailDrawer";
 import { useHome } from "@/features/home/hooks/useHome";
 import { cn } from "@/lib/utils";
+import { PageTransition } from "@/components/motion/PageTransition";
 
 const VenueMapView = dynamic(
   () =>
@@ -58,8 +59,7 @@ export default function HomePage() {
   const isMapView = viewMode === "map";
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
-      {/* HEADER CỐ ĐỊNH PHÍA TRÊN */}
+    <PageTransition className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
       <HomeHeader
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -69,7 +69,6 @@ export default function HomePage() {
         hasLocation={hasLocation}
       />
 
-      {/* KHU VỰC NỘI DUNG: Khóa cuộn linh hoạt khi ở chế độ Map */}
       <main
         className={cn(
           "flex-1 w-full flex flex-col min-h-0",
@@ -77,7 +76,6 @@ export default function HomePage() {
         )}
       >
         <div className="sm:mx-auto sm:max-w-[390px] w-full flex-1 flex flex-col min-h-0">
-          {/* Category List luôn ghim cố định ở đầu */}
           <div className="shrink-0">
             <CategoryList
               categories={categories}
@@ -86,7 +84,6 @@ export default function HomePage() {
             />
           </div>
 
-          {/* Section Header (Thanh chuyển Grid/Map) ghim cố định */}
           <div className="shrink-0">
             <VenueSectionHeader
               viewMode={viewMode}
@@ -94,7 +91,7 @@ export default function HomePage() {
             />
           </div>
 
-          {/* 1. CHẾ ĐỘ DANH SÁCH (GRID) */}
+          {/* 1. DANH SÁCH SÂN */}
           {!isMapView && (
             <div className="flex-1">
               <VenueGrid
@@ -106,7 +103,7 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* 2. CHẾ ĐỘ BẢN ĐỒ (MAP): Dãn trọn vẹn flex-1 min-h-0, không bao giờ bị cuộn trôi */}
+          {/* 2. BẢN ĐỒ: Giữ nguyên khung chuẩn Flexbox */}
           <div
             className={cn(
               "relative flex-1 w-full min-h-0 overflow-hidden touch-none",
@@ -127,7 +124,6 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* BOTTOM NAV CỐ ĐỊNH Ở ĐÁY */}
       <BottomNav activeTab="home" />
 
       <FilterDrawer
@@ -143,6 +139,6 @@ export default function HomePage() {
         onClose={closeDetailDrawer}
         onBook={handleNavigateToBooking}
       />
-    </div>
+    </PageTransition>
   );
 }

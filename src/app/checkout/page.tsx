@@ -9,6 +9,8 @@ import { useCheckout } from "@/features/checkout/hooks/useCheckout";
 import { CHECKOUT_TEXTS } from "@/features/checkout/constants/checkout.constants";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { PageTransition } from "@/components/motion/PageTransition";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 function CheckoutContent() {
   const {
@@ -22,7 +24,7 @@ function CheckoutContent() {
   } = useCheckout();
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+    <PageTransition className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
       <PageHeader
         title={CHECKOUT_TEXTS.headerTitle}
         showBack
@@ -30,17 +32,14 @@ function CheckoutContent() {
       />
 
       <div className="flex-1 overflow-y-auto p-4 pb-24 no-scrollbar">
-        <div className="w-full space-y-4 sm:mx-auto sm:max-w-[390px]">
-          {/* Tóm tắt đơn */}
+        <StaggerGroup className="w-full space-y-4 sm:mx-auto sm:max-w-[390px]">
           <CheckoutSummaryCard data={bookingData} />
 
-          {/* Chọn PTTT */}
           <PaymentMethodSelector
             selectedMethod={selectedMethod}
             onSelectMethod={setSelectedMethod}
           />
 
-          {/* DEV Switch Test Giả Lập Thành Công / Thất Bại */}
           <div className="flex items-center justify-between rounded-xl border border-dashed border-border bg-muted/30 p-3 mt-4">
             <Label className="text-[11px] font-semibold text-muted-foreground">
               {CHECKOUT_TEXTS.devModeTitle}{" "}
@@ -61,7 +60,7 @@ function CheckoutContent() {
               onCheckedChange={setShouldSimulateSuccess}
             />
           </div>
-        </div>
+        </StaggerGroup>
       </div>
 
       <CheckoutBottomBar
@@ -69,7 +68,7 @@ function CheckoutContent() {
         isProcessing={isProcessing}
         onPayNow={handleProcessPayment}
       />
-    </div>
+    </PageTransition>
   );
 }
 

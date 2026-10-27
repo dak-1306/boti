@@ -2,6 +2,7 @@
 
 import React, { memo } from "react";
 import { NEWS_CATEGORIES } from "../constants/news.constants";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 import { NewsCategoryFilter } from "../types/news.types";
 import { cn } from "@/lib/utils";
 
@@ -16,7 +17,7 @@ export const NewsCategoryTabs = memo(function NewsCategoryTabs({
 }: NewsCategoryTabsProps) {
   return (
     <div className="w-full shrink-0 overflow-x-auto overflow-y-hidden px-4 py-3 no-scrollbar touch-pan-x will-change-transform">
-      <div className="flex items-center gap-2 w-max">
+      <StaggerGroup className="flex items-center gap-2 w-max">
         {NEWS_CATEGORIES.map((cat) => {
           const isSelected = selectedCategory === cat.id;
           return (
@@ -35,7 +36,7 @@ export const NewsCategoryTabs = memo(function NewsCategoryTabs({
             </button>
           );
         })}
-      </div>
+      </StaggerGroup>
     </div>
   );
 });
