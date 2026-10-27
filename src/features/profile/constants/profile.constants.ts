@@ -28,6 +28,16 @@ export const PROFILE_TEXTS = {
   logoutConfirm: "Bạn có chắc chắn muốn đăng xuất khỏi Zalo Mini App?",
   logoutSuccessAlert: "Đã đăng xuất thành công!",
   updateSuccessToast: "Cập nhật thông tin thành công!",
+
+  // Validation Messages (Zod)
+  valNameRequired: "Vui lòng nhập họ và tên",
+  valNameMin: "Họ và tên phải có ít nhất 2 ký tự",
+  valPhoneRequired: "Vui lòng nhập số điện thoại",
+  valPhoneInvalid: "Số điện thoại không đúng định dạng (10 chữ số)",
+  valAccNoRequired: "Vui lòng nhập số tài khoản ngân hàng",
+  valAccNoNumeric: "Số tài khoản chỉ được chứa chữ số",
+  valAccHolderRequired: "Vui lòng nhập tên chủ tài khoản",
+  
 } as const;
 
 export const POPULAR_BANKS = [

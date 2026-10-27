@@ -8,9 +8,18 @@ export const BOOKING_CREATE_TEXTS = {
   labelFullName: "Họ và tên",
   labelPhone: "Số điện thoại",
   labelNotes: "Ghi chú cho chủ sân",
+  placeholderFullName: "Nhập họ và tên người đặt",
+  placeholderPhone: "Nhập số điện thoại liên hệ",
   placeholderNotes: "VD: Cần thuê thêm 2 vợt...",
   totalLabel: "Tổng cộng",
   btnSubmit: "Xác nhận đặt lịch",
   loadingFallback: "Đang tải thông tin đặt sân...",
   alertSuccessTitle: "Đặt sân thành công!",
+
+  // Validation Messages (Zod)
+  valNameRequired: "Vui lòng nhập họ và tên",
+  valNameMin: "Họ và tên phải có ít nhất 2 ký tự",
+  valPhoneRequired: "Vui lòng nhập số điện thoại",
+  valPhoneInvalid: "Số điện thoại không đúng định dạng (10 chữ số)",
+  valSelectSlotRequired: "Vui lòng chọn ít nhất 1 khung giờ chơi!",
 } as const;

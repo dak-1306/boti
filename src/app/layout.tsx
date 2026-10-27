@@ -31,7 +31,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" className={`${beVietnamPro.variable} h-full antialiased`}>
-      <body className="h-full min-h-screen overflow-hidden bg-slate-200 antialiased dark:bg-zinc-950 font-sans">
+      {/* 
+        Body chỉ làm canvas gốc 100dvh tràn viền, dùng token bg-background
+        Không gán cứng màu slate/zinc hay max-width tại đây.
+      */}
+      <body className="h-[100dvh] w-full overflow-hidden bg-background text-foreground font-sans antialiased">
         <Toaster />
         <MobileContainer>{children}</MobileContainer>
       </body>

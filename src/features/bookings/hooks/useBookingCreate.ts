@@ -1,8 +1,14 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { BookingCustomer, CourtOption } from "../types/booking-create.types";
+import { CourtOption } from "../types/booking-create.types";
 import { BOOKING_CREATE_TEXTS } from "../constants/booking-create.constants";
+import {
+  bookingCustomerSchema,
+  BookingCustomerFormData,
+} from "../schemas/booking-create.schema";
 import { Venue } from "@/features/home/types/home.types";
 import rawVenuesMock from "@/data/venues.mock.json";
 
@@ -23,11 +29,14 @@ export function useBookingCreate(venueIdParam?: string) {
   const [selectedCourtId, setSelectedCourtId] = useState<string>("");
   const [selectedSlotIds, setSelectedSlotIds] = useState<string[]>([]);
 
-  const [customer, setCustomer] = useState<BookingCustomer>({
-    name: "Nguyễn Văn A",
-    phone: "0901234567",
-    playerCount: 2,
-    notes: "",
+  // Khởi tạo React Hook Form với Zod
+  const form = useForm<BookingCustomerFormData>({
+    resolver: zodResolver(bookingCustomerSchema),
+    defaultValues: {
+      name: "Nguyễn Văn A",
+      phone: "0901234567",
+      notes: "",
+    },
   });
 
   const activeCourt = useMemo(() => {
@@ -50,14 +59,12 @@ export function useBookingCreate(venueIdParam?: string) {
     );
   };
 
-  const handleChangeCustomer = (
-    field: keyof BookingCustomer,
-    value: string | number,
-  ) => {
-    setCustomer((prev) => ({ ...prev, [field]: value }));
-  };
+  const onValidSubmit = (data: BookingCustomerFormData) => {
+    if (selectedSlotIds.length === 0) {
+      toast.error(BOOKING_CREATE_TEXTS.valSelectSlotRequired);
+      return;
+    }
 
-  const handleSubmit = () => {
     toast.success(BOOKING_CREATE_TEXTS.alertSuccessTitle, {
       description: `Sân: ${venue.name} • Tổng tiền: ${totalPrice.toLocaleString("vi-VN")}đ`,
     });
@@ -77,9 +84,8 @@ export function useBookingCreate(venueIdParam?: string) {
     activeCourt,
     selectedSlotIds,
     handleToggleSlot,
-    customer,
-    handleChangeCustomer,
+    form,
     totalPrice,
-    handleSubmit,
+    handleSubmit: form.handleSubmit(onValidSubmit),
   };
 }

@@ -16,13 +16,8 @@ export interface CourtOption {
 export interface BookingCustomer {
   name: string;
   phone: string;
-  playerCount: number;
+  playerCount?: number;
   notes?: string;
-}
-
-export interface VenueBookingData {
-  venueId: string;
-  courts: CourtOption[];
 }
 
 export interface CreateBookingPayload {

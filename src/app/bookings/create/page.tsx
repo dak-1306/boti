@@ -30,8 +30,7 @@ function BookingCreateContent({
     activeCourt,
     selectedSlotIds,
     handleToggleSlot,
-    customer,
-    handleChangeCustomer,
+    form,
     totalPrice,
     handleSubmit,
   } = useBookingCreate(resolvedParams.venueId);
@@ -61,10 +60,7 @@ function BookingCreateContent({
             />
           )}
 
-          <BookingCustomerForm
-            customer={customer}
-            onChangeCustomer={handleChangeCustomer}
-          />
+          <BookingCustomerForm form={form} />
         </div>
       </div>
 
