@@ -3,12 +3,12 @@
 import React, { useState } from "react";
 import { Copy, Check, Calendar, Clock, MapPin } from "lucide-react";
 import { SafeImage } from "@/components/common/safe-image";
-import { SafeCategoryIcon } from "@/components/common/safe-category-icon";
 import { Button } from "@/components/ui/button";
 import { BookingItem } from "../../types/bookings.types";
 import { BookingStatusBadge } from "../BookingStatusBadge";
 import { BOOKING_TEXTS } from "../../constants/bookings.constants";
-import { CATEGORIES_DATA } from "@/features/home/constants/home.constants";
+import { getCategoryBadgeConfig } from "@/constants/category.constants";
+import { cn } from "@/lib/utils";
 
 interface BookingSummaryCardProps {
   booking: BookingItem;
@@ -16,10 +16,7 @@ interface BookingSummaryCardProps {
 
 export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
   const [copied, setCopied] = useState(false);
-
-  const categoryInfo = CATEGORIES_DATA.find(
-    (c) => c.name.toLowerCase() === (booking.category || "").toLowerCase(),
-  );
+  const categoryConfig = getCategoryBadgeConfig(booking.category);
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(booking.bookingCode);
@@ -30,7 +27,7 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
   return (
     <div className="rounded-3xl border border-border bg-card p-4 text-card-foreground shadow-md">
       {/* Thanh Trạng thái & Mã Đặt Sân */}
-      <div className="flex  items-center justify-between border-b border-border/80 pb-3">
+      <div className="flex items-center justify-between border-b border-border/80 pb-3">
         <BookingStatusBadge
           status={booking.status}
           statusText={booking.statusText}
@@ -75,14 +72,15 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
             {booking.venueName}
           </h2>
 
-          <div className="inline-flex items-center gap-1.5 w-fit rounded-lg bg-muted/80 border border-border/80 px-2 py-0.5 text-[11px] font-bold text-foreground">
-            <SafeCategoryIcon
-              icon={categoryInfo?.icon}
-              alt={booking.category}
-              size={16}
-            />
-            <span>{booking.category}</span>
-          </div>
+          {/* Badge Category Đồng bộ (Đã bỏ icon, thiết kế sạch gọn) */}
+          <span
+            className={cn(
+              "inline-flex items-center w-fit rounded-md border px-2 py-0.5 text-[11px] font-bold transition-colors",
+              categoryConfig.badgeStyle
+            )}
+          >
+            {categoryConfig.label}
+          </span>
 
           <div className="mt-0.5 space-y-1 text-[11px] text-muted-foreground font-medium">
             <div className="flex items-center gap-1.5 truncate">

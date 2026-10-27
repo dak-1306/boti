@@ -4,9 +4,10 @@ import React from "react";
 import { Star, MapPin, Clock } from "lucide-react";
 import { Venue } from "../types/home.types";
 import { HOME_TEXTS } from "../constants/home.constants";
+import { getCategoryBadgeConfig } from "@/constants/category.constants";
 import { SafeImage } from "@/components/common/safe-image";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface VenueCardProps {
   venue: Venue;
@@ -15,6 +16,10 @@ interface VenueCardProps {
 }
 
 export function VenueCard({ venue, onClick, onBook }: VenueCardProps) {
+  const categoryConfig = getCategoryBadgeConfig(
+    venue.categorySlug || venue.category,
+  );
+
   return (
     <div
       onClick={onClick}
@@ -37,11 +42,17 @@ export function VenueCard({ venue, onClick, onBook }: VenueCardProps) {
       </div>
 
       <div className="flex flex-1 flex-col justify-between p-2.5">
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <div className="flex items-center justify-between gap-1">
-            <Badge variant="sky" size="sm">
-              {venue.categorySlug || venue.category}
-            </Badge>
+            {/* Badge có màu sắc và tên chuẩn theo từng Bộ Môn */}
+            <span
+              className={cn(
+                "inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-bold transition-colors",
+                categoryConfig.badgeStyle,
+              )}
+            >
+              {categoryConfig.label}
+            </span>
             <div className="flex items-center gap-0.5 shrink-0 text-amber-500">
               <Star className="h-3 w-3 fill-amber-500" />
               <span className="text-[11px] font-bold">{venue.rating}</span>
@@ -52,9 +63,12 @@ export function VenueCard({ venue, onClick, onBook }: VenueCardProps) {
             {venue.name}
           </h3>
 
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <MapPin className="h-3 w-3 shrink-0 text-primary" />
-            <p className="line-clamp-1 text-[10px]">{venue.address}</p>
+          {/* Cho phép Địa chỉ hiển thị tối đa 2 dòng */}
+          <div className="flex items-start gap-1 text-muted-foreground">
+            <MapPin className="h-3 w-3 shrink-0 text-primary mt-0.5" />
+            <p className="line-clamp-2 text-[10px] leading-snug">
+              {venue.address}
+            </p>
           </div>
 
           <div className="flex items-center gap-1 text-muted-foreground">
@@ -74,7 +88,7 @@ export function VenueCard({ venue, onClick, onBook }: VenueCardProps) {
               onClick();
             }
           }}
-          className="mt-3 h-11 w-full rounded-xl bg-primary text-xs font-bold text-primary-foreground transition hover:bg-primary/90 active:scale-95 shadow-xs"
+          className="mt-3 h-10 w-full rounded-xl bg-primary text-xs font-bold text-primary-foreground transition hover:bg-primary/90 active:scale-95 shadow-xs"
         >
           {HOME_TEXTS.bookBtn}
         </Button>

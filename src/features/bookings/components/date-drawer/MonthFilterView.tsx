@@ -18,28 +18,28 @@ export function MonthFilterView({
   onChangeYear,
 }: MonthFilterViewProps) {
   return (
-    <div className="flex w-full flex-col gap-4">
-      <div className="flex h-11 items-center justify-between rounded-xl bg-muted px-3">
+    <div className="flex w-full flex-col justify-center gap-3">
+      <div className="flex h-10 items-center justify-between rounded-xl bg-muted px-2">
         <button
           type="button"
           onClick={() => onChangeYear(tempYear - 1)}
-          className="flex h-11 w-11 items-center justify-center text-muted-foreground hover:text-foreground transition"
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-background hover:text-foreground transition"
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-4 w-4" />
         </button>
-        <span className="text-sm font-extrabold text-foreground">
+        <span className="text-xs font-extrabold text-foreground">
           {BOOKING_TEXTS.labelYearPrefix} {tempYear}
         </span>
         <button
           type="button"
           onClick={() => onChangeYear(tempYear + 1)}
-          className="flex h-11 w-11 items-center justify-center text-muted-foreground hover:text-foreground transition"
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-background hover:text-foreground transition"
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-4 w-4" />
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-2.5">
+      <div className="grid grid-cols-3 gap-2">
         {MONTH_NAMES.map((name, idx) => {
           const isSelected = tempMonth === idx;
           return (
@@ -47,9 +47,9 @@ export function MonthFilterView({
               key={name}
               type="button"
               onClick={() => onSelectMonth(idx)}
-              className={`h-11 rounded-2xl text-xs font-bold transition ${
+              className={`h-11 rounded-xl text-xs font-bold transition active:scale-95 ${
                 isSelected
-                  ? "bg-primary text-primary-foreground shadow-md"
+                  ? "bg-primary text-primary-foreground shadow-sm"
                   : "border border-border bg-card text-foreground hover:bg-muted"
               }`}
             >

@@ -60,7 +60,7 @@ function BookingDateDrawerContent({
 
   return (
     <div className="flex w-full flex-col">
-      <DrawerHeader className="border-b border-border pb-3 pt-6">
+      <DrawerHeader className="border-b border-border pb-3 pt-5">
         <DrawerTitle className="text-center text-xs font-extrabold uppercase tracking-wider text-foreground">
           {BOOKING_TEXTS.dateDrawerTitle}
         </DrawerTitle>
@@ -71,9 +71,9 @@ function BookingDateDrawerContent({
               key={mode}
               type="button"
               onClick={() => setActiveMode(mode)}
-              className={`flex-1 h-11 rounded-lg text-xs font-bold transition-all ${
+              className={`flex-1 h-10 rounded-lg text-xs font-bold transition-all ${
                 activeMode === mode
-                  ? "bg-card text-primary shadow-xs"
+                  ? "bg-primary text-primary-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -87,7 +87,11 @@ function BookingDateDrawerContent({
         </div>
       </DrawerHeader>
 
-      <div className="flex justify-center px-4 py-4" data-vaul-no-drag>
+      {/* CỐ ĐỊNH CHIỀU CAO CONTAINER H-[320PX] ĐỂ DỜI TABS KHÔNG BỊ TRỒI THỤT */}
+      <div
+        className="flex h-[320px] w-full items-center justify-center px-4 py-2"
+        data-vaul-no-drag
+      >
         {activeMode === "day" && (
           <DayFilterView tempDate={tempDate} onSelectDate={setTempDate} />
         )}

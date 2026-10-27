@@ -6,6 +6,7 @@ import { HOME_TEXTS } from "../constants/home.constants";
 import Banner from "@/assets/images/banner.png";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/common/page-header";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 interface HomeHeaderProps {
   searchQuery: string;
@@ -44,7 +45,7 @@ export function HomeHeader({
       }
     >
       {/* 2 nút phía dưới nằm trên nền trang trắng */}
-      <div className="mt-3 flex justify-end gap-2">
+      <StaggerGroup className="mt-3 flex justify-end gap-2">
         <Button
           type="button"
           onClick={onRequestLocation}
@@ -71,7 +72,7 @@ export function HomeHeader({
           <SlidersHorizontal className="mr-1 h-3.5 w-3.5" />
           {HOME_TEXTS.advancedSearch}
         </Button>
-      </div>
+      </StaggerGroup>
     </PageHeader>
   );
 }

@@ -13,36 +13,37 @@ export function YearFilterView({
   selectedYear,
   onSelectYear,
 }: YearFilterViewProps) {
+  // Hiển thị khung 12 năm (VD: 2020 - 2031) để vừa khít lưới 3 cột x 4 hàng
   const [startYear, setStartYear] = useState(() => {
-    return Math.floor(selectedYear / 10) * 10;
+    return Math.floor(selectedYear / 12) * 12;
   });
 
-  const endYear = startYear + 9;
-  const years = Array.from({ length: 10 }, (_, i) => startYear + i);
+  const endYear = startYear + 11;
+  const years = Array.from({ length: 12 }, (_, i) => startYear + i);
 
   return (
-    <div className="flex w-full flex-col gap-4">
-      <div className="flex h-11 items-center justify-between rounded-xl bg-muted px-3">
+    <div className="flex w-full flex-col justify-center gap-3">
+      <div className="flex h-10 items-center justify-between rounded-xl bg-muted px-2">
         <button
           type="button"
-          onClick={() => setStartYear((prev) => prev - 10)}
-          className="flex h-11 w-11 items-center justify-center text-muted-foreground hover:text-foreground transition"
+          onClick={() => setStartYear((prev) => prev - 12)}
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-background hover:text-foreground transition"
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-4 w-4" />
         </button>
-        <span className="text-sm font-extrabold text-foreground">
+        <span className="text-xs font-extrabold text-foreground">
           {startYear} - {endYear}
         </span>
         <button
           type="button"
-          onClick={() => setStartYear((prev) => prev + 10)}
-          className="flex h-11 w-11 items-center justify-center text-muted-foreground hover:text-foreground transition"
+          onClick={() => setStartYear((prev) => prev + 12)}
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-background hover:text-foreground transition"
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-4 w-4" />
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-2.5">
+      <div className="grid grid-cols-3 gap-2">
         {years.map((year) => {
           const isSelected = selectedYear === year;
           return (
@@ -50,9 +51,9 @@ export function YearFilterView({
               key={year}
               type="button"
               onClick={() => onSelectYear(year)}
-              className={`flex h-11 items-center justify-between rounded-2xl px-3.5 text-xs font-bold transition ${
+              className={`flex h-11 items-center justify-between rounded-xl px-3 text-xs font-bold transition active:scale-95 ${
                 isSelected
-                  ? "bg-primary text-primary-foreground shadow-md"
+                  ? "bg-primary text-primary-foreground shadow-sm"
                   : "border border-border bg-card text-foreground hover:bg-muted"
               }`}
             >
@@ -60,7 +61,7 @@ export function YearFilterView({
                 {BOOKING_TEXTS.labelYearPrefix} {year}
               </span>
               {isSelected && (
-                <Check className="h-4 w-4 text-primary-foreground" />
+                <Check className="h-3.5 w-3.5 text-primary-foreground shrink-0" />
               )}
             </button>
           );

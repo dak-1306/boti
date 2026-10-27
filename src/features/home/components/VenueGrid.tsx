@@ -21,7 +21,7 @@ export function VenueGrid({
 }: VenueGridProps) {
   if (venues.length === 0) {
     return (
-      <div className="flex h-64 flex-col items-center justify-center p-4 text-center">
+      <StaggerGroup className="flex h-64 flex-col items-center justify-center p-4 text-center">
         <p className="text-xs text-muted-foreground">
           Không tìm thấy sân phù hợp với bộ lọc.
         </p>
@@ -31,7 +31,7 @@ export function VenueGrid({
         >
           Xóa bộ lọc
         </Button>
-      </div>
+      </StaggerGroup>
     );
   }
 

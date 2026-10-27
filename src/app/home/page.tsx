@@ -11,7 +11,6 @@ import { FilterDrawer } from "@/features/home/components/drawer-filter/FilterDra
 import { VenueDetailDrawer } from "@/features/home/components/detail-drawer/VenueDetailDrawer";
 import { useHome } from "@/features/home/hooks/useHome";
 import { cn } from "@/lib/utils";
-import { PageTransition } from "@/components/motion/PageTransition";
 
 const VenueMapView = dynamic(
   () =>
@@ -59,7 +58,7 @@ export default function HomePage() {
   const isMapView = viewMode === "map";
 
   return (
-    <PageTransition className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+    <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
       <HomeHeader
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -139,6 +138,6 @@ export default function HomePage() {
         onClose={closeDetailDrawer}
         onBook={handleNavigateToBooking}
       />
-    </PageTransition>
+    </div>
   );
 }

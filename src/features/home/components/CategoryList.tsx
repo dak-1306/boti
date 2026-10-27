@@ -29,19 +29,20 @@ export function CategoryList({
               onClick={() => onSelectCategory(item.id)}
               className="group flex flex-col items-center gap-1.5 shrink-0 transition-transform active:scale-95 focus:outline-hidden"
             >
+              {/* Tăng kích thước hộp & làm icon to rõ hơn hẳn */}
               <div
                 className={cn(
-                  "flex h-12 w-12 items-center justify-center rounded-2xl p-2 bg-card shadow-xs transition-all",
+                  "flex h-13 w-13 items-center justify-center rounded-2xl p-1.5 bg-card shadow-xs transition-all",
                   isSelected
-                    ? "ring-2 ring-primary ring-offset-2 ring-offset-background bg-primary/10"
+                    ? "ring-2 ring-primary ring-offset-2 ring-offset-background bg-primary/15"
                     : "border border-border hover:border-primary/50",
                 )}
               >
                 <SafeCategoryIcon
                   icon={item.icon}
                   alt={item.name}
-                  size={32}
-                  className="h-7 w-7"
+                  size={50}
+                  className="h-15 w-15 object-contain"
                 />
               </div>
 

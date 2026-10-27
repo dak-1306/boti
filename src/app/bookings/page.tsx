@@ -10,7 +10,6 @@ import { BookingEmptyState } from "@/features/bookings/components/BookingEmptySt
 import { BottomNav } from "@/components/common/bottom-nav";
 import { useBookings } from "@/features/bookings/hooks/useBookings";
 import { BOOKING_TABS } from "@/features/bookings/constants/bookings.constants";
-import { PageTransition } from "@/components/motion/PageTransition";
 
 export default function BookingsPage() {
   const {
@@ -51,7 +50,7 @@ export default function BookingsPage() {
       </div>
 
       {/* Animation chuyển Tab siêu mượt nhờ key={filters.tab} */}
-      <PageTransition
+      <div
         key={filters.tab}
         className="flex-1 overflow-y-auto no-scrollbar"
       >
@@ -63,7 +62,7 @@ export default function BookingsPage() {
         ) : (
           <BookingEmptyState onBookNow={handleNavigateToHome} />
         )}
-      </PageTransition>
+      </div>
 
       <BottomNav activeTab="bookings" />
 

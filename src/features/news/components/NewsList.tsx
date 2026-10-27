@@ -24,7 +24,7 @@ export function NewsList({
 }: NewsListProps) {
   if (newsList.length === 0) {
     return (
-      <div className="flex h-64 flex-col items-center justify-center p-6 text-center">
+      <StaggerGroup className="flex h-64 flex-col items-center justify-center p-6 text-center">
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
           <FileQuestion className="h-6 w-6 text-muted-foreground" />
         </div>
@@ -40,14 +40,14 @@ export function NewsList({
         >
           {NEWS_TEXTS.clearSearchBtn}
         </Button>
-      </div>
+      </StaggerGroup>
     );
   }
 
   return (
     <div className="space-y-4 px-4 pb-4">
       {featuredNews && (
-        <div className="space-y-2">
+        <StaggerGroup className="space-y-2">
           <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
             {NEWS_TEXTS.featuredTitle}
           </h2>
@@ -55,10 +55,10 @@ export function NewsList({
             news={featuredNews}
             onClick={() => onSelectNews(featuredNews)}
           />
-        </div>
+        </StaggerGroup>
       )}
 
-      <div className="space-y-2">
+      <StaggerGroup className="space-y-2">
         <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
           {NEWS_TEXTS.allNewsTitle}
         </h2>
@@ -71,7 +71,7 @@ export function NewsList({
             />
           ))}
         </StaggerGroup>
-      </div>
+      </StaggerGroup>
     </div>
   );
 }

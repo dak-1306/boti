@@ -9,7 +9,6 @@ import { useCheckout } from "@/features/checkout/hooks/useCheckout";
 import { CHECKOUT_TEXTS } from "@/features/checkout/constants/checkout.constants";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { PageTransition } from "@/components/motion/PageTransition";
 import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 function CheckoutContent() {
@@ -24,7 +23,7 @@ function CheckoutContent() {
   } = useCheckout();
 
   return (
-    <PageTransition className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+    <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
       <PageHeader
         title={CHECKOUT_TEXTS.headerTitle}
         showBack
@@ -68,7 +67,7 @@ function CheckoutContent() {
         isProcessing={isProcessing}
         onPayNow={handleProcessPayment}
       />
-    </PageTransition>
+    </div>
   );
 }
 

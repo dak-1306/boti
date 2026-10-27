@@ -3,9 +3,10 @@
 import React from "react";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import { SafeImage } from "@/components/common/safe-image";
-import { Badge } from "@/components/ui/badge";
 import { BookingItem } from "../types/bookings.types";
 import { BookingStatusBadge } from "./BookingStatusBadge";
+import { getCategoryBadgeConfig } from "@/constants/category.constants";
+import { cn } from "@/lib/utils";
 
 interface BookingCardProps {
   booking: BookingItem;
@@ -13,6 +14,8 @@ interface BookingCardProps {
 }
 
 export function BookingCard({ booking, onClick }: BookingCardProps) {
+  const categoryConfig = getCategoryBadgeConfig(booking.category);
+
   return (
     <div
       onClick={onClick}
@@ -30,9 +33,15 @@ export function BookingCard({ booking, onClick }: BookingCardProps) {
 
       <div className="flex flex-1 flex-col justify-between min-w-0 space-y-1">
         <div className="flex items-start justify-between gap-1">
-          <Badge variant="sky" size="sm">
-            {booking.category}
-          </Badge>
+          {/* Badge Category Đồng bộ */}
+          <span
+            className={cn(
+              "inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-bold transition-colors",
+              categoryConfig.badgeStyle,
+            )}
+          >
+            {categoryConfig.label}
+          </span>
           <BookingStatusBadge
             status={booking.status}
             statusText={booking.statusText}

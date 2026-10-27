@@ -11,7 +11,6 @@ import { BookingPaymentCard } from "@/features/bookings/components/detail/Bookin
 import { BookingBottomActions } from "@/features/bookings/components/detail/BookingBottomActions";
 import { BookingRescheduleDrawer } from "@/features/bookings/components/reschedule/BookingRescheduleDrawer";
 import { BOOKING_TEXTS } from "@/features/bookings/constants/bookings.constants";
-import { PageTransition } from "@/components/motion/PageTransition";
 import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 interface BookingDetailPageProps {
@@ -50,7 +49,7 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
   }
 
   return (
-    <PageTransition className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+    <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
       <PageHeader
         title={BOOKING_TEXTS.detailHeaderTitle}
         showBack
@@ -91,7 +90,7 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
         cancelText="Giữ lại"
         variant="destructive"
       />
-    </PageTransition>
+    </div>
   );
 }
 

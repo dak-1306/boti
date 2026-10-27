@@ -4,6 +4,7 @@ import React from "react";
 import { LayoutGrid, MapPin } from "lucide-react";
 import { ViewMode } from "../types/home.types";
 import { HOME_TEXTS } from "../constants/home.constants";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 interface VenueSectionHeaderProps {
   viewMode: ViewMode;
@@ -15,7 +16,7 @@ export function VenueSectionHeader({
   onViewModeChange,
 }: VenueSectionHeaderProps) {
   return (
-    <div className="flex h-14 items-center justify-between px-4 py-2">
+    <StaggerGroup className="flex h-14 items-center justify-between px-4 py-2">
       <h2 className="text-base font-bold text-foreground">
         {HOME_TEXTS.sectionTitle}
       </h2>
@@ -44,6 +45,6 @@ export function VenueSectionHeader({
           {HOME_TEXTS.viewMap}
         </button>
       </div>
-    </div>
+    </StaggerGroup>
   );
 }

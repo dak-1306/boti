@@ -10,7 +10,6 @@ import { ProfileMenuList } from "@/features/profile/components/ProfileMenuList";
 import { EditProfileDrawer } from "@/features/profile/components/EditProfileDrawer";
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import { PROFILE_TEXTS } from "@/features/profile/constants/profile.constants";
-import { PageTransition } from "@/components/motion/PageTransition";
 import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 export default function ProfilePage() {
@@ -34,18 +33,18 @@ export default function ProfilePage() {
     return (
       <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
         <PageHeader title={PROFILE_TEXTS.pageTitle} variant="gradient" />
-        <div className="flex-1 space-y-4 p-4 animate-pulse">
+        <StaggerGroup className="flex-1 space-y-4 p-4 animate-pulse">
           <div className="h-28 w-full rounded-2xl bg-muted" />
           <div className="h-20 w-full rounded-2xl bg-muted" />
           <div className="h-40 w-full rounded-2xl bg-muted" />
-        </div>
+        </StaggerGroup>
         <BottomNav activeTab="profile" />
       </div>
     );
   }
 
   return (
-    <PageTransition className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+    <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
       <PageHeader
         title={PROFILE_TEXTS.pageTitle}
         variant="gradient"
@@ -92,6 +91,6 @@ export default function ProfilePage() {
         cancelText="Hủy"
         variant="destructive"
       />
-    </PageTransition>
+    </div>
   );
 }
