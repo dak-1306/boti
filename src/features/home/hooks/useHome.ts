@@ -16,8 +16,8 @@ import { useVenuesQuery } from "./useVenuesQuery";
 
 export const useHome = () => {
   const router = useRouter();
-  
-  // 👈 Dùng React Query thay cho Zustand Store
+
+  // Dùng TanStack Query lấy dữ liệu sân
   const { data: storeVenues = [], isLoading } = useVenuesQuery();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -50,35 +50,60 @@ export const useHome = () => {
         };
       })
       .filter((venue) => {
-        const venueCity = venue.city || "";
+        const venueCity = (venue.city || "").toLowerCase();
+        const venueDistrict = (venue.district || "").toLowerCase();
         const venueAddress = venue.address.toLowerCase();
+        const venueCatName = venue.category.toLowerCase();
+        const venueCatSlug = (venue.categorySlug || "").toLowerCase();
 
-        const matchesCity = filters.city
-          ? venueCity.toLowerCase() === filters.city.toLowerCase() ||
-            venueAddress.includes(filters.city.toLowerCase()) ||
+        // 1. Lọc Thành phố
+        const filterCity = filters.city ? filters.city.toLowerCase() : "";
+        const matchesCity = !filterCity
+          ? true
+          : venueCity === filterCity ||
+            venueAddress.includes(filterCity) ||
             (filters.city === "TP. Hồ Chí Minh" &&
-              venueAddress.includes("tp.hcm"))
-          : true;
+              (venueAddress.includes("tp.hcm") ||
+                venueAddress.includes("tp. hồ chí minh")));
 
-        const matchesSearch =
-          venue.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          venueAddress.includes(searchQuery.toLowerCase());
+        // 2. Lọc Từ khóa Tìm kiếm
+        const search = searchQuery.trim().toLowerCase();
+        const matchesSearch = !search
+          ? true
+          : venue.name.toLowerCase().includes(search) ||
+            venueAddress.includes(search) ||
+            venueCatName.includes(search);
 
-        const matchesCategory = selectedCategory
-          ? venue.category.toLowerCase() === selectedCategory.toLowerCase()
-          : true;
+        // 3. Lọc theo Danh mục (So sánh cả categorySlug lẫn category tiếng Việt)
+        const selectedCat = selectedCategory
+          ? selectedCategory.toLowerCase()
+          : null;
+        const matchesCategory = !selectedCat
+          ? true
+          : venueCatSlug === selectedCat || venueCatName === selectedCat;
 
+        // 4. Lọc Nâng cao theo Nhiều môn thể thao (FilterDrawer)
         const matchesSports =
           filters.selectedSports.length > 0
-            ? filters.selectedSports.some(
-                (sport) => sport.toLowerCase() === venue.category.toLowerCase(),
-              )
+            ? filters.selectedSports.some((sport) => {
+                const s = sport.toLowerCase();
+                return s === venueCatSlug || s === venueCatName;
+              })
             : true;
 
-        const matchesDistrict = filters.district
-          ? venueAddress.includes(filters.district.toLowerCase())
-          : true;
+        // 5. Lọc Quận / Huyện (Tự động bỏ qua nếu chọn "Tất cả Quận/Huyện")
+        const filterDistrict = filters.district
+          ? filters.district.toLowerCase()
+          : "";
+        const isAllDistrict =
+          !filterDistrict || filterDistrict.includes("tất cả");
 
+        const matchesDistrict = isAllDistrict
+          ? true
+          : venueDistrict === filterDistrict ||
+            venueAddress.includes(filterDistrict);
+
+        // 6. Lọc Đánh giá tối thiểu
         const matchesRating = venue.rating >= filters.ratingMin;
 
         return (
@@ -126,7 +151,7 @@ export const useHome = () => {
   };
 
   return {
-    isLoading, // 👈 Tự động ăn theo trạng thái Fetch của React Query (Skeleton mượt 100%)
+    isLoading,
     searchQuery,
     setSearchQuery,
     selectedCategory,

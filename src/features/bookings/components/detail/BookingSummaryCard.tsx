@@ -7,16 +7,15 @@ import { Button } from "@/components/ui/button";
 import { BookingItem } from "../../types/bookings.types";
 import { BookingStatusBadge } from "../BookingStatusBadge";
 import { BOOKING_TEXTS } from "../../constants/bookings.constants";
-import { getCategoryBadgeConfig } from "@/constants/category.constants";
-import { cn } from "@/lib/utils";
-
+import { getCategoryMeta } from "@/constants/category.constants";
+import { Badge } from "@/components/ui/badge";
 interface BookingSummaryCardProps {
   booking: BookingItem;
 }
 
 export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
   const [copied, setCopied] = useState(false);
-  const categoryConfig = getCategoryBadgeConfig(booking.category);
+  const categoryMeta = getCategoryMeta(booking.category);
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(booking.bookingCode);
@@ -73,14 +72,9 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
           </h2>
 
           {/* Badge Category Đồng bộ (Đã bỏ icon, thiết kế sạch gọn) */}
-          <span
-            className={cn(
-              "inline-flex items-center w-fit rounded-md border px-2 py-0.5 text-[11px] font-bold transition-colors",
-              categoryConfig.badgeStyle
-            )}
-          >
-            {categoryConfig.label}
-          </span>
+          <Badge variant={categoryMeta.variant} size="sm" className="font-bold">
+            {categoryMeta.label}
+          </Badge>
 
           <div className="mt-0.5 space-y-1 text-[11px] text-muted-foreground font-medium">
             <div className="flex items-center gap-1.5 truncate">

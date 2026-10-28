@@ -62,7 +62,7 @@ export function ProfileMenuItem({
 
       <div className="flex items-center gap-2 shrink-0">
         {item.badgeText && (
-          <Badge variant={item.badgeVariant || "neutral"} size="sm">
+          <Badge variant={item.badgeVariant || "default"} size="sm">
             {item.badgeText}
           </Badge>
         )}

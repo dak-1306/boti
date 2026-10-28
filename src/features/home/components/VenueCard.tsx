@@ -4,11 +4,10 @@ import React from "react";
 import { Star, MapPin, Clock } from "lucide-react";
 import { Venue } from "../types/home.types";
 import { HOME_TEXTS } from "../constants/home.constants";
-import { getCategoryBadgeConfig } from "@/constants/category.constants";
+import { getCategoryMeta } from "@/constants/category.constants";
 import { SafeImage } from "@/components/common/safe-image";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-
+import {Badge } from "@/components/ui/badge";
 interface VenueCardProps {
   venue: Venue;
   onClick: () => void;
@@ -16,9 +15,7 @@ interface VenueCardProps {
 }
 
 export function VenueCard({ venue, onClick, onBook }: VenueCardProps) {
-  const categoryConfig = getCategoryBadgeConfig(
-    venue.categorySlug || venue.category,
-  );
+  const categoryMeta = getCategoryMeta(venue.categorySlug || venue.category);
 
   return (
     <div
@@ -45,14 +42,9 @@ export function VenueCard({ venue, onClick, onBook }: VenueCardProps) {
         <div className="space-y-1.5">
           <div className="flex items-center justify-between gap-1">
             {/* Badge có màu sắc và tên chuẩn theo từng Bộ Môn */}
-            <span
-              className={cn(
-                "inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-bold transition-colors",
-                categoryConfig.badgeStyle,
-              )}
-            >
-              {categoryConfig.label}
-            </span>
+            <Badge variant={categoryMeta.variant} size="sm" className="font-bold">
+              {categoryMeta.label}
+            </Badge>
             <div className="flex items-center gap-0.5 shrink-0 text-amber-500">
               <Star className="h-3 w-3 fill-amber-500" />
               <span className="text-[11px] font-bold">{venue.rating}</span>

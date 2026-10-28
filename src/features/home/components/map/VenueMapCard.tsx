@@ -4,8 +4,8 @@ import React from "react";
 import { Star, MapPin, Clock, ChevronRight } from "lucide-react";
 import { Venue } from "../../types/home.types";
 import { SafeImage } from "@/components/common/safe-image";
-import { getCategoryBadgeConfig } from "@/constants/category.constants";
-import { cn } from "@/lib/utils";
+import { getCategoryMeta } from "@/constants/category.constants";
+import { Badge } from "@/components/ui/badge";
 
 interface VenueMapCardProps {
   venue: Venue;
@@ -13,9 +13,7 @@ interface VenueMapCardProps {
 }
 
 export function VenueMapCard({ venue, onClick }: VenueMapCardProps) {
-  const categoryConfig = getCategoryBadgeConfig(
-    venue.categorySlug || venue.category,
-  );
+  const categoryMeta = getCategoryMeta(venue.categorySlug || venue.category);
 
   return (
     <div
@@ -41,14 +39,9 @@ export function VenueMapCard({ venue, onClick }: VenueMapCardProps) {
       <div className="flex flex-1 flex-col justify-center min-w-0 pr-1 space-y-1">
         <div className="flex items-center justify-between gap-1">
           {/* Badge Category Đồng bộ */}
-          <span
-            className={cn(
-              "inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-bold transition-colors",
-              categoryConfig.badgeStyle,
-            )}
-          >
-            {categoryConfig.label}
-          </span>
+          <Badge variant={categoryMeta.variant} size="sm" className="font-bold">
+            {categoryMeta.label}
+          </Badge>
           <div className="flex items-center gap-0.5 shrink-0 text-amber-500">
             <Star className="h-3 w-3 fill-amber-500" />
             <span className="text-[11px] font-bold text-foreground">

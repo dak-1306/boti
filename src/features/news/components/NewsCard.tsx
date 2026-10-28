@@ -5,6 +5,7 @@ import { Clock, Eye } from "lucide-react";
 import { NewsItem } from "../types/news.types";
 import { SafeImage } from "@/components/common/safe-image";
 import { Badge } from "@/components/ui/badge";
+import { getCategoryMeta } from "@/constants/category.constants";
 
 interface NewsCardProps {
   news: NewsItem;
@@ -12,6 +13,8 @@ interface NewsCardProps {
 }
 
 export function NewsCard({ news, onClick }: NewsCardProps) {
+  const categoryMeta = getCategoryMeta(news.category);
+
   return (
     <div
       onClick={onClick}
@@ -30,8 +33,8 @@ export function NewsCard({ news, onClick }: NewsCardProps) {
       <div className="flex flex-1 flex-col justify-between min-w-0">
         <div className="space-y-1">
           <div className="flex items-center justify-between gap-1">
-            <Badge variant="neutral" size="sm">
-              {news.category}
+            <Badge variant={categoryMeta.variant} size="sm" className="font-bold">
+              {categoryMeta.label}
             </Badge>
             <span className="text-[10px] text-muted-foreground flex items-center gap-1">
               <Clock className="h-3 w-3" /> {news.readTime}

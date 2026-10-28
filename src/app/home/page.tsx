@@ -10,7 +10,6 @@ import { VenueGrid } from "@/features/home/components/VenueGrid";
 import { FilterDrawer } from "@/features/home/components/drawer-filter/FilterDrawer";
 import { VenueDetailDrawer } from "@/features/home/components/detail-drawer/VenueDetailDrawer";
 import { useHome } from "@/features/home/hooks/useHome";
-import { cn } from "@/lib/utils";
 import { PullToRefresh } from "@/components/common/PullToRefresh";
 
 const VenueMapView = dynamic(
@@ -59,7 +58,7 @@ export default function HomePage() {
 
   const isMapView = viewMode === "map";
 
-  // SKELETON LOADING KHỚP 1:1 CHO TRANG CHỦ
+  // 1. GIAO DIỆN SKELETON LOADING
   if (isLoading) {
     return (
       <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
@@ -72,9 +71,8 @@ export default function HomePage() {
           hasLocation={hasLocation}
         />
 
-        <PullToRefresh className={cn(isMapView && "hidden")}>
+        <PullToRefresh className="flex-1 w-full pb-20">
           <div className="sm:mx-auto sm:max-w-[390px] w-full flex-1 flex flex-col min-h-0">
-            {/* Category Skeleton */}
             <div className="w-full shrink-0 overflow-x-auto py-3 px-4 no-scrollbar">
               <div className="flex items-center gap-3.5 w-max animate-pulse">
                 {Array.from({ length: 6 }).map((_, i) => (
@@ -89,13 +87,11 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Section Header Skeleton */}
             <div className="flex items-center justify-between px-4 py-2 shrink-0 animate-pulse">
               <div className="h-4 w-28 rounded-md bg-muted" />
               <div className="h-8 w-24 rounded-full bg-muted" />
             </div>
 
-            {/* Grid Sân Skeleton (2 Cột) */}
             <div className="grid grid-cols-2 gap-3 px-4 pb-4 animate-pulse">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
@@ -124,6 +120,7 @@ export default function HomePage() {
     );
   }
 
+  // 2. GIAO DIỆN CHÍNH
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
       <HomeHeader
@@ -135,58 +132,45 @@ export default function HomePage() {
         hasLocation={hasLocation}
       />
 
-      <main
-        className={cn(
-          "flex-1 w-full flex flex-col min-h-0",
-          isMapView ? "overflow-hidden" : "overflow-y-auto pb-20 no-scrollbar",
-        )}
-      >
-        <div className="sm:mx-auto sm:max-w-[390px] w-full flex-1 flex flex-col min-h-0">
-          <div className="shrink-0">
-            <CategoryList
-              categories={categories}
-              selectedCategory={selectedCategory}
-              onSelectCategory={handleSelectCategory}
-            />
-          </div>
+      {/* CỤM BANNER DÙNG CHUNG: Luôn giữ nguyên vị trí ở cả 2 chế độ */}
+      <div className="shrink-0 w-full sm:mx-auto sm:max-w-[390px]">
+        <CategoryList
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onSelectCategory={handleSelectCategory}
+        />
+        <VenueSectionHeader
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+        />
+      </div>
 
-          <div className="shrink-0">
-            <VenueSectionHeader
-              viewMode={viewMode}
-              onViewModeChange={setViewMode}
-            />
-          </div>
-
-          {!isMapView && (
-            <div className="flex-1">
-              <VenueGrid
-                venues={venues}
-                onSelectVenue={openDetailDrawer}
-                onBookVenue={handleNavigateToBooking}
-                onResetFilters={handleResetFilters}
-              />
-            </div>
-          )}
-
-          <div
-            className={cn(
-              "relative flex-1 w-full min-h-0 overflow-hidden touch-none",
-              !isMapView && "hidden",
-            )}
-          >
-            <VenueMapView
+      {/* KHỐI NỘI DUNG THAY ĐỔI: GRID DẠNG DANH SÁCH HOẶC BẢN ĐỒ */}
+      {!isMapView ? (
+        <PullToRefresh className="flex-1 w-full pb-20">
+          <div className="sm:mx-auto sm:max-w-[390px] w-full flex-1">
+            <VenueGrid
               venues={venues}
-              selectedVenue={selectedVenueOnMap}
-              onSelectVenue={setSelectedVenueOnMap}
-              userLocation={userLocation}
-              onRequestLocation={onRequestLocation}
-              isLoadingLocation={isLoadingLocation}
-              onOpenDetail={openDetailDrawer}
-              isVisible={isMapView}
+              onSelectVenue={openDetailDrawer}
+              onBookVenue={handleNavigateToBooking}
+              onResetFilters={handleResetFilters}
             />
           </div>
+        </PullToRefresh>
+      ) : (
+        <div className="relative flex-1 w-full min-h-0 overflow-hidden sm:mx-auto sm:max-w-[390px]">
+          <VenueMapView
+            venues={venues}
+            selectedVenue={selectedVenueOnMap}
+            onSelectVenue={setSelectedVenueOnMap}
+            userLocation={userLocation}
+            onRequestLocation={onRequestLocation}
+            isLoadingLocation={isLoadingLocation}
+            onOpenDetail={openDetailDrawer}
+            isVisible={isMapView}
+          />
         </div>
-      </main>
+      )}
 
       <BottomNav activeTab="home" />
 

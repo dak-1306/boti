@@ -32,7 +32,7 @@ export function CheckoutBottomBar({
           variant="cta"
           disabled={isProcessing}
           onClick={onPayNow}
-          className="h-11 flex-1 rounded-full text-xs font-bold shadow-md disabled:opacity-50"
+          className="h-11 flex-1"
         >
           {isProcessing ? (
             <span className="flex items-center gap-2">

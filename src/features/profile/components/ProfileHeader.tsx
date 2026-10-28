@@ -91,7 +91,7 @@ export function ProfileHeader({
 
           <div className="mt-0.5 flex items-center gap-1.5">
             {user.isZaloVerified && (
-              <Badge variant="sky" size="sm" className="gap-1">
+              <Badge variant="default" size="sm" className="gap-1">
                 <ShieldCheck className="h-3 w-3" />
                 <span>{PROFILE_TEXTS.zaloVerifiedBadge}</span>
               </Badge>

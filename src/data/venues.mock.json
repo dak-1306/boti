@@ -7,22 +7,23 @@
     "rating": 4.9,
     "reviewCount": 128,
     "priceRange": "150.000đ - 280.000đ/giờ",
-    "address": "142/5A Hoàng Hoa Thám, Q. Tân Bình, TP.HCM",
-    "district": "Quận Tân Bình",
-    "city": "TP.HCM",
+    "address": "142/5A Lý Thường Kiệt, Phường 14, Quận 10, TP. Hồ Chí Minh",
+    "district": "Quận 10",
+    "city": "TP. Hồ Chí Minh",
     "openTime": "06:00 - 23:00",
     "phone": "0901 234 567 (A. Dũng)",
     "markerColor": "#2563eb",
     "distanceKm": 1.2,
     "location": {
-      "lat": 10.8012,
-      "lng": 106.6508
+      "lat": 10.7725,
+      "lng": 106.6588
     },
     "images": [
       "https://images.unsplash.com/photo-1626248801379-51a0748a5f96?w=800&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&auto=format&fit=crop&q=80"
     ],
-    "description": "Cụm sân Pickleball tiêu chuẩn quốc tế với mặt sân đệm giảm chấn, hệ thống chiếu sáng chống chói hiện đại, khu vực chờ máy lạnh phủ sóng wifi miễn phí.",
+    "imageUrl": "https://images.unsplash.com/photo-1626248801379-51a0748a5f96?w=800&auto=format&fit=crop&q=80",
+    "description": "Cụm sân Pickleball tiêu chuẩn quốc tế với mặt sân đệm giảm chấn 8 lớp, hệ thống chiếu sáng chống chói hiện đại, khu vực chờ máy lạnh phủ sóng wifi miễn phí.",
     "amenities": [
       "Wifi miễn phí",
       "Máy lạnh phòng chờ",
@@ -99,15 +100,15 @@
   },
   {
     "id": "v2",
-    "name": "Sân cầu lông Riverside Club",
+    "name": "Sân Cầu Lông Riverside Club",
     "category": "Cầu lông",
     "categorySlug": "badminton",
     "rating": 4.8,
     "reviewCount": 96,
     "priceRange": "90.000đ - 160.000đ/giờ",
-    "address": "239/10 Nguyễn Duy Trinh, Q.2, TP.HCM",
+    "address": "239 Nguyễn Duy Trinh, Phường Bình Trưng Tây, TP. Thủ Đức, TP. Hồ Chí Minh",
     "district": "TP. Thủ Đức",
-    "city": "TP.HCM",
+    "city": "TP. Hồ Chí Minh",
     "openTime": "05:00 - 23:00",
     "phone": "0908 888 999 (Chị Minh)",
     "markerColor": "#0284c7",
@@ -117,15 +118,18 @@
       "lng": 106.7582
     },
     "images": [
-      "https://images.unsplash.com/photo-1626225967045-944088226228?w=800&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1613918108466-292b78a8ef95?w=800&auto=format&fit=crop&q=80"
+      "https://images.unsplash.com/photo-1521537634581-0dced2eed251?w=800&auto=format&fit=crop&q=80"
     ],
+    "imageUrl": "https://images.unsplash.com/photo-1521537634581-0dced2eed251?w=800&auto=format&fit=crop&q=80",
     "description": "Hệ thống 8 sân cầu lông trải thảm Yonex cao cấp 100%, trần cao thoáng mát không lóa mắt, phục vụ cả tập luyện lẫn giải đấu giao lưu.",
     "amenities": [
       "Thảm Yonex chính hãng",
       "Bãi đậu xe rộng rãi",
       "Khu bán phụ kiện cầu lông",
       "Phòng thay đồ riêng"
+    ],
+    "preparationNotes": [
+      "Có hỗ trợ căng vợt lấy liền tại cửa hàng trong khuôn viên sân."
     ],
     "priceTable": [
       {
@@ -174,15 +178,15 @@
   },
   {
     "id": "v3",
-    "name": "Sân bóng rổ 3x3 Hoops Center",
+    "name": "Sân Bóng Rổ 3x3 Hoops Center",
     "category": "Bóng rổ",
     "categorySlug": "basketball",
     "rating": 4.7,
     "reviewCount": 64,
     "priceRange": "200.000đ - 350.000đ/giờ",
-    "address": "90 Song Hành, P. An Phú, Q.2, TP.HCM",
+    "address": "90 Song Hành, Phường An Phú, TP. Thủ Đức, TP. Hồ Chí Minh",
     "district": "TP. Thủ Đức",
-    "city": "TP.HCM",
+    "city": "TP. Hồ Chí Minh",
     "openTime": "07:00 - 22:00",
     "phone": "0933 111 222 (BQL)",
     "markerColor": "#ea580c",
@@ -194,12 +198,16 @@
     "images": [
       "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&auto=format&fit=crop&q=80"
     ],
+    "imageUrl": "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&auto=format&fit=crop&q=80",
     "description": "Sân bóng rổ trong nhà phủ sơn SPM đạt chuẩn FIBA, trang bị bảng kính cường lực và bóng Spalding cao cấp.",
     "amenities": [
       "Sàn gỗ chống trượt",
       "Bảng điểm điện tử",
       "Máy bán nước tự động",
       "Khán đài Mini"
+    ],
+    "preparationNotes": [
+      "Có cho thuê bóng thi đấu FIBA tiêu chuẩn tại quầy."
     ],
     "priceTable": [
       {
@@ -238,31 +246,35 @@
   },
   {
     "id": "v4",
-    "name": "Sân bóng đá cỏ nhân tạo Phước Long",
+    "name": "Sân Bóng Đá Cỏ Nhân Tạo Bình Thạnh",
     "category": "Bóng đá",
     "categorySlug": "football",
     "rating": 4.6,
     "reviewCount": 150,
     "priceRange": "300.000đ - 650.000đ/giờ",
-    "address": "18A Đỗ Xuân Hợp, Q.9, TP.HCM",
-    "district": "TP. Thủ Đức",
-    "city": "TP.HCM",
+    "address": "18A Điện Biên Phủ, Phường 25, Quận Bình Thạnh, TP. Hồ Chí Minh",
+    "district": "Quận Bình Thạnh",
+    "city": "TP. Hồ Chí Minh",
     "openTime": "06:00 - 23:00",
     "phone": "0977 444 555 (A. Long)",
     "markerColor": "#16a34a",
-    "distanceKm": 5.8,
+    "distanceKm": 2.8,
     "location": {
-      "lat": 10.8214,
-      "lng": 106.7726
+      "lat": 10.8014,
+      "lng": 106.7126
     },
     "images": [
       "https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=800&auto=format&fit=crop&q=80"
     ],
+    "imageUrl": "https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=800&auto=format&fit=crop&q=80",
     "description": "Cụm 4 sân 5 người và 2 sân 7 người cỏ nhân tạo sợi đúc mềm, thoát nước cực nhanh ngay cả khi mưa lớn.",
     "amenities": [
       "Cho thuê trọng tài & áo lưới",
       "Bãi đỗ xe tải/ô tô",
       "Hệ thống đèn LED 1000W"
+    ],
+    "preparationNotes": [
+      "Hỗ trợ tìm đối thủ giao lưu miễn phí qua nhóm Zalo của sân."
     ],
     "priceTable": [
       {
@@ -309,6 +321,141 @@
         "category": "Bóng đá",
         "slots": [
           { "id": "s4_3", "startTime": "18:00", "endTime": "19:30", "price": 650000, "isAvailable": true }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "v5",
+    "name": "CLB Quần Vợt Kỳ Hòa",
+    "category": "Quần vợt",
+    "categorySlug": "tennis",
+    "rating": 4.8,
+    "reviewCount": 112,
+    "priceRange": "180.000đ - 320.000đ/giờ",
+    "address": "238 Đường 3 Tháng 2, Phường 12, Quận 10, TP. Hồ Chí Minh",
+    "district": "Quận 10",
+    "city": "TP. Hồ Chí Minh",
+    "openTime": "05:30 - 22:30",
+    "phone": "0903 777 888 (Quản lý)",
+    "markerColor": "#84cc16",
+    "distanceKm": 2.1,
+    "location": {
+      "lat": 10.7725,
+      "lng": 106.6712
+    },
+    "images": [
+      "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=800&auto=format&fit=crop&q=80"
+    ],
+    "imageUrl": "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=800&auto=format&fit=crop&q=80",
+    "description": "Cụm 6 sân Quần vợt mặt sân cứng sơn Plexipave tiêu chuẩn Australian Open. Nằm trong không gian cây xanh Kỳ Hòa mát mẻ, thoáng đãng.",
+    "amenities": [
+      "Mặt sân cứng Plexipave",
+      "Đèn chiếu sáng chuyên nghiệp",
+      "HLV dạy Tennis chuyên nghiệp",
+      "Bãi xe ô tô có mái che"
+    ],
+    "preparationNotes": [
+      "Có nhặt bóng (ballboy) theo yêu cầu với chi phí ưu đãi."
+    ],
+    "priceTable": [
+      {
+        "days": "T2 - T6",
+        "timeSlot": "05:30 - 16:00",
+        "fixedPrice": "160.000 đ",
+        "casualPrice": "180.000 đ"
+      },
+      {
+        "days": "T2 - T6",
+        "timeSlot": "16:00 - 22:30",
+        "fixedPrice": "290.000 đ",
+        "casualPrice": "320.000 đ"
+      }
+    ],
+    "rules": [
+      {
+        "title": "Giờ giấc & Dịch vụ",
+        "items": [
+          "Vui lòng thanh toán chi phí Ballboy trực tiếp tại sân.",
+          "Đi đúng trang phục Tennis tiêu chuẩn."
+        ]
+      }
+    ],
+    "courts": [
+      {
+        "id": "c5_1",
+        "name": "Sân Tennis Sân 1",
+        "category": "Quần vợt",
+        "slots": [
+          { "id": "s5_1", "startTime": "06:00", "endTime": "08:00", "price": 360000, "isAvailable": true },
+          { "id": "s5_2", "startTime": "17:00", "endTime": "19:00", "price": 640000, "isAvailable": true }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "v6",
+    "name": "Sân Bóng Chuyền Saigon Arena",
+    "category": "B.Chuyền",
+    "categorySlug": "volleyball",
+    "rating": 4.7,
+    "reviewCount": 78,
+    "priceRange": "150.000đ - 250.000đ/giờ",
+    "address": "104 Nguyễn Hữu Thọ, Phường Tân Phong, Quận 7, TP. Hồ Chí Minh",
+    "district": "Quận 7",
+    "city": "TP. Hồ Chí Minh",
+    "openTime": "06:00 - 22:00",
+    "phone": "0909 555 666 (A. Nam)",
+    "markerColor": "#9333ea",
+    "distanceKm": 5.4,
+    "location": {
+      "lat": 10.7328,
+      "lng": 106.7001
+    },
+    "images": [
+      "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800&auto=format&fit=crop&q=80"
+    ],
+    "imageUrl": "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800&auto=format&fit=crop&q=80",
+    "description": "Sân bóng chuyền trong nhà thảm đệm Taraflex chống chấn thương, hệ thống lưới căng đạt chuẩn thi đấu chuyên nghiệp.",
+    "amenities": [
+      "Thảm Taraflex cao cấp",
+      "Khăn lau & Nước uống",
+      "Phòng thay đồ có vòi sen"
+    ],
+    "preparationNotes": [
+      "Mang giày bóng chuyền đệm khí để đảm bảo di chuyển tốt nhất."
+    ],
+    "priceTable": [
+      {
+        "days": "Hàng ngày",
+        "timeSlot": "06:00 - 17:00",
+        "fixedPrice": "130.000 đ",
+        "casualPrice": "150.000 đ"
+      },
+      {
+        "days": "Hàng ngày",
+        "timeSlot": "17:00 - 22:00",
+        "fixedPrice": "220.000 đ",
+        "casualPrice": "250.000 đ"
+      }
+    ],
+    "rules": [
+      {
+        "title": "Nội quy thi đấu",
+        "items": [
+          "Không mang giày đinh hoặc giày dính đất cát vào thảm thi đấu.",
+          "Trả bóng lại quầy lễ tân sau khi kết thúc giờ thuê."
+        ]
+      }
+    ],
+    "courts": [
+      {
+        "id": "c6_1",
+        "name": "Sân Bóng Chuyền Indoor 1",
+        "category": "B.Chuyền",
+        "slots": [
+          { "id": "s6_1", "startTime": "08:00", "endTime": "10:00", "price": 300000, "isAvailable": true },
+          { "id": "s6_2", "startTime": "18:00", "endTime": "20:00", "price": 500000, "isAvailable": true }
         ]
       }
     ]

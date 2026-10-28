@@ -27,7 +27,7 @@ export interface ProfileMenuItemType {
   label: string;
   iconName: string;
   badgeText?: string;
-  badgeVariant?: "success" | "sky" | "warning" | "neutral";
+  badgeVariant?: "success" | "warning" | "destructive" | "default";
   actionType: MenuActionType;
   path?: string;
 }

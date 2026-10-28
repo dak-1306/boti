@@ -113,7 +113,7 @@ function NewsDetailDrawerContent({
           variant="cta"
           type="button"
           onClick={handleShare}
-          className="h-11 w-full rounded-full bg-primary text-xs font-bold text-primary-foreground shadow-md hover:bg-primary/90 active:scale-98 transition"
+          className="h-11 w-full"
         >
           <Share2 className="mr-2 h-4 w-4" />
           {NEWS_TEXTS.shareBtn}

@@ -54,7 +54,7 @@ export function BookingRescheduleDrawer({
               <h2 className="text-base font-extrabold tracking-tight text-foreground">
                 {RESCHEDULE_TEXTS.drawerTitle}
               </h2>
-              <Badge variant="sky" size="sm">
+              <Badge variant="default" size="sm">
                 {RESCHEDULE_TEXTS.samePriceBadge}:{" "}
                 {targetSlotPrice.toLocaleString("vi-VN")}đ
               </Badge>
@@ -98,10 +98,11 @@ export function BookingRescheduleDrawer({
           {/* Action Bottom */}
           <div className="p-3 border-t border-border pb-[calc(12px+env(safe-area-inset-bottom))] bg-card">
             <Button
+              variant="cta"
               type="button"
               disabled={!selectedSlot}
               onClick={handleConfirm}
-              className="h-11 w-full rounded-full bg-primary text-xs font-bold text-primary-foreground shadow-md hover:bg-primary/90 active:scale-98 transition disabled:opacity-50"
+              className="h-11 w-full"
             >
               {RESCHEDULE_TEXTS.confirmBtn}
             </Button>

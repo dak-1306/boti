@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { Loader2, ArrowDown } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
@@ -23,43 +23,59 @@ export function PullToRefresh({
 
   const [pullDistance, setPullDistance] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isPulling, setIsPulling] = useState(false); // 👈 Chuyển sang State thay vì Ref
+  const [isPulling, setIsPulling] = useState(false);
 
   const touchStartY = useRef(0);
+  const touchStartX = useRef(0);
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     const container = containerRef.current;
     if (!container || isRefreshing) return;
 
-    // Chỉ cho phép kéo khi đang ở đỉnh đầu trang
+    // Chỉ cho phép kéo khi đang ở vị trí đỉnh trang
     if (container.scrollTop === 0) {
       touchStartY.current = e.touches[0].clientY;
+      touchStartX.current = e.touches[0].clientX;
       setIsPulling(true);
     }
   };
 
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+  // Đăng ký sự kiện touchmove ở chế độ { passive: false } để e.preventDefault() hoạt động mượt mà trên Safari/Chrome Mobile
+  useEffect(() => {
     const container = containerRef.current;
-    if (!container || !isPulling || isRefreshing) return;
+    if (!container) return;
 
-    const currentY = e.touches[0].clientY;
-    const diff = currentY - touchStartY.current;
+    const onTouchMoveNative = (e: TouchEvent) => {
+      if (!isPulling || isRefreshing) return;
 
-    // Chỉ tính khi người dùng vuốt xuống & ở vị trí scrollTop = 0
-    if (diff > 0 && container.scrollTop === 0) {
-      // Công thức tạo độ cản elastic nhẹ nhàng (Dampening)
-      const distance = Math.min(diff * 0.45, pullThreshold * 1.5);
-      setPullDistance(distance);
+      const currentY = e.touches[0].clientY;
+      const currentX = e.touches[0].clientX;
 
-      // Tránh cuộn trang trùng lặp của trình duyệt
-      if (e.cancelable && distance > 10) {
-        e.preventDefault();
+      const diffY = currentY - touchStartY.current;
+      const diffX = Math.abs(currentX - touchStartX.current);
+
+      // Chỉ kích hoạt kéo làm mới khi vuốt DỌC nhiều hơn vuốt NGANG và ở vị trí scrollTop = 0
+      if (diffY > diffX && diffY > 0 && container.scrollTop === 0) {
+        const distance = Math.min(diffY * 0.45, pullThreshold * 1.5);
+        setPullDistance(distance);
+
+        if (e.cancelable && distance > 10) {
+          e.preventDefault();
+        }
+      } else if (diffY <= 0) {
+        setPullDistance(0);
+        setIsPulling(false);
       }
-    } else {
-      setPullDistance(0);
-      setIsPulling(false);
-    }
-  };
+    };
+
+    container.addEventListener("touchmove", onTouchMoveNative, {
+      passive: false,
+    });
+
+    return () => {
+      container.removeEventListener("touchmove", onTouchMoveNative);
+    };
+  }, [isPulling, isRefreshing, pullThreshold]);
 
   const handleTouchEnd = useCallback(async () => {
     if (!isPulling && !isRefreshing) return;
@@ -73,7 +89,7 @@ export function PullToRefresh({
         if (onRefresh) {
           await onRefresh();
         } else {
-          // Mặc định tự động làm mới tất cả API Cache của TanStack Query
+          // Tự động làm mới tất cả API Cache của TanStack Query
           await queryClient.invalidateQueries();
         }
       } catch (error) {
@@ -100,7 +116,6 @@ export function PullToRefresh({
     <div
       ref={containerRef}
       onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       className={cn("relative flex-1 overflow-y-auto no-scrollbar", className)}
     >
@@ -126,13 +141,13 @@ export function PullToRefresh({
         </div>
       </div>
 
-      {/* Khung nội dung được di chuyển mượt bằng GPU */}
+      {/* Khung nội dung di chuyển bằng GPU */}
       <div
         style={{
           transform: `translate3d(0, ${pullDistance}px, 0)`,
           transition: isPulling
             ? "none"
-            : "transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)", // 👈 Sử dụng state isPulling an toàn trong render
+            : "transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)",
         }}
         className="will-change-transform flex-1"
       >
