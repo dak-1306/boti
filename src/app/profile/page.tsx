@@ -11,6 +11,7 @@ import { EditProfileDrawer } from "@/features/profile/components/EditProfileDraw
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import { PROFILE_TEXTS } from "@/features/profile/constants/profile.constants";
 import { StaggerGroup } from "@/components/motion/StaggerGroup";
+import { PullToRefresh } from "@/components/common/PullToRefresh";
 
 export default function ProfilePage() {
   const {
@@ -33,7 +34,6 @@ export default function ProfilePage() {
   if (isLoading || !user) {
     return (
       <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
-        {/* 1. PageHeader Skeleton với extension -mt-12 y hệt UI thật */}
         <div className="shrink-0">
           <PageHeader
             title={PROFILE_TEXTS.pageTitle}
@@ -43,9 +43,7 @@ export default function ProfilePage() {
             bottomExtension={
               <div className="w-full rounded-2xl border border-border bg-card p-4 shadow-xs sm:mx-auto sm:max-w-[390px] animate-pulse">
                 <div className="flex items-center gap-3.5">
-                  {/* Avatar Skeleton */}
                   <div className="h-16 w-16 shrink-0 rounded-full bg-muted" />
-                  {/* User Info Skeleton */}
                   <div className="flex-1 space-y-2">
                     <div className="h-4 w-32 rounded-md bg-muted" />
                     <div className="h-3 w-24 rounded-md bg-muted" />
@@ -57,15 +55,12 @@ export default function ProfilePage() {
           />
         </div>
 
-        {/* 2. Body Skeleton cuộn bên dưới khớp vị trí Card */}
-        <div className="flex-1 overflow-y-auto px-4 pt-3 pb-20 no-scrollbar">
+        <PullToRefresh className="flex-1 w-full px-4 pt-3 pb-20">
           <div className="w-full space-y-3.5 sm:mx-auto sm:max-w-[390px] animate-pulse">
-            {/* Bank Card Skeleton */}
             <div className="h-24 w-full rounded-2xl bg-muted" />
-            {/* Menu List Skeleton */}
             <div className="h-64 w-full rounded-2xl bg-muted" />
           </div>
-        </div>
+        </PullToRefresh>
 
         <BottomNav activeTab="profile" />
       </div>
@@ -74,7 +69,6 @@ export default function ProfilePage() {
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
-      {/* GIAO DIỆN CHÍNH THỨC */}
       <div className="shrink-0">
         <PageHeader
           title={PROFILE_TEXTS.pageTitle}
@@ -91,7 +85,7 @@ export default function ProfilePage() {
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 pt-3 pb-20 no-scrollbar">
+      <PullToRefresh className="flex-1 w-full px-4 pt-3 pb-20">
         <StaggerGroup className="w-full space-y-3.5 sm:mx-auto sm:max-w-[390px]">
           <ProfileBankCard bankInfo={user.bankInfo} onEdit={openEditDrawer} />
 
@@ -102,7 +96,7 @@ export default function ProfilePage() {
             onLogout={openLogoutDialog}
           />
         </StaggerGroup>
-      </div>
+      </PullToRefresh>
 
       <BottomNav activeTab="profile" />
 

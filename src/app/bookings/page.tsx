@@ -10,6 +10,7 @@ import { BookingEmptyState } from "@/features/bookings/components/BookingEmptySt
 import { BottomNav } from "@/components/common/bottom-nav";
 import { useBookings } from "@/features/bookings/hooks/useBookings";
 import { BOOKING_TABS } from "@/features/bookings/constants/bookings.constants";
+import { PullToRefresh } from "@/components/common/PullToRefresh";
 
 export default function BookingsPage() {
   const {
@@ -52,30 +53,28 @@ export default function BookingsPage() {
           </BookingHeader>
         </div>
 
-        {/* Danh sách Booking Card Skeleton */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar sm:mx-auto sm:max-w-[390px] w-full animate-pulse">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div
-              key={i}
-              className="flex items-start gap-3 rounded-[22px] bg-card p-3 border border-border shadow-xs"
-            >
-              {/* Thumbnail Skeleton */}
-              <div className="h-24 w-24 shrink-0 rounded-2xl bg-muted" />
-
-              {/* Thông tin Đơn Skeleton */}
-              <div className="flex flex-1 flex-col justify-between min-w-0 space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="h-4 w-16 rounded-md bg-muted" />
-                  <div className="h-4 w-20 rounded-full bg-muted" />
+        <PullToRefresh className="flex-1 w-full pb-20">
+          <div className="p-4 space-y-3 no-scrollbar sm:mx-auto sm:max-w-[390px] w-full animate-pulse">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex items-start gap-3 rounded-[22px] bg-card p-3 border border-border shadow-xs"
+              >
+                <div className="h-24 w-24 shrink-0 rounded-2xl bg-muted" />
+                <div className="flex flex-1 flex-col justify-between min-w-0 space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="h-4 w-16 rounded-md bg-muted" />
+                    <div className="h-4 w-20 rounded-full bg-muted" />
+                  </div>
+                  <div className="h-3.5 w-3/4 rounded-md bg-muted" />
+                  <div className="h-3 w-28 rounded-md bg-muted" />
+                  <div className="h-3 w-24 rounded-md bg-muted" />
+                  <div className="h-3 w-36 rounded-md bg-muted" />
                 </div>
-                <div className="h-3.5 w-3/4 rounded-md bg-muted" />
-                <div className="h-3 w-28 rounded-md bg-muted" />
-                <div className="h-3 w-24 rounded-md bg-muted" />
-                <div className="h-3 w-36 rounded-md bg-muted" />
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </PullToRefresh>
 
         <BottomNav activeTab="bookings" />
       </div>
@@ -102,17 +101,18 @@ export default function BookingsPage() {
         </BookingHeader>
       </div>
 
-      {/* Animation chuyển Tab siêu mượt nhờ key={filters.tab} */}
-      <div key={filters.tab} className="flex-1 overflow-y-auto no-scrollbar">
-        {hasBookings ? (
-          <BookingList
-            bookings={bookings}
-            onSelectBooking={(booking) => handleSelectBooking(booking.id)}
-          />
-        ) : (
-          <BookingEmptyState onBookNow={handleNavigateToHome} />
-        )}
-      </div>
+      <PullToRefresh className="flex-1 w-full pb-20">
+        <div key={filters.tab} className="w-full sm:mx-auto sm:max-w-[390px]">
+          {hasBookings ? (
+            <BookingList
+              bookings={bookings}
+              onSelectBooking={(booking) => handleSelectBooking(booking.id)}
+            />
+          ) : (
+            <BookingEmptyState onBookNow={handleNavigateToHome} />
+          )}
+        </div>
+      </PullToRefresh>
 
       <BottomNav activeTab="bookings" />
 

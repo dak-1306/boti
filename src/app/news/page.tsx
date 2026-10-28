@@ -7,6 +7,7 @@ import { NewsCategoryTabs } from "@/features/news/components/NewsCategoryTabs";
 import { NewsList } from "@/features/news/components/NewsList";
 import { NewsDetailDrawer } from "@/features/news/components/NewsDetailDrawer";
 import { useNews } from "@/features/news/hooks/useNews";
+import { PullToRefresh } from "@/components/common/PullToRefresh";
 
 export default function NewsPage() {
   const {
@@ -38,9 +39,8 @@ export default function NewsPage() {
           />
         </div>
 
-        <div className="flex-1 overflow-y-auto pt-2 pb-20 no-scrollbar">
+        <PullToRefresh className="flex-1 w-full pt-2 pb-20">
           <div className="sm:mx-auto sm:max-w-[390px] w-full px-4 space-y-4 animate-pulse">
-            {/* Featured Article Skeleton */}
             <div className="space-y-2">
               <div className="h-3 w-28 rounded-md bg-muted" />
               <div className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -56,7 +56,6 @@ export default function NewsPage() {
               </div>
             </div>
 
-            {/* News Item List Skeleton */}
             <div className="space-y-2.5">
               <div className="h-3 w-24 rounded-md bg-muted mb-2" />
               {Array.from({ length: 3 }).map((_, i) => (
@@ -74,7 +73,7 @@ export default function NewsPage() {
               ))}
             </div>
           </div>
-        </div>
+        </PullToRefresh>
 
         <BottomNav activeTab="news" />
       </div>
@@ -91,7 +90,7 @@ export default function NewsPage() {
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto pt-2 pb-20 no-scrollbar">
+      <PullToRefresh className="flex-1 w-full pt-2 pb-20">
         <div className="sm:mx-auto sm:max-w-[390px] w-full">
           <NewsList
             featuredNews={featuredNews}
@@ -100,7 +99,7 @@ export default function NewsPage() {
             onResetSearch={handleResetSearch}
           />
         </div>
-      </div>
+      </PullToRefresh>
 
       <BottomNav activeTab="news" />
 
