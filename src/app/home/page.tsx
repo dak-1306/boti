@@ -9,6 +9,7 @@ import { VenueSectionHeader } from "@/features/home/components/VenueSectionHeade
 import { VenueGrid } from "@/features/home/components/VenueGrid";
 import { FilterDrawer } from "@/features/home/components/drawer-filter/FilterDrawer";
 import { VenueDetailDrawer } from "@/features/home/components/detail-drawer/VenueDetailDrawer";
+import { PassFeatureAnnouncementDrawer } from "@/features/home/components/PassFeatureAnnouncementDrawer";
 import { useHome } from "@/features/home/hooks/useHome";
 import { PullToRefresh } from "@/components/common/PullToRefresh";
 
@@ -71,8 +72,8 @@ export default function HomePage() {
         />
 
         <PullToRefresh className="flex-1 w-full pb-20">
-          <div className="sm:mx-auto sm:max-w-[390px] w-full flex-1 flex flex-col min-h-0">
-            <div className="grid grid-cols-2 gap-3 px-4 pb-4 animate-pulse pt-4">
+          <div className="sm:mx-auto sm:max-w-[390px] w-full flex-1 flex flex-col min-h-0 pt-4 px-4">
+            <div className="grid grid-cols-2 gap-3 pb-4 animate-pulse">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
                   key={i}
@@ -160,6 +161,9 @@ export default function HomePage() {
         onClose={closeDetailDrawer}
         onBook={handleNavigateToBooking}
       />
+
+      {/* Drawer gợi ý tính năng Pass sân lần đầu mở app */}
+      <PassFeatureAnnouncementDrawer />
     </div>
   );
 }

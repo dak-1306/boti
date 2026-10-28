@@ -7,7 +7,8 @@ import { HOME_TEXTS } from "../constants/home.constants";
 import { getCategoryMeta } from "@/constants/category.constants";
 import { SafeImage } from "@/components/common/safe-image";
 import { Button } from "@/components/ui/button";
-import {Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
+
 interface VenueCardProps {
   venue: Venue;
   onClick: () => void;
@@ -40,9 +41,18 @@ export function VenueCard({ venue, onClick, onBook }: VenueCardProps) {
 
       <div className="flex flex-1 flex-col justify-between p-2.5">
         <div className="space-y-1.5">
+          {/* 1. Tiêu đề sân lên trên cùng */}
+          <h3 className="line-clamp-1 text-xs font-bold text-foreground">
+            {venue.name}
+          </h3>
+
+          {/* 2. Badge Bộ Môn + Sao đánh giá nằm bên dưới Tiêu đề */}
           <div className="flex items-center justify-between gap-1">
-            {/* Badge có màu sắc và tên chuẩn theo từng Bộ Môn */}
-            <Badge variant={categoryMeta.variant} size="sm" className="font-bold">
+            <Badge
+              variant={categoryMeta.variant}
+              size="sm"
+              className="font-bold"
+            >
               {categoryMeta.label}
             </Badge>
             <div className="flex items-center gap-0.5 shrink-0 text-amber-500">
@@ -51,12 +61,8 @@ export function VenueCard({ venue, onClick, onBook }: VenueCardProps) {
             </div>
           </div>
 
-          <h3 className="line-clamp-1 text-xs font-bold text-foreground">
-            {venue.name}
-          </h3>
-
-          {/* Cho phép Địa chỉ hiển thị tối đa 2 dòng */}
-          <div className="flex items-start gap-1 text-muted-foreground">
+          {/* Địa chỉ hiển thị tối đa 2 dòng */}
+          <div className="flex items-start gap-1 text-muted-foreground pt-0.5">
             <MapPin className="h-3 w-3 shrink-0 text-primary mt-0.5" />
             <p className="line-clamp-2 text-[10px] leading-snug">
               {venue.address}

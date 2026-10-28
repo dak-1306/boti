@@ -13,6 +13,7 @@ import { BookingBottomActions } from "@/features/bookings/components/detail/Book
 import { BookingRescheduleDrawer } from "@/features/bookings/components/reschedule/BookingRescheduleDrawer";
 import { PassCourtDrawer } from "@/features/bookings/components/pass/PassCourtDrawer";
 import { BOOKING_TEXTS } from "@/features/bookings/constants/bookings.constants";
+import { PASS_COURT_TEXTS } from "@/features/bookings/constants/pass.constants";
 import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 interface BookingDetailPageProps {
@@ -29,15 +30,17 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
     isCancelDialogOpen,
     openCancelDialog,
     closeCancelDialog,
-    handleConfirmCancel,
     isRescheduleDrawerOpen,
     openRescheduleDrawer,
     closeRescheduleDrawer,
-    handleConfirmReschedule,
     isPassDrawerOpen,
     openPassDrawer,
     closePassDrawer,
     handleConfirmPass,
+    isRevokeDialogOpen,
+    openRevokeDialog,
+    closeRevokeDialog,
+    handleConfirmRevokePass,
   } = useBookingDetail(resolvedParams.id);
 
   if (!booking) {
@@ -74,23 +77,22 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
         </StaggerGroup>
       </div>
 
-      {/* Cập nhật: Truyền status và trigger onPass */}
       <BookingBottomActions
         status={booking.status}
         onShare={handleShare}
         onCancel={openCancelDialog}
         onReschedule={openRescheduleDrawer}
         onPass={openPassDrawer}
+        onRevokePass={openRevokeDialog}
       />
 
       <BookingRescheduleDrawer
         booking={booking}
         isOpen={isRescheduleDrawerOpen}
         onClose={closeRescheduleDrawer}
-        onConfirmReschedule={handleConfirmReschedule}
+        onConfirmReschedule={() => {}}
       />
 
-      {/* Drawer Đăng Pass Sân */}
       <PassCourtDrawer
         booking={booking}
         isOpen={isPassDrawerOpen}
@@ -99,14 +101,15 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
         onConfirmPass={handleConfirmPass}
       />
 
+      {/* Dialog xác nhận Thu hồi Pass */}
       <ConfirmDialog
-        isOpen={isCancelDialogOpen}
-        onClose={closeCancelDialog}
-        onConfirm={handleConfirmCancel}
-        title="Xác nhận hủy đơn đặt sân"
-        description="Bạn có chắc chắn muốn hủy đơn đặt sân này? Hành động này không thể hoàn tác."
-        confirmText="Hủy đặt sân"
-        cancelText="Giữ lại"
+        isOpen={isRevokeDialogOpen}
+        onClose={closeRevokeDialog}
+        onConfirm={handleConfirmRevokePass}
+        title={PASS_COURT_TEXTS.revokeConfirmTitle}
+        description={PASS_COURT_TEXTS.revokeConfirmDescription}
+        confirmText={PASS_COURT_TEXTS.revokeConfirmText}
+        cancelText={PASS_COURT_TEXTS.revokeCancelText}
         variant="destructive"
       />
     </div>

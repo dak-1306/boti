@@ -36,11 +36,12 @@ export async function handleBookingsRequest<T, P = Record<string, unknown>>(
     );
   };
 
-  // 1. Endpoint Đăng Pass Sân: PUT /bookings/:id/pass
+  // 1. Endpoint Đăng mới / Chỉnh sửa Pass Sân: PUT /bookings/:id/pass
   if (
     method === "PUT" &&
     endpoint.includes("/pass") &&
-    !endpoint.includes("/pass-slots")
+    !endpoint.includes("/pass-slots") &&
+    !endpoint.includes("/revoke-pass")
   ) {
     const match = endpoint.match(/\/bookings\/([^/]+)\/pass/);
     const bookingId = match ? match[1].split("?")[0] : null;
@@ -62,7 +63,7 @@ export async function handleBookingsRequest<T, P = Record<string, unknown>>(
           isPassing: true,
           passPrice: passPayload.passPrice,
           passDiscountPercent: passPayload.discountPercent,
-          passCreatedAt: new Date().toISOString(),
+          passCreatedAt: b.passCreatedAt || new Date().toISOString(),
           sellerBankInfo: passPayload.bankInfo,
           sellerName: b.customer.name,
           sellerPhone: b.customer.phone,
@@ -75,14 +76,13 @@ export async function handleBookingsRequest<T, P = Record<string, unknown>>(
       return createErrorResponse<T>("Không tìm thấy đơn đặt sân", 404);
     }
 
-    // Cập nhật Ngân hàng vào Profile người dùng
     const userProfile = mockDb.get<UserProfile>("USER");
-if (userProfile) {
-  mockDb.set("USER", {
-    ...userProfile,
-    bankInfo: passPayload.bankInfo,
-  });
-}
+    if (userProfile) {
+      mockDb.set("USER", {
+        ...userProfile,
+        bankInfo: passPayload.bankInfo,
+      });
+    }
 
     mockDb.set("BOOKINGS", updatedBookings);
     const updatedItem = updatedBookings.find((b) =>
@@ -91,7 +91,54 @@ if (userProfile) {
 
     return createSuccessResponse(
       updatedItem as unknown as T,
-      "Đăng Pass sân thành công!",
+      "Cập nhật thông tin Pass sân thành công!",
+    );
+  }
+
+  // 1.5. Endpoint Thu hồi Pass Sân: PUT /bookings/:id/revoke-pass
+  if (method === "PUT" && endpoint.includes("/revoke-pass")) {
+    const match = endpoint.match(/\/bookings\/([^/]+)\/revoke-pass/);
+    const bookingId = match ? match[1].split("?")[0] : null;
+
+    if (!bookingId) {
+      return createErrorResponse<T>("Mã đơn không hợp lệ", 400);
+    }
+
+    let found = false;
+    const updatedBookings = bookings.map((b) => {
+      if (isTargetBooking(b, bookingId)) {
+        found = true;
+        const {
+          passPrice,
+          passDiscountPercent,
+          passCreatedAt,
+          sellerBankInfo,
+          sellerName,
+          sellerPhone,
+          ...rest
+        } = b;
+        return {
+          ...rest,
+          status: "confirmed" as const,
+          statusText: "Đã xác nhận",
+          isPassing: false,
+        };
+      }
+      return b;
+    });
+
+    if (!found) {
+      return createErrorResponse<T>("Không tìm thấy đơn đặt sân", 404);
+    }
+
+    mockDb.set("BOOKINGS", updatedBookings);
+    const updatedItem = updatedBookings.find((b) =>
+      isTargetBooking(b, bookingId),
+    );
+
+    return createSuccessResponse(
+      updatedItem as unknown as T,
+      "Đã thu hồi Pass sân thành công!",
     );
   }
 
@@ -110,7 +157,6 @@ if (userProfile) {
 
     const buyPayload = payload as unknown as BuyPassSlotPayload;
 
-    // Tìm đơn đang đăng pass tương ứng
     const targetBooking = bookings.find(
       (b) =>
         String(b.id) === String(passSlotId) || b.bookingCode === passSlotId,
@@ -123,7 +169,6 @@ if (userProfile) {
     const now = new Date();
     const newBookingCode = `TB-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}-${Math.floor(1000 + Math.random() * 9000)}`;
 
-    // Tạo đơn mới cho người mua (B)
     const newBuyerBooking: BookingItem = {
       id: `b_${Date.now()}`,
       bookingCode: newBookingCode,
@@ -161,7 +206,6 @@ if (userProfile) {
       },
     };
 
-    // Cập nhật trạng thái đơn gốc của người bán (A) sang "passed_success"
     const updatedBookings = bookings.map((b) => {
       if (String(b.id) === String(targetBooking.id)) {
         return {
@@ -174,7 +218,6 @@ if (userProfile) {
       return b;
     });
 
-    // Lưu lại cả đơn mới và đơn đã cập nhật
     mockDb.set("BOOKINGS", [newBuyerBooking, ...updatedBookings]);
 
     return createSuccessResponse(
@@ -184,7 +227,7 @@ if (userProfile) {
     );
   }
 
-  // 3. Endpoint Lấy danh sách Slot Pass ở Trang chủ: GET /bookings/pass-slots
+  // 3. Endpoint Lấy danh sách Slot Pass: GET /bookings/pass-slots
   if (method === "GET" && endpoint.includes("/pass-slots")) {
     const activePassBookings = bookings.filter((b) => b.status === "passing");
 

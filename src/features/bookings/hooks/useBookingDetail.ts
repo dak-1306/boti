@@ -12,6 +12,7 @@ import {
   useCancelBookingMutation,
   useRescheduleBookingMutation,
   usePassCourtMutation,
+  useRevokePassMutation,
 } from "./useBookingQuery";
 
 export function useBookingDetail(bookingId: string) {
@@ -19,10 +20,12 @@ export function useBookingDetail(bookingId: string) {
   const cancelBookingMutation = useCancelBookingMutation();
   const rescheduleBookingMutation = useRescheduleBookingMutation();
   const passCourtMutation = usePassCourtMutation();
+  const revokePassMutation = useRevokePassMutation();
 
   const [isRescheduleDrawerOpen, setIsRescheduleDrawerOpen] = useState(false);
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [isPassDrawerOpen, setIsPassDrawerOpen] = useState(false);
+  const [isRevokeDialogOpen, setIsRevokeDialogOpen] = useState(false);
 
   const booking = useMemo<BookingItem | null>(() => {
     const target = decodeURIComponent(bookingId);
@@ -87,20 +90,35 @@ export function useBookingDetail(bookingId: string) {
     [booking?.id, bookingId, rescheduleBookingMutation],
   );
 
-  // SỬA TẠI ĐÂY: Đổi key 'bookingId' -> 'id' để khớp 100% với signature của usePassCourtMutation
   const handleConfirmPass = useCallback(
     async (payload: PassCourtPayload) => {
       const idToUse = booking?.id || bookingId;
+      const isEditing = booking?.status === "passing";
       try {
         await passCourtMutation.mutateAsync({ id: idToUse, payload });
         setIsPassDrawerOpen(false);
-        toast.success("Đã đăng Pass sân thành công! Slot của bạn đã xuất hiện ở Trang chủ.");
+        toast.success(
+          isEditing
+            ? "Đã cập nhật thông tin Pass sân!"
+            : "Đã đăng Pass sân thành công! Slot của bạn đã xuất hiện ở trang Pass sân.",
+        );
       } catch {
-        toast.error("Đăng Pass thất bại. Vui lòng thử lại.");
+        toast.error("Thao tác thất bại. Vui lòng thử lại.");
       }
     },
-    [booking?.id, bookingId, passCourtMutation],
+    [booking?.id, booking?.status, bookingId, passCourtMutation],
   );
+
+  const handleConfirmRevokePass = useCallback(async () => {
+    const idToUse = booking?.id || bookingId;
+    try {
+      await revokePassMutation.mutateAsync(idToUse);
+      setIsRevokeDialogOpen(false);
+      toast.success("Đã thu hồi lượt Pass sân thành công!");
+    } catch {
+      toast.error("Thu hồi Pass thất bại. Vui lòng thử lại.");
+    }
+  }, [booking?.id, bookingId, revokePassMutation]);
 
   return {
     booking,
@@ -118,5 +136,10 @@ export function useBookingDetail(bookingId: string) {
     closePassDrawer: () => setIsPassDrawerOpen(false),
     handleConfirmPass,
     isPassingLoading: passCourtMutation.isPending,
+    isRevokeDialogOpen,
+    openRevokeDialog: () => setIsRevokeDialogOpen(true),
+    closeRevokeDialog: () => setIsRevokeDialogOpen(false),
+    handleConfirmRevokePass,
+    isRevokingLoading: revokePassMutation.isPending,
   };
 }

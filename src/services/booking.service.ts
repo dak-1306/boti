@@ -49,9 +49,9 @@ export const bookingService = {
     );
   },
 
-  // --- LUỒNG PASS SÂN NEW ENDPOINTS ---
+  // --- LUỒNG PASS SÂN ENDPOINTS ---
 
-  // 1. Đăng Pass đơn đặt sân: PUT /bookings/:id/pass
+  // 1. Đăng mới / Chỉnh sửa Pass đơn đặt sân: PUT /bookings/:id/pass
   passBooking: (
     id: string,
     payload: PassCourtPayload,
@@ -62,12 +62,17 @@ export const bookingService = {
     );
   },
 
-  // 2. Lấy danh sách slot Pass công khai trên Trang chủ: GET /bookings/pass-slots
+  // 2. Thu hồi Pass sân: PUT /bookings/:id/revoke-pass
+  revokePassBooking: (id: string): Promise<ApiResponse<BookingItem>> => {
+    return apiClient.put<BookingItem>(`/bookings/${id}/revoke-pass`);
+  },
+
+  // 3. Lấy danh sách slot Pass công khai: GET /bookings/pass-slots
   getPassSlots: (): Promise<ApiResponse<PassSlotItem[]>> => {
     return apiClient.get<PassSlotItem[]>("/bookings/pass-slots");
   },
 
-  // 3. Mua slot Pass sân: POST /bookings/pass-slots/:id/buy
+  // 4. Mua slot Pass sân: POST /bookings/pass-slots/:id/buy
   buyPassSlot: (
     passSlotId: string,
     payload: BuyPassSlotPayload,

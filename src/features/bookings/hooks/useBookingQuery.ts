@@ -28,7 +28,7 @@ export function useMyBookingsQuery() {
   });
 }
 
-// 2. Fetch danh sách slot Pass sân công khai ở Trang chủ
+// 2. Fetch danh sách slot Pass sân công khai ở trang Pass sân
 export function usePassSlotsQuery() {
   return useQuery({
     queryKey: bookingKeys.passSlots(),
@@ -110,9 +110,10 @@ export function useRescheduleBookingMutation() {
   });
 }
 
-// 6. Mutation đăng Pass sân
+// 6. Mutation đăng Pass / Chỉnh sửa thông tin Pass sân
 export function usePassCourtMutation() {
   const queryClient = useQueryClient();
+  const setActiveTab = useBookingStore((s) => s.setActiveTab);
 
   return useMutation({
     mutationFn: async ({
@@ -131,11 +132,32 @@ export function usePassCourtMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: bookingKeys.all });
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      setActiveTab("passing" as BookingTab);
     },
   });
 }
 
-// 7. Mutation mua lại Slot Pass sân
+// 7. Mutation thu hồi Pass sân (Chuyển trạng thái về lại 'confirmed')
+export function useRevokePassMutation() {
+  const queryClient = useQueryClient();
+  const setActiveTab = useBookingStore((s) => s.setActiveTab);
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const res = await bookingService.revokePassBooking(id);
+      if (!res.success || !res.data) {
+        throw new Error(res.message || "Thu hồi Pass sân thất bại");
+      }
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: bookingKeys.all });
+      setActiveTab("confirmed" as BookingTab);
+    },
+  });
+}
+
+// 8. Mutation mua lại Slot Pass sân
 export function useBuyPassSlotMutation() {
   const queryClient = useQueryClient();
   const setActiveTab = useBookingStore((s) => s.setActiveTab);

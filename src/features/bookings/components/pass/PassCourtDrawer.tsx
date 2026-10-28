@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Tag, Info, ArrowRight } from "lucide-react";
+import { Tag, Info, ArrowRight, Edit3 } from "lucide-react";
 import {
   Drawer,
   DrawerContent,
@@ -46,6 +46,8 @@ export function PassCourtDrawer({
   userBankInfo,
   onConfirmPass,
 }: PassCourtDrawerProps) {
+  const isEditing = booking?.status === "passing";
+
   const {
     register,
     handleSubmit,
@@ -57,25 +59,28 @@ export function PassCourtDrawer({
     resolver: zodResolver(passCourtSchema),
     defaultValues: {
       discountPercent: 20,
-      bankName: userBankInfo?.bankName || "",
-      bankCode: userBankInfo?.bankCode || "MB",
-      accountNumber: userBankInfo?.accountNumber || "",
-      accountHolder: userBankInfo?.accountHolder || "",
+      bankName: "",
+      bankCode: "MB",
+      accountNumber: "",
+      accountHolder: "",
     },
     mode: "onChange",
   });
 
   useEffect(() => {
-    if (userBankInfo) {
+    if (booking) {
+      const activeDiscount = booking.passDiscountPercent ?? 20;
+      const bank = booking.sellerBankInfo || userBankInfo;
+
       reset({
-        discountPercent: watch("discountPercent") ?? 20,
-        bankName: userBankInfo.bankName || "",
-        bankCode: userBankInfo.bankCode || "MB",
-        accountNumber: userBankInfo.accountNumber || "",
-        accountHolder: userBankInfo.accountHolder || "",
+        discountPercent: activeDiscount,
+        bankName: bank?.bankName || "",
+        bankCode: bank?.bankCode || "MB",
+        accountNumber: bank?.accountNumber || "",
+        accountHolder: bank?.accountHolder || "",
       });
     }
-  }, [userBankInfo, reset, watch]);
+  }, [booking, userBankInfo, reset]);
 
   const discountPercent = watch("discountPercent") ?? 20;
   const originalPrice = booking?.payment?.totalFee || 200000;
@@ -101,8 +106,12 @@ export function PassCourtDrawer({
       <DrawerContent className="max-h-[90vh] rounded-t-[28px]">
         <DrawerHeader className="text-left border-b border-border pb-3">
           <DrawerTitle className="text-base font-bold flex items-center gap-2 text-foreground">
-            <Tag className="h-5 w-5 text-primary" />
-            {PASS_COURT_TEXTS.drawerTitle}
+            {isEditing ? (
+              <Edit3 className="h-5 w-5 text-primary" />
+            ) : (
+              <Tag className="h-5 w-5 text-primary" />
+            )}
+            {isEditing ? PASS_COURT_TEXTS.editTitle : PASS_COURT_TEXTS.createTitle}
           </DrawerTitle>
         </DrawerHeader>
 
@@ -150,7 +159,9 @@ export function PassCourtDrawer({
               variant="cta"
               className="w-full h-11 text-xs font-bold"
             >
-              {PASS_COURT_TEXTS.submitBtn(passPrice)}
+              {isEditing
+                ? PASS_COURT_TEXTS.submitEditBtn
+                : PASS_COURT_TEXTS.submitCreateBtn(passPrice)}
               <ArrowRight className="ml-1.5 h-4 w-4" />
             </Button>
           </div>

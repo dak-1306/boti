@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MapPin, Clock, Calendar, Tag } from "lucide-react";
+import { MapPin, Clock, Calendar, Tag, Star } from "lucide-react";
 import { PassSlotItem } from "../types/home.types";
 import { getCategoryMeta } from "@/constants/category.constants";
 import { SafeImage } from "@/components/common/safe-image";
@@ -17,61 +17,79 @@ interface PassSlotCardProps {
 
 export function PassSlotCard({ slot, onClick, onBuy }: PassSlotCardProps) {
   const categoryMeta = getCategoryMeta(slot.categorySlug || slot.category);
+  const ratingValue = (slot as unknown as { rating?: number }).rating ?? 5.0;
 
   return (
     <div
       onClick={onClick}
-      className="group relative flex w-full cursor-pointer overflow-hidden rounded-2xl border border-border bg-card p-2.5 shadow-xs transition-all hover:border-primary/40 active:scale-[0.98] text-card-foreground gap-3"
+      className="group relative flex w-full cursor-pointer overflow-hidden rounded-2xl border border-border bg-card shadow-xs transition-all hover:border-primary/40 active:scale-[0.98] text-card-foreground"
     >
-      {/* Khối Ảnh bên trái */}
-      <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-muted flex items-center justify-center">
+      {/* Khối Ảnh bên trái - Tràn viền vừa khớp 100% chiều cao khung chứa */}
+      <div className="relative w-32 shrink-0 bg-muted self-stretch">
         <SafeImage
           src={slot.imageUrl || ""}
           alt={slot.venueName}
           fill
           className="object-cover transition-transform duration-300 group-hover:scale-105"
-          sizes="112px"
+          sizes="128px"
         />
-        <Badge variant="passing" className="absolute top-1.5 left-1.5 z-10">
-          <Tag className="h-2.5 w-2.5" />
+
+        {/* Lớp phủ gradient ở góc trên ảnh */}
+        <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
+
+        {/* Badge Giảm Giá nổi tương phản cao */}
+        <Badge
+          variant="passing"
+          className="absolute top-2 left-2 z-10 font-bold bg-background/95 text-primary border border-border/80 backdrop-blur-md shadow-xs"
+        >
+          <Tag className="h-2.5 w-2.5 mr-0.5" />
           {PASS_SLOT_TEXTS.discountTag(slot.discountPercent)}
         </Badge>
       </div>
 
-      {/* Khối Thông Tin bên phải */}
-      <div className="flex flex-1 flex-col justify-between min-w-0">
+      {/* Khối Thông Tin bên phải - Padding 2.5 đồng bộ với VenueCard */}
+      <div className="flex flex-1 flex-col justify-between p-2.5 min-w-0">
         <div className="space-y-1">
-          <div className="flex items-center justify-between gap-1">
-            <Badge variant={categoryMeta.variant} size="sm" className="font-bold">
-              {categoryMeta.label}
-            </Badge>
-            <Badge variant="passing" size="sm">
-              {PASS_SLOT_TEXTS.quickPassBadge}
-            </Badge>
-          </div>
-
+          {/* Tiêu đề sân */}
           <h3 className="line-clamp-1 text-xs font-bold text-foreground">
             {slot.venueName}
           </h3>
 
-          <p className="line-clamp-1 text-[11px] font-semibold text-primary">
-            {slot.courtName}
-          </p>
+          {/* Badge Bộ môn + Rating */}
+          <div className="flex items-center justify-between gap-1">
+            <Badge
+              variant={categoryMeta.variant}
+              size="sm"
+              className="font-bold"
+            >
+              {categoryMeta.label}
+            </Badge>
+            <div className="flex items-center gap-0.5 shrink-0 text-amber-500">
+              <Star className="h-3 w-3 fill-amber-500" />
+              <span className="text-[11px] font-bold">{ratingValue}</span>
+            </div>
+          </div>
 
-          <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-            <span className="flex items-center gap-0.5 shrink-0">
-              <Calendar className="h-3 w-3 text-primary" />
-              {slot.dateText}
-            </span>
-            <span className="flex items-center gap-0.5 shrink-0 font-medium text-foreground">
-              <Clock className="h-3 w-3 text-primary" />
+          {/* Dòng 1: Ngày chơi */}
+          <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground pt-0.5">
+            <Calendar className="h-3 w-3 text-primary shrink-0" />
+            <span className="truncate">{slot.dateText}</span>
+          </div>
+
+          {/* Dòng 2: Khung giờ chơi */}
+          <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+            <Clock className="h-3 w-3 text-primary shrink-0" />
+            <span className="font-medium text-foreground truncate">
               {slot.timeText}
             </span>
           </div>
 
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <MapPin className="h-3 w-3 shrink-0 text-primary" />
-            <p className="line-clamp-1 text-[10px]">{slot.address}</p>
+          {/* Dòng 3: Địa chỉ hiển thị tối đa 2 dòng */}
+          <div className="flex items-start gap-1 text-muted-foreground">
+            <MapPin className="h-3 w-3 shrink-0 text-primary mt-0.5" />
+            <p className="line-clamp-2 text-[10px] leading-snug">
+              {slot.address}
+            </p>
           </div>
         </div>
 
