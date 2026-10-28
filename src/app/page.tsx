@@ -1,20 +1,7 @@
-"use client";
+// src/app/page.tsx
+import { redirect } from "next/navigation";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { SplashScreen } from "@/components/common/SplashScreen";
-import { APP_CONFIG } from "@/constants/appConfig";
-
-export default function SplashPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      router.replace("/home");
-    }, APP_CONFIG.splashDuration || 1800);
-
-    return () => clearTimeout(timer);
-  }, [router]);
-
-  return <SplashScreen />;
+export default function RootPage() {
+  // Chuyển hướng tức thì ngay tại Server-side trước khi gửi HTML về Client
+  redirect("/home");
 }

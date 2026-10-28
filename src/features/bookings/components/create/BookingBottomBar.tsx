@@ -28,9 +28,10 @@ export function BookingBottomBar({
         </div>
 
         <Button
+          variant="cta"
           disabled={slotCount === 0}
           onClick={onSubmit}
-          className="h-11 flex-1 rounded-full bg-primary text-xs font-bold text-primary-foreground shadow-md hover:bg-primary/90 disabled:opacity-50"
+          className="h-11 flex-1 rounded-full text-xs font-bold shadow-md disabled:opacity-50"
         >
           {BOOKING_CREATE_TEXTS.btnSubmit}
         </Button>

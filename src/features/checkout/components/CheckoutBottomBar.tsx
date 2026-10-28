@@ -29,9 +29,10 @@ export function CheckoutBottomBar({
         </div>
 
         <Button
+          variant="cta"
           disabled={isProcessing}
           onClick={onPayNow}
-          className="h-11 flex-1 rounded-full bg-primary text-xs font-bold text-primary-foreground shadow-md hover:bg-primary/90 disabled:opacity-50 active:scale-95 transition"
+          className="h-11 flex-1 rounded-full text-xs font-bold shadow-md disabled:opacity-50"
         >
           {isProcessing ? (
             <span className="flex items-center gap-2">

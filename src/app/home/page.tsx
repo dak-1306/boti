@@ -11,6 +11,7 @@ import { FilterDrawer } from "@/features/home/components/drawer-filter/FilterDra
 import { VenueDetailDrawer } from "@/features/home/components/detail-drawer/VenueDetailDrawer";
 import { useHome } from "@/features/home/hooks/useHome";
 import { cn } from "@/lib/utils";
+import { PullToRefresh } from "@/components/common/PullToRefresh";
 
 const VenueMapView = dynamic(
   () =>
@@ -71,7 +72,7 @@ export default function HomePage() {
           hasLocation={hasLocation}
         />
 
-        <main className="flex-1 w-full flex flex-col min-h-0 overflow-y-auto pb-20 no-scrollbar">
+        <PullToRefresh className={cn(isMapView && "hidden")}>
           <div className="sm:mx-auto sm:max-w-[390px] w-full flex-1 flex flex-col min-h-0">
             {/* Category Skeleton */}
             <div className="w-full shrink-0 overflow-x-auto py-3 px-4 no-scrollbar">
@@ -116,7 +117,7 @@ export default function HomePage() {
               ))}
             </div>
           </div>
-        </main>
+        </PullToRefresh>
 
         <BottomNav activeTab="home" />
       </div>

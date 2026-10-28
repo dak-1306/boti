@@ -193,3 +193,12 @@ body {
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
 }
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-200%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(450%) skewX(-20deg);
+  }
+}

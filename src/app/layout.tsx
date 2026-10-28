@@ -31,7 +31,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`${beVietnamPro.variable} h-full antialiased`}>
+    <html
+      lang="vi"
+      suppressHydrationWarning
+      className={`${beVietnamPro.variable} h-full antialiased`}
+    >
       <body className="h-[100dvh] w-full overflow-hidden bg-background text-foreground font-sans antialiased">
         <QueryProvider>
           <Toaster />

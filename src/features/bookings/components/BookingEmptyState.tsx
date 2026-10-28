@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { BOOKING_TEXTS } from "../constants/bookings.constants";
 import emptyBookingIcon from "@/assets/icons/empty_booking.svg";
+import { Button } from "@/components/ui/button";
 
 interface BookingEmptyStateProps {
   onBookNow: () => void;
@@ -35,12 +36,13 @@ export function BookingEmptyState({ onBookNow }: BookingEmptyStateProps) {
         {BOOKING_TEXTS.emptySubtitle}
       </p>
 
-      <button
+      <Button
+        variant="cta"
         onClick={onBookNow}
         className="mt-6 h-11 w-full max-w-[220px] rounded-full bg-primary text-xs font-bold text-primary-foreground shadow-lg transition hover:bg-primary/90 active:scale-95"
       >
         {BOOKING_TEXTS.bookNowBtn}
-      </button>
+      </Button>
     </motion.div>
   );
 }

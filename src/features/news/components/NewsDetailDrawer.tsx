@@ -110,6 +110,7 @@ function NewsDetailDrawerContent({
       {/* Thanh Action Đáy */}
       <div className="shrink-0 border-t border-border p-3 pb-[calc(12px+env(safe-area-inset-bottom))] bg-card">
         <Button
+          variant="cta"
           type="button"
           onClick={handleShare}
           className="h-11 w-full rounded-full bg-primary text-xs font-bold text-primary-foreground shadow-md hover:bg-primary/90 active:scale-98 transition"
