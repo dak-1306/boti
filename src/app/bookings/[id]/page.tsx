@@ -4,12 +4,14 @@ import React, { Suspense, use } from "react";
 import { PageHeader } from "@/components/common/page-header";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { useBookingDetail } from "@/features/bookings/hooks/useBookingDetail";
+import { useProfile } from "@/features/profile/hooks/useProfile";
 import { BookingSummaryCard } from "@/features/bookings/components/detail/BookingSummaryCard";
 import { BookingQRCard } from "@/features/bookings/components/detail/BookingQRCard";
 import { BookingCustomerCard } from "@/features/bookings/components/detail/BookingCustomerCard";
 import { BookingPaymentCard } from "@/features/bookings/components/detail/BookingPaymentCard";
 import { BookingBottomActions } from "@/features/bookings/components/detail/BookingBottomActions";
 import { BookingRescheduleDrawer } from "@/features/bookings/components/reschedule/BookingRescheduleDrawer";
+import { PassCourtDrawer } from "@/features/bookings/components/pass/PassCourtDrawer";
 import { BOOKING_TEXTS } from "@/features/bookings/constants/bookings.constants";
 import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
@@ -19,6 +21,7 @@ interface BookingDetailPageProps {
 
 function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
+  const { user } = useProfile();
 
   const {
     booking,
@@ -31,6 +34,10 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
     openRescheduleDrawer,
     closeRescheduleDrawer,
     handleConfirmReschedule,
+    isPassDrawerOpen,
+    openPassDrawer,
+    closePassDrawer,
+    handleConfirmPass,
   } = useBookingDetail(resolvedParams.id);
 
   if (!booking) {
@@ -67,10 +74,13 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
         </StaggerGroup>
       </div>
 
+      {/* Cập nhật: Truyền status và trigger onPass */}
       <BookingBottomActions
+        status={booking.status}
         onShare={handleShare}
         onCancel={openCancelDialog}
         onReschedule={openRescheduleDrawer}
+        onPass={openPassDrawer}
       />
 
       <BookingRescheduleDrawer
@@ -78,6 +88,15 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
         isOpen={isRescheduleDrawerOpen}
         onClose={closeRescheduleDrawer}
         onConfirmReschedule={handleConfirmReschedule}
+      />
+
+      {/* Drawer Đăng Pass Sân */}
+      <PassCourtDrawer
+        booking={booking}
+        isOpen={isPassDrawerOpen}
+        onClose={closePassDrawer}
+        userBankInfo={user?.bankInfo}
+        onConfirmPass={handleConfirmPass}
       />
 
       <ConfirmDialog

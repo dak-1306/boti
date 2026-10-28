@@ -6,7 +6,11 @@ export interface CategoryMeta {
 }
 
 const CATEGORY_MAP: Record<string, CategoryMeta> = {
-  // --- Môn thể thao ---
+  // Trạng thái đơn đặt
+  passing: { variant: "passing", label: "Đang Pass" },
+  passed_success: { variant: "passed", label: "Đã Pass" },
+
+  // Môn thể thao
   pickleball: { variant: "pickleball", label: "Pickleball" },
   badminton: { variant: "badminton", label: "Cầu lông" },
   "cầu lông": { variant: "badminton", label: "Cầu lông" },
@@ -20,14 +24,13 @@ const CATEGORY_MAP: Record<string, CategoryMeta> = {
   "bóng chuyền": { variant: "volleyball", label: "Bóng chuyền" },
   "b.chuyền": { variant: "volleyball", label: "Bóng chuyền" },
 
-  // --- Tin tức & Ưu đãi ---
+  // Tin tức & Ưu đãi
   promotion: { variant: "promotion", label: "Khuyến mãi" },
   "khuyến mãi": { variant: "promotion", label: "Khuyến mãi" },
   tournament: { variant: "tournament", label: "Giải đấu" },
   "giải đấu": { variant: "tournament", label: "Giải đấu" },
   tips: { variant: "tips", label: "Mẹo & Kinh nghiệm" },
   "mẹo & kinh nghiệm": { variant: "tips", label: "Mẹo & Kinh nghiệm" },
-  mẹo: { variant: "tips", label: "Mẹo & Kinh nghiệm" },
   system: { variant: "system", label: "Thông báo" },
   "thông báo": { variant: "system", label: "Thông báo" },
 };

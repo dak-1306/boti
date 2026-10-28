@@ -1,0 +1,92 @@
+[
+  {
+    "id": "bk_pass_demo_1",
+    "bookingCode": "TB-PASS-001",
+    "venueId": "v1",
+    "venueName": "Sân Pickleball D-Joy",
+    "category": "Pickleball",
+    "categorySlug": "pickleball",
+    "imageUrl": "https://images.unsplash.com/photo-1626248801379-51a0748a5f96?w=800&auto=format&fit=crop&q=80",
+    "status": "passing",
+    "statusText": "Đang Pass",
+    "date": "2026-10-30",
+    "dateText": "Thứ Sáu, 30/10/2026",
+    "timeText": "17:00 - 18:00",
+    "address": "142/5A Lý Thường Kiệt, Phường 14, Quận 10, TP. Hồ Chí Minh",
+    "courtName": "Sân 1 (Trong nhà)",
+    "qrCodeUrl": "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=TB-PASS-001",
+    "customer": {
+      "name": "Nguyễn Văn Hùng",
+      "phone": "0912345678",
+      "playerCount": 4
+    },
+    "payment": {
+      "method": "ZaloPay",
+      "status": "paid",
+      "statusText": "Đã thanh toán",
+      "transactionId": "TXN-PASS-101",
+      "paidAt": "2026-10-28 10:00:00",
+      "courtFee": 240000,
+      "discountFee": 0,
+      "serviceFee": 0,
+      "totalFee": 240000
+    },
+    "isPassing": true,
+    "passPrice": 192000,
+    "passDiscountPercent": 20,
+    "passCreatedAt": "2026-10-28T10:30:00.000Z",
+    "sellerName": "Nguyễn Văn Hùng",
+    "sellerPhone": "0912345678",
+    "sellerBankInfo": {
+      "bankName": "MBBank",
+      "bankCode": "MB",
+      "accountNumber": "0912345678",
+      "accountHolder": "NGUYEN VAN HUNG"
+    }
+  },
+  {
+    "id": "bk_pass_demo_2",
+    "bookingCode": "TB-PASS-002",
+    "venueId": "v2",
+    "venueName": "Sân Cầu Lông Riverside Club",
+    "category": "Cầu lông",
+    "categorySlug": "badminton",
+    "imageUrl": "https://images.unsplash.com/photo-1521537634581-0dced2eed251?w=800&auto=format&fit=crop&q=80",
+    "status": "passing",
+    "statusText": "Đang Pass",
+    "date": "2026-10-31",
+    "dateText": "Thứ Bảy, 31/10/2026",
+    "timeText": "18:00 - 19:00",
+    "address": "239 Nguyễn Duy Trinh, Phường Bình Trưng Tây, TP. Thủ Đức, TP. Hồ Chí Minh",
+    "courtName": "Sân Cầu Lông A1",
+    "qrCodeUrl": "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=TB-PASS-002",
+    "customer": {
+      "name": "Lê Thị Mai",
+      "phone": "0987654321",
+      "playerCount": 2
+    },
+    "payment": {
+      "method": "ZaloPay",
+      "status": "paid",
+      "statusText": "Đã thanh toán",
+      "transactionId": "TXN-PASS-102",
+      "paidAt": "2026-10-28 11:00:00",
+      "courtFee": 160000,
+      "discountFee": 0,
+      "serviceFee": 0,
+      "totalFee": 160000
+    },
+    "isPassing": true,
+    "passPrice": 112000,
+    "passDiscountPercent": 30,
+    "passCreatedAt": "2026-10-28T11:15:00.000Z",
+    "sellerName": "Lê Thị Mai",
+    "sellerPhone": "0987654321",
+    "sellerBankInfo": {
+      "bankName": "Vietcombank",
+      "bankCode": "VCB",
+      "accountNumber": "9987654321",
+      "accountHolder": "LE THI MAI"
+    }
+  }
+]

@@ -1,6 +1,7 @@
 import rawUserMock from "@/data/user.mock.json";
 import rawVenuesMock from "@/data/venues.mock.json";
 import rawNewsMock from "@/data/news.mock.json";
+import rawBookingsMock from "@/data/bookings.mock.json";
 
 const STORAGE_KEYS = {
   USER: "boti_mock_user",
@@ -21,7 +22,10 @@ export const mockDb = {
       localStorage.setItem(STORAGE_KEYS.VENUES, JSON.stringify(rawVenuesMock));
     }
     if (!localStorage.getItem(STORAGE_KEYS.BOOKINGS)) {
-      localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify([]));
+      localStorage.setItem(
+        STORAGE_KEYS.BOOKINGS,
+        JSON.stringify(rawBookingsMock),
+      );
     }
     if (!localStorage.getItem(STORAGE_KEYS.NEWS)) {
       localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(rawNewsMock));

@@ -1,15 +1,20 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { bookingService, ReschedulePayload } from "@/services/booking.service";
+import {
+  bookingService,
+  ReschedulePayload,
+  BuyPassSlotPayload,
+} from "@/services/booking.service";
 import { CheckoutBookingData } from "@/features/checkout/types/checkout.types";
 import { useBookingStore } from "@/stores/useBookingStore";
-import { BookingTab } from "../types/bookings.types";
+import { BookingTab, PassCourtPayload } from "../types/bookings.types";
 
 export const bookingKeys = {
   all: ["bookings"] as const,
   myBookings: () => [...bookingKeys.all, "my"] as const,
+  passSlots: () => [...bookingKeys.all, "passSlots"] as const,
 };
 
-// 1. Fetch danh sách đơn đặt sân
+// 1. Fetch danh sách đơn đặt sân của tôi
 export function useMyBookingsQuery() {
   return useQuery({
     queryKey: bookingKeys.myBookings(),
@@ -23,7 +28,21 @@ export function useMyBookingsQuery() {
   });
 }
 
-// 2. Mutation tạo đơn mới
+// 2. Fetch danh sách slot Pass sân công khai ở Trang chủ
+export function usePassSlotsQuery() {
+  return useQuery({
+    queryKey: bookingKeys.passSlots(),
+    queryFn: async () => {
+      const res = await bookingService.getPassSlots();
+      if (!res.success || !res.data) {
+        return [];
+      }
+      return res.data;
+    },
+  });
+}
+
+// 3. Mutation tạo đơn đặt sân mới
 export function useCreateBookingMutation() {
   const queryClient = useQueryClient();
   const setActiveTab = useBookingStore((s) => s.setActiveTab);
@@ -45,7 +64,7 @@ export function useCreateBookingMutation() {
   });
 }
 
-// 3. Mutation hủy đơn đặt sân
+// 4. Mutation hủy đơn đặt sân
 export function useCancelBookingMutation() {
   const queryClient = useQueryClient();
   const setActiveTab = useBookingStore((s) => s.setActiveTab);
@@ -65,7 +84,7 @@ export function useCancelBookingMutation() {
   });
 }
 
-// 4. Mutation dời lịch đơn đặt sân
+// 5. Mutation dời lịch đơn đặt sân
 export function useRescheduleBookingMutation() {
   const queryClient = useQueryClient();
   const setActiveTab = useBookingStore((s) => s.setActiveTab);
@@ -87,6 +106,57 @@ export function useRescheduleBookingMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: bookingKeys.all });
       setActiveTab("rescheduled" as BookingTab);
+    },
+  });
+}
+
+// 6. Mutation đăng Pass sân
+export function usePassCourtMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: PassCourtPayload;
+    }) => {
+      const res = await bookingService.passBooking(id, payload);
+      if (!res.success || !res.data) {
+        throw new Error(res.message || "Đăng Pass sân thất bại");
+      }
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: bookingKeys.all });
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+    },
+  });
+}
+
+// 7. Mutation mua lại Slot Pass sân
+export function useBuyPassSlotMutation() {
+  const queryClient = useQueryClient();
+  const setActiveTab = useBookingStore((s) => s.setActiveTab);
+
+  return useMutation({
+    mutationFn: async ({
+      passSlotId,
+      payload,
+    }: {
+      passSlotId: string;
+      payload: BuyPassSlotPayload;
+    }) => {
+      const res = await bookingService.buyPassSlot(passSlotId, payload);
+      if (!res.success || !res.data) {
+        throw new Error(res.message || "Mua slot Pass thất bại");
+      }
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: bookingKeys.all });
+      setActiveTab("confirmed" as BookingTab);
     },
   });
 }

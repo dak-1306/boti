@@ -2,8 +2,9 @@ import { BookingTab } from "../types/bookings.types";
 
 export const BOOKING_TABS: { id: BookingTab; label: string }[] = [
   { id: "confirmed", label: "Đã đặt" },
-  { id: "cancelled", label: "Đã hủy" },
+  { id: "passing", label: "Đang Pass" },
   { id: "rescheduled", label: "Đã dời" },
+  { id: "cancelled", label: "Đã hủy" },
 ];
 
 export const MONTH_NAMES = [
@@ -64,6 +65,7 @@ export const BOOKING_TEXTS = {
   actionShare: "Chia sẻ",
   actionCancel: "Hủy lịch",
   actionReschedule: "Dời lịch",
+  actionPass: "Đăng Pass sân này",
 } as const;
 
 export const RESCHEDULE_TEXTS = {

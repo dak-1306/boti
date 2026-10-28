@@ -2,29 +2,47 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   CATEGORIES_DATA,
   DEFAULT_FILTER_STATE,
 } from "../constants/home.constants";
-import { Venue, ViewMode, FilterState } from "../types/home.types";
+import {
+  Venue,
+  ViewMode,
+  FilterState,
+  PassSlotItem,
+} from "../types/home.types";
 import { useLocation } from "./useLocation";
 import {
   calculateHaversineDistance,
   formatDistanceText,
 } from "../utils/distance";
 import { useVenuesQuery } from "./useVenuesQuery";
+import {
+  usePassSlotsQuery,
+  useBuyPassSlotMutation,
+} from "@/features/bookings/hooks/useBookingQuery";
+import { useProfile } from "@/features/profile/hooks/useProfile";
 
 export const useHome = () => {
   const router = useRouter();
+  const { user } = useProfile();
 
-  // Dùng TanStack Query lấy dữ liệu sân
-  const { data: storeVenues = [], isLoading } = useVenuesQuery();
+  const { data: storeVenues = [], isLoading: isLoadingVenues } =
+    useVenuesQuery();
+  const { data: passSlots = [], isLoading: isLoadingPassSlots } =
+    usePassSlotsQuery();
+  const buyPassSlotMutation = useBuyPassSlotMutation();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
 
   const [detailVenue, setDetailVenue] = useState<Venue | null>(null);
+  const [selectedPassSlot, setSelectedPassSlot] = useState<PassSlotItem | null>(
+    null,
+  );
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTER_STATE);
 
@@ -56,7 +74,6 @@ export const useHome = () => {
         const venueCatName = venue.category.toLowerCase();
         const venueCatSlug = (venue.categorySlug || "").toLowerCase();
 
-        // 1. Lọc Thành phố
         const filterCity = filters.city ? filters.city.toLowerCase() : "";
         const matchesCity = !filterCity
           ? true
@@ -66,7 +83,6 @@ export const useHome = () => {
               (venueAddress.includes("tp.hcm") ||
                 venueAddress.includes("tp. hồ chí minh")));
 
-        // 2. Lọc Từ khóa Tìm kiếm
         const search = searchQuery.trim().toLowerCase();
         const matchesSearch = !search
           ? true
@@ -74,7 +90,6 @@ export const useHome = () => {
             venueAddress.includes(search) ||
             venueCatName.includes(search);
 
-        // 3. Lọc theo Danh mục (So sánh cả categorySlug lẫn category tiếng Việt)
         const selectedCat = selectedCategory
           ? selectedCategory.toLowerCase()
           : null;
@@ -82,7 +97,6 @@ export const useHome = () => {
           ? true
           : venueCatSlug === selectedCat || venueCatName === selectedCat;
 
-        // 4. Lọc Nâng cao theo Nhiều môn thể thao (FilterDrawer)
         const matchesSports =
           filters.selectedSports.length > 0
             ? filters.selectedSports.some((sport) => {
@@ -91,7 +105,6 @@ export const useHome = () => {
               })
             : true;
 
-        // 5. Lọc Quận / Huyện (Tự động bỏ qua nếu chọn "Tất cả Quận/Huyện")
         const filterDistrict = filters.district
           ? filters.district.toLowerCase()
           : "";
@@ -103,7 +116,6 @@ export const useHome = () => {
           : venueDistrict === filterDistrict ||
             venueAddress.includes(filterDistrict);
 
-        // 6. Lọc Đánh giá tối thiểu
         const matchesRating = venue.rating >= filters.ratingMin;
 
         return (
@@ -122,6 +134,24 @@ export const useHome = () => {
         return 0;
       });
   }, [searchQuery, selectedCategory, filters, userLocation, storeVenues]);
+
+  const filteredPassSlots = useMemo(() => {
+    return passSlots.filter((slot) => {
+      const cat = (slot.categorySlug || slot.category).toLowerCase();
+      const selectedCat = selectedCategory
+        ? selectedCategory.toLowerCase()
+        : null;
+      const matchesCat = !selectedCat ? true : cat === selectedCat;
+
+      const search = searchQuery.trim().toLowerCase();
+      const matchesSearch = !search
+        ? true
+        : slot.venueName.toLowerCase().includes(search) ||
+          slot.courtName.toLowerCase().includes(search);
+
+      return matchesCat && matchesSearch;
+    });
+  }, [passSlots, selectedCategory, searchQuery]);
 
   const [selectedVenueId, setSelectedVenueId] = useState<string | null>(null);
 
@@ -150,8 +180,32 @@ export const useHome = () => {
     router.push(`/bookings/create?venueId=${venueId}`);
   };
 
+  // SỬA TẠI ĐÂY: Truyền đúng cấu trúc { passSlotId, payload: { customerName, customerPhone } }
+  const handleConfirmBuyPassSlot = async (slot: PassSlotItem) => {
+    try {
+      const customerName = user?.name || "Người mua Slot Pass";
+      const customerPhone = user?.phone || "0900000000";
+
+      await buyPassSlotMutation.mutateAsync({
+        passSlotId: slot.id,
+        payload: {
+          customerName,
+          customerPhone,
+        },
+      });
+
+      setSelectedPassSlot(null);
+      toast.success(
+        "Mua slot Pass sân thành công! Đơn đặt đã được thêm vào Lịch đặt.",
+      );
+      router.push("/bookings");
+    } catch {
+      toast.error("Mua slot Pass thất bại. Vui lòng thử lại.");
+    }
+  };
+
   return {
-    isLoading,
+    isLoading: isLoadingVenues || isLoadingPassSlots,
     searchQuery,
     setSearchQuery,
     selectedCategory,
@@ -160,6 +214,7 @@ export const useHome = () => {
     setViewMode,
     categories: CATEGORIES_DATA,
     venues: filteredVenues,
+    passSlots: filteredPassSlots,
     selectedVenueOnMap,
     setSelectedVenueOnMap: handleSelectVenueOnMap,
     isFilterDrawerOpen,
@@ -176,6 +231,10 @@ export const useHome = () => {
     detailVenue,
     openDetailDrawer: (venue: Venue) => setDetailVenue(venue),
     closeDetailDrawer: () => setDetailVenue(null),
+    selectedPassSlot,
+    openPassSlotDrawer: (slot: PassSlotItem) => setSelectedPassSlot(slot),
+    closePassSlotDrawer: () => setSelectedPassSlot(null),
+    handleConfirmBuyPassSlot,
     handleNavigateToBooking,
   };
 };

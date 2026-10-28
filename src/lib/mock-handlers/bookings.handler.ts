@@ -1,13 +1,22 @@
 import { HttpMethod, ApiResponse } from "@/types/api.types";
 import { createSuccessResponse, createErrorResponse } from "../api-response";
 import { mockDb } from "../mock-db";
-import { BookingItem } from "@/features/bookings/types/bookings.types";
+import {
+  BookingItem,
+  PassCourtPayload,
+} from "@/features/bookings/types/bookings.types";
 import { CheckoutBookingData } from "@/features/checkout/types/checkout.types";
-import { Venue } from "@/features/home/types/home.types";
+import { Venue, PassSlotItem } from "@/features/home/types/home.types";
+import { UserProfile } from "@/features/profile/types/profile.types";
 
 export interface RescheduleBookingPayload {
   newDateText: string;
   newTimeText: string;
+}
+
+export interface BuyPassSlotPayload {
+  customerName: string;
+  customerPhone: string;
 }
 
 export async function handleBookingsRequest<T, P = Record<string, unknown>>(
@@ -15,10 +24,8 @@ export async function handleBookingsRequest<T, P = Record<string, unknown>>(
   endpoint: string,
   payload?: P,
 ): Promise<ApiResponse<T>> {
-  // Đảm bảo an toàn 100% nếu mockDb chưa khởi tạo
   const bookings = mockDb.get<BookingItem[]>("BOOKINGS") || [];
 
-  // Helper kiểm tra khớp ID hoặc BookingCode (hỗ trợ cả URL decode)
   const isTargetBooking = (b: BookingItem, targetId: string) => {
     const decodedTarget = decodeURIComponent(targetId);
     return (
@@ -29,7 +36,191 @@ export async function handleBookingsRequest<T, P = Record<string, unknown>>(
     );
   };
 
-  // 1. Endpoint Hủy đơn: PUT /bookings/:id/cancel
+  // 1. Endpoint Đăng Pass Sân: PUT /bookings/:id/pass
+  if (
+    method === "PUT" &&
+    endpoint.includes("/pass") &&
+    !endpoint.includes("/pass-slots")
+  ) {
+    const match = endpoint.match(/\/bookings\/([^/]+)\/pass/);
+    const bookingId = match ? match[1].split("?")[0] : null;
+
+    if (!bookingId) {
+      return createErrorResponse<T>("Mã đơn không hợp lệ", 400);
+    }
+
+    const passPayload = payload as unknown as PassCourtPayload;
+    let found = false;
+
+    const updatedBookings = bookings.map((b) => {
+      if (isTargetBooking(b, bookingId)) {
+        found = true;
+        return {
+          ...b,
+          status: "passing" as const,
+          statusText: "Đang Pass",
+          isPassing: true,
+          passPrice: passPayload.passPrice,
+          passDiscountPercent: passPayload.discountPercent,
+          passCreatedAt: new Date().toISOString(),
+          sellerBankInfo: passPayload.bankInfo,
+          sellerName: b.customer.name,
+          sellerPhone: b.customer.phone,
+        };
+      }
+      return b;
+    });
+
+    if (!found) {
+      return createErrorResponse<T>("Không tìm thấy đơn đặt sân", 404);
+    }
+
+    // Cập nhật Ngân hàng vào Profile người dùng
+    const userProfile = mockDb.get<UserProfile>("USER");
+if (userProfile) {
+  mockDb.set("USER", {
+    ...userProfile,
+    bankInfo: passPayload.bankInfo,
+  });
+}
+
+    mockDb.set("BOOKINGS", updatedBookings);
+    const updatedItem = updatedBookings.find((b) =>
+      isTargetBooking(b, bookingId),
+    );
+
+    return createSuccessResponse(
+      updatedItem as unknown as T,
+      "Đăng Pass sân thành công!",
+    );
+  }
+
+  // 2. Endpoint Mua Slot Pass: POST /bookings/pass-slots/:id/buy
+  if (
+    method === "POST" &&
+    endpoint.includes("/pass-slots/") &&
+    endpoint.includes("/buy")
+  ) {
+    const match = endpoint.match(/\/bookings\/pass-slots\/([^/]+)\/buy/);
+    const passSlotId = match ? match[1].split("?")[0] : null;
+
+    if (!passSlotId) {
+      return createErrorResponse<T>("Mã slot Pass không hợp lệ", 400);
+    }
+
+    const buyPayload = payload as unknown as BuyPassSlotPayload;
+
+    // Tìm đơn đang đăng pass tương ứng
+    const targetBooking = bookings.find(
+      (b) =>
+        String(b.id) === String(passSlotId) || b.bookingCode === passSlotId,
+    );
+
+    if (!targetBooking || targetBooking.status !== "passing") {
+      return createErrorResponse<T>("Slot pass này không còn khả dụng", 404);
+    }
+
+    const now = new Date();
+    const newBookingCode = `TB-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    // Tạo đơn mới cho người mua (B)
+    const newBuyerBooking: BookingItem = {
+      id: `b_${Date.now()}`,
+      bookingCode: newBookingCode,
+      venueId: targetBooking.venueId,
+      venueName: targetBooking.venueName,
+      category: targetBooking.category,
+      categorySlug: targetBooking.categorySlug,
+      imageUrl: targetBooking.imageUrl,
+      status: "confirmed",
+      statusText: "Đã xác nhận",
+      date: targetBooking.date,
+      dateText: targetBooking.dateText,
+      timeText: targetBooking.timeText,
+      address: targetBooking.address,
+      courtName: targetBooking.courtName,
+      qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${newBookingCode}`,
+      customer: {
+        name: buyPayload.customerName || "Người mua Pass",
+        phone: buyPayload.customerPhone || "0900000000",
+        playerCount: targetBooking.customer.playerCount || 2,
+        notes: `Slot Pass nhượng lại từ ${targetBooking.customer.name}`,
+      },
+      payment: {
+        method: "ZaloPay",
+        status: "paid",
+        statusText: "Đã thanh toán",
+        transactionId: `TXN-PASS-${Date.now()}`,
+        paidAt: now.toISOString(),
+        courtFee: targetBooking.payment.totalFee,
+        discountFee:
+          (targetBooking.payment.totalFee || 0) -
+          (targetBooking.passPrice || 0),
+        serviceFee: 0,
+        totalFee: targetBooking.passPrice || targetBooking.payment.totalFee,
+      },
+    };
+
+    // Cập nhật trạng thái đơn gốc của người bán (A) sang "passed_success"
+    const updatedBookings = bookings.map((b) => {
+      if (String(b.id) === String(targetBooking.id)) {
+        return {
+          ...b,
+          status: "passed_success" as const,
+          statusText: "Đã Pass",
+          isPassing: false,
+        };
+      }
+      return b;
+    });
+
+    // Lưu lại cả đơn mới và đơn đã cập nhật
+    mockDb.set("BOOKINGS", [newBuyerBooking, ...updatedBookings]);
+
+    return createSuccessResponse(
+      newBuyerBooking as unknown as T,
+      "Mua slot Pass thành công!",
+      201,
+    );
+  }
+
+  // 3. Endpoint Lấy danh sách Slot Pass ở Trang chủ: GET /bookings/pass-slots
+  if (method === "GET" && endpoint.includes("/pass-slots")) {
+    const activePassBookings = bookings.filter((b) => b.status === "passing");
+
+    const passSlots: PassSlotItem[] = activePassBookings.map((b) => ({
+      id: String(b.id),
+      bookingId: String(b.id),
+      bookingCode: b.bookingCode,
+      venueId: b.venueId,
+      venueName: b.venueName,
+      category: b.category,
+      categorySlug: b.categorySlug,
+      imageUrl: b.imageUrl,
+      address: b.address,
+      courtName: b.courtName || "Sân tiêu chuẩn",
+      date: b.date,
+      dateText: b.dateText,
+      timeText: b.timeText,
+      startTime: b.timeText.split("-")[0]?.trim() || "00:00",
+      originalPrice: b.payment.totalFee || 200000,
+      passPrice: b.passPrice || b.payment.totalFee || 160000,
+      discountPercent: b.passDiscountPercent || 0,
+      sellerName: b.customer.name,
+      sellerPhone: b.customer.phone,
+      sellerBankInfo: b.sellerBankInfo || {
+        bankName: "MBBank",
+        bankCode: "MB",
+        accountNumber: "0000000000",
+        accountHolder: "N/A",
+      },
+      createdAt: b.passCreatedAt || new Date().toISOString(),
+    }));
+
+    return createSuccessResponse(passSlots as unknown as T);
+  }
+
+  // 4. Endpoint Hủy đơn: PUT /bookings/:id/cancel
   if (method === "PUT" && endpoint.includes("/cancel")) {
     const match = endpoint.match(/\/bookings\/([^/]+)\/cancel/);
     const rawBookingId = match ? match[1] : null;
@@ -62,7 +253,7 @@ export async function handleBookingsRequest<T, P = Record<string, unknown>>(
     );
   }
 
-  // 2. Endpoint Dời lịch: PUT /bookings/:id/reschedule
+  // 5. Endpoint Dời lịch: PUT /bookings/:id/reschedule
   if (method === "PUT" && endpoint.includes("/reschedule")) {
     const match = endpoint.match(/\/bookings\/([^/]+)\/reschedule/);
     const rawBookingId = match ? match[1] : null;
@@ -94,9 +285,7 @@ export async function handleBookingsRequest<T, P = Record<string, unknown>>(
       ? `${dateMatch[3]}-${dateMatch[2].padStart(2, "0")}-${dateMatch[1].padStart(2, "0")}`
       : undefined;
 
-    // 🔴 KIỂM TRA XUNG ĐỘT TRÙNG LỊCH KHI DỜI (EXCLUDING CURRENT BOOKING)
     const isConflict = safeBookings.some((b) => {
-      // Bỏ qua chính đơn đang dời lịch
       if (
         String(b.id) === String(targetBooking.id) ||
         b.bookingCode === targetBooking.bookingCode
@@ -107,7 +296,6 @@ export async function handleBookingsRequest<T, P = Record<string, unknown>>(
       if (String(b.venueId) !== String(targetBooking.venueId)) return false;
       if (newDate && b.date !== newDate) return false;
 
-      // Kiểm tra trùng giờ / sân con
       const timeMatch =
         b.timeText &&
         newTimeText &&
@@ -161,12 +349,12 @@ export async function handleBookingsRequest<T, P = Record<string, unknown>>(
     );
   }
 
-  // 3. Endpoint Lấy danh sách: GET /bookings
+  // 6. Endpoint Lấy danh sách: GET /bookings
   if (method === "GET") {
     return createSuccessResponse(bookings as unknown as T);
   }
 
-  // 4. Endpoint Tạo đơn mới: POST /bookings
+  // 7. Endpoint Tạo đơn mới: POST /bookings
   if (method === "POST" && payload) {
     const draft = payload as unknown as CheckoutBookingData;
     const venues = mockDb.get<Venue[]>("VENUES") || [];
@@ -179,7 +367,6 @@ export async function handleBookingsRequest<T, P = Record<string, unknown>>(
       ? `${dateMatch[3]}-${dateMatch[2].padStart(2, "0")}-${dateMatch[1].padStart(2, "0")}`
       : now.toISOString().split("T")[0];
 
-    // 🔴 KIỂM TRA XUNG ĐỘT TRÙNG LỊCH (API GUARD)
     const isConflict = bookings.some((b) => {
       if (String(b.venueId) !== String(draft.venueId)) return false;
       if (b.status === "cancelled") return false;

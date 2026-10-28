@@ -1,5 +1,18 @@
-export type BookingStatus = "confirmed" | "cancelled" | "rescheduled";
-export type BookingTab = "confirmed" | "cancelled" | "rescheduled";
+import { BankInfo } from "@/features/profile/types/profile.types";
+
+export type BookingStatus =
+  | "confirmed"
+  | "cancelled"
+  | "rescheduled"
+  | "passing"
+  | "passed_success";
+
+export type BookingTab =
+  | "confirmed"
+  | "passing"
+  | "rescheduled"
+  | "cancelled"
+  | "passed_success";
 export type DateFilterMode = "all" | "day" | "month" | "year";
 
 export interface BookingPaymentInfo {
@@ -27,6 +40,7 @@ export interface BookingItem {
   venueId: string;
   venueName: string;
   category: string;
+  categorySlug?: string;
   imageUrl: string;
   status: BookingStatus;
   statusText: string;
@@ -34,9 +48,20 @@ export interface BookingItem {
   dateText: string;
   timeText: string;
   address: string;
+  courtName?: string;
   qrCodeUrl: string;
   customer: BookingCustomerInfo;
   payment: BookingPaymentInfo;
+
+  // --- Dữ liệu phục vụ Pass sân ---
+  isPassing?: boolean;
+  originalPrice?: number;
+  passPrice?: number;
+  passDiscountPercent?: number; // 0, 10, 20, 30, 50
+  passCreatedAt?: string;
+  sellerBankInfo?: BankInfo;
+  sellerName?: string;
+  sellerPhone?: string;
 }
 
 export interface BookingFilterState {
@@ -59,9 +84,9 @@ export interface RescheduleSlotOption {
 }
 
 export interface RescheduleDateOption {
-  date: string; // ISO format (YYYY-MM-DD)
-  dayName: string; // Thứ hai, Thứ ba...
-  displayDate: string; // 24/10
+  date: string;
+  dayName: string;
+  displayDate: string;
   isToday?: boolean;
 }
 
@@ -71,4 +96,10 @@ export interface ReschedulePayload {
   newDateText: string;
   newTimeText: string;
   slotId: string;
+}
+
+export interface PassCourtPayload {
+  passPrice: number;
+  discountPercent: number;
+  bankInfo: BankInfo;
 }

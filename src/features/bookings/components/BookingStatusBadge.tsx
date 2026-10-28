@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Badge } from "@/components/ui/badge";
+import { Badge, BadgeVariant } from "@/components/ui/badge";
 import { BookingStatus } from "../types/bookings.types";
 import { COMMON_TEXTS } from "@/constants/common.constants";
 
@@ -17,24 +17,34 @@ const STATUS_CONFIG: Record<
   BookingStatus,
   {
     defaultText: string;
-    variant: "success" | "warning" | "cancelled";
+    variant: BadgeVariant;
     icon: string;
   }
 > = {
   confirmed: {
     defaultText: "Đã đặt",
     variant: "success",
-    icon: COMMON_TEXTS.statusIcons.confirmed,
+    icon: COMMON_TEXTS.statusIcons?.confirmed || "✓",
   },
   rescheduled: {
     defaultText: "Đã dời lịch",
     variant: "warning",
-    icon: COMMON_TEXTS.statusIcons.rescheduled,
+    icon: COMMON_TEXTS.statusIcons?.rescheduled || "🔄",
   },
   cancelled: {
     defaultText: "Đã hủy",
     variant: "cancelled",
-    icon: COMMON_TEXTS.statusIcons.cancelled,
+    icon: COMMON_TEXTS.statusIcons?.cancelled || "✕",
+  },
+  passing: {
+    defaultText: "Đang Pass",
+    variant: "passing",
+    icon: (COMMON_TEXTS.statusIcons as Record<string, string>)?.passing || "🎟️",
+  },
+  passed_success: {
+    defaultText: "Đã Pass",
+    variant: "passed",
+    icon: (COMMON_TEXTS.statusIcons as Record<string, string>)?.passed_success || "✅",
   },
 };
 
