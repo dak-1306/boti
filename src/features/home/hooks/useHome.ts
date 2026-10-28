@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   CATEGORIES_DATA,
@@ -12,11 +12,13 @@ import {
   calculateHaversineDistance,
   formatDistanceText,
 } from "../utils/distance";
-import { useVenueStore } from "@/stores/useVenueStore";
+import { useVenuesQuery } from "./useVenuesQuery";
 
 export const useHome = () => {
   const router = useRouter();
-  const { venues: storeVenues, isLoading, fetchVenues } = useVenueStore();
+  
+  // 👈 Dùng React Query thay cho Zustand Store
+  const { data: storeVenues = [], isLoading } = useVenuesQuery();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -28,10 +30,6 @@ export const useHome = () => {
 
   const { userLocation, isLoadingLocation, locationError, requestLocation } =
     useLocation();
-
-  useEffect(() => {
-    fetchVenues();
-  }, [fetchVenues]);
 
   const filteredVenues = useMemo(() => {
     return storeVenues
@@ -128,7 +126,7 @@ export const useHome = () => {
   };
 
   return {
-    isLoading, // 👈 Đọc trực tiếp từ Zustand Store
+    isLoading, // 👈 Tự động ăn theo trạng thái Fetch của React Query (Skeleton mượt 100%)
     searchQuery,
     setSearchQuery,
     selectedCategory,

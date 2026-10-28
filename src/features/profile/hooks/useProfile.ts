@@ -1,38 +1,41 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useUserStore } from "@/stores/useUserStore";
+import { useState } from "react";
+import { useUserProfileQuery, useUpdateProfileMutation } from "./useUserQuery";
 import { UserProfile } from "../types/profile.types";
 
 export function useProfile() {
-  const { user, isLoading, fetchProfile, updateProfile } = useUserStore();
+  const { data: user, isLoading } = useUserProfileQuery();
+  const updateProfileMutation = useUpdateProfileMutation();
+
   const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-
-  // Trigger fetch dữ liệu người dùng từ Store khi mount
-  useEffect(() => {
-    fetchProfile();
-  }, [fetchProfile]);
 
   const handleConfirmLogout = () => {
     setIsLogoutDialogOpen(false);
   };
 
   const handleUpdateProfile = async (data: Partial<UserProfile>) => {
-    const success = await updateProfile(data);
-    if (success) {
+    try {
+      await updateProfileMutation.mutateAsync(data);
       setIsEditDrawerOpen(false);
+    } catch {
+      // Error được xử lý qua Toast hoặc UI feedback
     }
   };
 
   const handleChangeAvatar = async (avatarUrl: string) => {
-    await updateProfile({ avatarUrl });
+    try {
+      await updateProfileMutation.mutateAsync({ avatarUrl });
+    } catch {
+      // Handle error
+    }
   };
 
   return {
-    user,
-    isLoading, // 👈 Đọc trực tiếp từ Zustand Store
+    user: user || null,
+    isLoading: isLoading || updateProfileMutation.isPending,
     isEditDrawerOpen,
     openEditDrawer: () => setIsEditDrawerOpen(true),
     closeEditDrawer: () => setIsEditDrawerOpen(false),

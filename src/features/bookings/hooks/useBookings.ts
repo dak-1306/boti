@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   BookingItem,
@@ -9,6 +9,7 @@ import {
   DateFilterMode,
 } from "../types/bookings.types";
 import { useBookingStore } from "@/stores/useBookingStore";
+import { useMyBookingsQuery } from "./useBookingQuery";
 
 interface LocalDateFilterState {
   filterMode: DateFilterMode;
@@ -19,13 +20,8 @@ interface LocalDateFilterState {
 
 export const useBookings = () => {
   const router = useRouter();
-  const {
-    bookings: storeBookings,
-    isLoading, // 👈 Đọc trực tiếp từ Zustand Store
-    fetchMyBookings,
-    activeTab,
-    setActiveTab,
-  } = useBookingStore();
+  const { data: storeBookings = [], isLoading } = useMyBookingsQuery();
+  const { activeTab, setActiveTab } = useBookingStore();
 
   const [dateFilters, setDateFilters] = useState<LocalDateFilterState>({
     filterMode: "all",
@@ -35,10 +31,6 @@ export const useBookings = () => {
   });
 
   const [isDateDrawerOpen, setIsDateDrawerOpen] = useState(false);
-
-  useEffect(() => {
-    fetchMyBookings();
-  }, [fetchMyBookings]);
 
   const filters: BookingFilterState = useMemo(
     () => ({
@@ -151,7 +143,7 @@ export const useBookings = () => {
   };
 
   return {
-    isLoading, // 👈 Trả về cho UI
+    isLoading,
     filters,
     setFilters,
     selectedDateText,

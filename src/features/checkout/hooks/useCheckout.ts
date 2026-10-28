@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -7,6 +9,7 @@ import {
   CheckoutBookingData,
 } from "../types/checkout.types";
 import { useBookingStore } from "@/stores/useBookingStore";
+import { useCreateBookingMutation } from "@/features/bookings/hooks/useBookingQuery";
 
 const fallbackBookingData: CheckoutBookingData = {
   venueId: "v1",
@@ -25,10 +28,11 @@ const fallbackBookingData: CheckoutBookingData = {
 
 export function useCheckout() {
   const router = useRouter();
-  const { activeDraft, confirmBooking } = useBookingStore();
+  const activeDraft = useBookingStore((s) => s.activeDraft);
+  const createBookingMutation = useCreateBookingMutation();
+
   const [selectedMethod, setSelectedMethod] =
     useState<PaymentMethodType>("zalopay");
-  const [isProcessing, setIsProcessing] = useState(false);
   const [shouldSimulateSuccess, setShouldSimulateSuccess] = useState(true);
 
   const bookingData = useMemo<CheckoutBookingData>(() => {
@@ -49,33 +53,28 @@ export function useCheckout() {
   }, [activeDraft]);
 
   const handleProcessPayment = useCallback(async () => {
-    setIsProcessing(true);
-
     if (shouldSimulateSuccess) {
-      const success = await confirmBooking(bookingData);
-      setIsProcessing(false);
-
-      if (success) {
+      try {
+        await createBookingMutation.mutateAsync(bookingData);
         toast.success(CHECKOUT_TEXTS.toastSuccess, {
           description: CHECKOUT_TEXTS.toastSuccessDesc,
         });
         router.push("/bookings");
-      } else {
+      } catch {
         toast.error("Không thể lưu đơn hàng. Vui lòng thử lại.");
       }
     } else {
-      setIsProcessing(false);
       toast.error(CHECKOUT_TEXTS.toastError, {
         description: CHECKOUT_TEXTS.toastErrorDesc,
       });
     }
-  }, [shouldSimulateSuccess, confirmBooking, bookingData, router]);
+  }, [shouldSimulateSuccess, createBookingMutation, bookingData, router]);
 
   return {
     bookingData,
     selectedMethod,
     setSelectedMethod,
-    isProcessing,
+    isProcessing: createBookingMutation.isPending,
     shouldSimulateSuccess,
     setShouldSimulateSuccess,
     handleProcessPayment,

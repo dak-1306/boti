@@ -1,26 +1,26 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
+"use client";
+
+import { useState, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import { BookingItem } from "../types/bookings.types";
 import {
   RESCHEDULE_TEXTS,
   BOOKING_TEXTS,
 } from "../constants/bookings.constants";
-import { useBookingStore } from "@/stores/useBookingStore";
+import {
+  useMyBookingsQuery,
+  useCancelBookingMutation,
+  useRescheduleBookingMutation,
+} from "./useBookingQuery";
 
 export function useBookingDetail(bookingId: string) {
-  const { bookings, fetchMyBookings, cancelBooking, rescheduleBooking } =
-    useBookingStore();
+  const { data: bookings = [] } = useMyBookingsQuery();
+  const cancelBookingMutation = useCancelBookingMutation();
+  const rescheduleBookingMutation = useRescheduleBookingMutation();
 
   const [isRescheduleDrawerOpen, setIsRescheduleDrawerOpen] = useState(false);
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
-  useEffect(() => {
-    if (!bookings.length) {
-      fetchMyBookings();
-    }
-  }, [bookings.length, fetchMyBookings]);
-
-  // Khớp linh hoạt theo b.id hoặc b.bookingCode
   const booking = useMemo<BookingItem | null>(() => {
     const target = decodeURIComponent(bookingId);
     return (
@@ -52,14 +52,14 @@ export function useBookingDetail(bookingId: string) {
 
   const handleConfirmCancel = useCallback(async () => {
     const idToUse = booking?.id || bookingId;
-    const success = await cancelBooking(idToUse);
-    if (success) {
+    try {
+      await cancelBookingMutation.mutateAsync(idToUse);
       setIsCancelDialogOpen(false);
       toast.error("Đã hủy đơn đặt sân thành công.");
-    } else {
+    } catch {
       toast.error("Hủy đơn thất bại. Vui lòng thử lại.");
     }
-  }, [booking?.id, bookingId, cancelBooking]);
+  }, [booking?.id, bookingId, cancelBookingMutation]);
 
   const handleConfirmReschedule = useCallback(
     async ({
@@ -70,20 +70,18 @@ export function useBookingDetail(bookingId: string) {
       newTimeText: string;
     }) => {
       const idToUse = booking?.id || bookingId;
-
-      const success = await rescheduleBooking(idToUse, {
-        newDateText,
-        newTimeText,
-      });
-
-      if (success) {
+      try {
+        await rescheduleBookingMutation.mutateAsync({
+          id: idToUse,
+          payload: { newDateText, newTimeText },
+        });
         setIsRescheduleDrawerOpen(false);
         toast.success(RESCHEDULE_TEXTS.successToast);
-      } else {
+      } catch {
         toast.error("Dời lịch thất bại. Vui lòng thử lại.");
       }
     },
-    [booking?.id, bookingId, rescheduleBooking],
+    [booking?.id, bookingId, rescheduleBookingMutation],
   );
 
   return {

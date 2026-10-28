@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import { MobileContainer } from "@/components/layout/MobileContainer";
+import { QueryProvider } from "@/providers/query-provider";
 import { APP_CONFIG } from "@/constants/appConfig";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -31,13 +32,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" className={`${beVietnamPro.variable} h-full antialiased`}>
-      {/* 
-        Body chỉ làm canvas gốc 100dvh tràn viền, dùng token bg-background
-        Không gán cứng màu slate/zinc hay max-width tại đây.
-      */}
       <body className="h-[100dvh] w-full overflow-hidden bg-background text-foreground font-sans antialiased">
-        <Toaster />
-        <MobileContainer>{children}</MobileContainer>
+        <QueryProvider>
+          <Toaster />
+          <MobileContainer>{children}</MobileContainer>
+        </QueryProvider>
       </body>
     </html>
   );

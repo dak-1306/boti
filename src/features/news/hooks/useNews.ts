@@ -1,19 +1,15 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { NewsItem, NewsCategoryFilter } from "../types/news.types";
-import { useNewsStore } from "@/stores/useNewsStore";
+import { useNewsQuery } from "./useNewsQuery";
 
 export function useNews() {
-  const { newsList, isLoading, fetchNews } = useNewsStore();
+  const { data: newsList = [], isLoading } = useNewsQuery();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] =
     useState<NewsCategoryFilter>("all");
   const [detailNews, setDetailNews] = useState<NewsItem | null>(null);
-
-  useEffect(() => {
-    fetchNews();
-  }, [fetchNews]);
 
   const featuredNews = useMemo(() => {
     return newsList.find((item) => item.isFeatured) || newsList[0];

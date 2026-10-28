@@ -1,17 +1,14 @@
-import { useMemo } from "react";
-import { NewsItem } from "../types/news.types";
-import rawNewsMock from "@/data/news.mock.json";
+"use client";
+
+import { useNewsDetailQuery } from "./useNewsQuery";
 
 export function useNewsDetail(id?: string) {
   const targetId = id || "n_01";
-
-  const news = useMemo<NewsItem>(() => {
-    const list = rawNewsMock as unknown as NewsItem[];
-    const found = list.find((n) => n.id === targetId || n.slug === targetId);
-    return found || list[0];
-  }, [targetId]);
+  const { data: news, isLoading } = useNewsDetailQuery(targetId);
 
   const handleShare = async () => {
+    if (!news) return;
+
     if (navigator.share) {
       try {
         await navigator.share({
@@ -30,6 +27,7 @@ export function useNewsDetail(id?: string) {
 
   return {
     news,
+    isLoading,
     handleShare,
   };
 }

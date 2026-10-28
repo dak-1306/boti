@@ -1,7 +1,13 @@
-import { useState, useMemo, useEffect } from "react";
-import { BookingItem, RescheduleSlotOption, RescheduleDateOption } from "../types/bookings.types";
+"use client";
+
+import { useState, useMemo } from "react";
+import {
+  BookingItem,
+  RescheduleSlotOption,
+  RescheduleDateOption,
+} from "../types/bookings.types";
 import rawVenuesMock from "@/data/venues.mock.json";
-import { useBookingStore } from "@/stores/useBookingStore";
+import { useMyBookingsQuery } from "./useBookingQuery";
 
 interface UseRescheduleDrawerProps {
   booking: BookingItem | null;
@@ -17,13 +23,8 @@ export function useRescheduleDrawer({
   onConfirmReschedule,
   onClose,
 }: UseRescheduleDrawerProps) {
-  const { bookings: storeBookings, fetchMyBookings } = useBookingStore();
+  const { data: storeBookings = [] } = useMyBookingsQuery();
 
-  useEffect(() => {
-    fetchMyBookings();
-  }, [fetchMyBookings]);
-
-  // Tạo danh sách 7 ngày tiếp theo để chọn
   const dateOptions: RescheduleDateOption[] = useMemo(() => {
     const dates: RescheduleDateOption[] = [];
     const today = new Date();
@@ -53,10 +54,11 @@ export function useRescheduleDrawer({
     return dates;
   }, []);
 
-  const [selectedDateOption, setSelectedDateOption] = useState<RescheduleDateOption>(
-    dateOptions[0]
+  const [selectedDateOption, setSelectedDateOption] =
+    useState<RescheduleDateOption>(dateOptions[0]);
+  const [selectedSlot, setSelectedSlot] = useState<RescheduleSlotOption | null>(
+    null,
   );
-  const [selectedSlot, setSelectedSlot] = useState<RescheduleSlotOption | null>(null);
 
   const currentVenue = useMemo(() => {
     if (!booking?.venueId) return rawVenuesMock[0];
@@ -70,7 +72,6 @@ export function useRescheduleDrawer({
     return booking?.payment?.totalFee || booking?.payment?.courtFee || 240000;
   }, [booking]);
 
-  // Lọc khung giờ theo ngày chọn & Kiểm tra tính khả dụng ĐỘNG với các đơn khác
   const courtSlots = useMemo(() => {
     if (!currentVenue?.courts) return [];
 
@@ -78,23 +79,24 @@ export function useRescheduleDrawer({
       const slots: RescheduleSlotOption[] = court.slots.map((s) => {
         const slotTimeStr = `${s.startTime} - ${s.endTime}`;
 
-        // Kiểm tra xem slot này có bị ĐƠN KHÁC (trừ chính đơn hiện tại) chiếm giữ không
         const isOccupiedByAnotherBooking = storeBookings.some((b) => {
-          // Bỏ qua chính đơn đang được dời lịch
-          if (String(b.id) === String(booking?.id) || b.bookingCode === booking?.bookingCode) {
+          if (
+            String(b.id) === String(booking?.id) ||
+            b.bookingCode === booking?.bookingCode
+          ) {
             return false;
           }
           if (b.status === "cancelled") return false;
           if (String(b.venueId) !== String(currentVenue.id)) return false;
           if (b.date !== selectedDateOption.date) return false;
 
-          const isCourtMatch = !b.timeText.includes("(") || b.timeText.includes(court.name);
+          const isCourtMatch =
+            !b.timeText.includes("(") || b.timeText.includes(court.name);
           const isTimeMatch = b.timeText.includes(slotTimeStr);
 
           return isCourtMatch && isTimeMatch;
         });
 
-        // Khả dụng khi JSON cho phép VÀ chưa có đơn khác đặt thành công
         const isAvailable = s.isAvailable && !isOccupiedByAnotherBooking;
 
         return {
@@ -115,7 +117,13 @@ export function useRescheduleDrawer({
         slots,
       };
     });
-  }, [currentVenue, targetSlotPrice, storeBookings, booking, selectedDateOption]);
+  }, [
+    currentVenue,
+    targetSlotPrice,
+    storeBookings,
+    booking,
+    selectedDateOption,
+  ]);
 
   const handleConfirm = () => {
     if (!selectedSlot || !booking) return;
@@ -133,7 +141,7 @@ export function useRescheduleDrawer({
     selectedDateOption,
     setSelectedDateOption: (opt: RescheduleDateOption) => {
       setSelectedDateOption(opt);
-      setSelectedSlot(null); // Reset slot được chọn khi người dùng chuyển ngày
+      setSelectedSlot(null);
     },
     courtSlots,
     selectedSlot,
