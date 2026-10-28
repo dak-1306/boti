@@ -3,10 +3,10 @@ import rawVenuesMock from "@/data/venues.mock.json";
 import rawNewsMock from "@/data/news.mock.json";
 
 const STORAGE_KEYS = {
-  USER: "tabby_mock_user",
-  VENUES: "tabby_mock_venues",
-  BOOKINGS: "tabby_mock_bookings",
-  NEWS: "tabby_mock_news",
+  USER: "boti_mock_user",
+  VENUES: "boti_mock_venues",
+  BOOKINGS: "boti_mock_bookings",
+  NEWS: "boti_mock_news",
 } as const;
 
 type StorageKey = keyof typeof STORAGE_KEYS;

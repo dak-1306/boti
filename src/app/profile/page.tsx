@@ -29,15 +29,44 @@ export default function ProfilePage() {
     handleToggleNotifications,
   } = useProfile();
 
+  // SKELETON LOADING KHỚP 100% CẤU TRÚC OVERLAY HEADER
   if (isLoading || !user) {
     return (
       <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
-        <PageHeader title={PROFILE_TEXTS.pageTitle} variant="gradient" />
-        <StaggerGroup className="flex-1 space-y-4 p-4 animate-pulse">
-          <div className="h-28 w-full rounded-2xl bg-muted" />
-          <div className="h-20 w-full rounded-2xl bg-muted" />
-          <div className="h-40 w-full rounded-2xl bg-muted" />
-        </StaggerGroup>
+        {/* 1. PageHeader Skeleton với extension -mt-12 y hệt UI thật */}
+        <div className="shrink-0">
+          <PageHeader
+            title={PROFILE_TEXTS.pageTitle}
+            variant="gradient"
+            headerClassName="pb-16"
+            extensionClassName="-mt-12"
+            bottomExtension={
+              <div className="w-full rounded-2xl border border-border bg-card p-4 shadow-xs sm:mx-auto sm:max-w-[390px] animate-pulse">
+                <div className="flex items-center gap-3.5">
+                  {/* Avatar Skeleton */}
+                  <div className="h-16 w-16 shrink-0 rounded-full bg-muted" />
+                  {/* User Info Skeleton */}
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-32 rounded-md bg-muted" />
+                    <div className="h-3 w-24 rounded-md bg-muted" />
+                    <div className="h-3 w-40 rounded-md bg-muted" />
+                  </div>
+                </div>
+              </div>
+            }
+          />
+        </div>
+
+        {/* 2. Body Skeleton cuộn bên dưới khớp vị trí Card */}
+        <div className="flex-1 overflow-y-auto px-4 pt-3 pb-20 no-scrollbar">
+          <div className="w-full space-y-3.5 sm:mx-auto sm:max-w-[390px] animate-pulse">
+            {/* Bank Card Skeleton */}
+            <div className="h-24 w-full rounded-2xl bg-muted" />
+            {/* Menu List Skeleton */}
+            <div className="h-64 w-full rounded-2xl bg-muted" />
+          </div>
+        </div>
+
         <BottomNav activeTab="profile" />
       </div>
     );
@@ -45,21 +74,24 @@ export default function ProfilePage() {
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
-      <PageHeader
-        title={PROFILE_TEXTS.pageTitle}
-        variant="gradient"
-        headerClassName="pb-16"
-        extensionClassName="-mt-12"
-        bottomExtension={
-          <ProfileHeader
-            user={user}
-            onEdit={openEditDrawer}
-            onChangeAvatar={handleChangeAvatar}
-          />
-        }
-      />
+      {/* GIAO DIỆN CHÍNH THỨC */}
+      <div className="shrink-0">
+        <PageHeader
+          title={PROFILE_TEXTS.pageTitle}
+          variant="gradient"
+          headerClassName="pb-16"
+          extensionClassName="-mt-12"
+          bottomExtension={
+            <ProfileHeader
+              user={user}
+              onEdit={openEditDrawer}
+              onChangeAvatar={handleChangeAvatar}
+            />
+          }
+        />
+      </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 no-scrollbar">
+      <div className="flex-1 overflow-y-auto px-4 pt-3 pb-20 no-scrollbar">
         <StaggerGroup className="w-full space-y-3.5 sm:mx-auto sm:max-w-[390px]">
           <ProfileBankCard bankInfo={user.bankInfo} onEdit={openEditDrawer} />
 

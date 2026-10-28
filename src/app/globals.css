@@ -188,3 +188,8 @@ body {
   background: transparent !important;
   border: none !important;
 }
+
+.no-scrollbar {
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}

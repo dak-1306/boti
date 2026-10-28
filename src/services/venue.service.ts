@@ -6,4 +6,8 @@ export const venueService = {
   getVenues: (): Promise<ApiResponse<Venue[]>> => {
     return apiClient.get<Venue[]>("/venues");
   },
+
+  getVenueById: (id: string): Promise<ApiResponse<Venue>> => {
+    return apiClient.get<Venue>(`/venues/${id}`);
+  },
 };

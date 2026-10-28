@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -19,12 +21,12 @@ export const useBookings = () => {
   const router = useRouter();
   const {
     bookings: storeBookings,
+    isLoading, // 👈 Đọc trực tiếp từ Zustand Store
     fetchMyBookings,
     activeTab,
     setActiveTab,
   } = useBookingStore();
 
-  // Local state chỉ quản lý bộ lọc ngày/tháng/năm
   const [dateFilters, setDateFilters] = useState<LocalDateFilterState>({
     filterMode: "all",
     selectedDate: undefined,
@@ -38,29 +40,25 @@ export const useBookings = () => {
     fetchMyBookings();
   }, [fetchMyBookings]);
 
-  // Derived state: Hợp nhất activeTab từ Store và dateFilters từ Local State (Không dùng useEffect)
   const filters: BookingFilterState = useMemo(
     () => ({
       tab: activeTab || "confirmed",
       ...dateFilters,
     }),
-    [activeTab, dateFilters]
+    [activeTab, dateFilters],
   );
 
-  // Hàm setFilters giữ nguyên Interface cũ để không làm hỏng UI Components
   const setFilters = (
     updater:
       | BookingFilterState
-      | ((prev: BookingFilterState) => BookingFilterState)
+      | ((prev: BookingFilterState) => BookingFilterState),
   ) => {
     const next = typeof updater === "function" ? updater(filters) : updater;
-    
-    // Nếu tab thay đổi, ghi trực tiếp vào Zustand Store
+
     if (next.tab !== activeTab) {
       setActiveTab(next.tab as BookingTab);
     }
 
-    // Cập nhật phần filter ngày cục bộ
     setDateFilters({
       filterMode: next.filterMode,
       selectedDate: next.selectedDate,
@@ -98,7 +96,10 @@ export const useBookings = () => {
         );
       }
 
-      if (dateFilters.filterMode === "year" && dateFilters.selectedYear !== undefined) {
+      if (
+        dateFilters.filterMode === "year" &&
+        dateFilters.selectedYear !== undefined
+      ) {
         return bYear === dateFilters.selectedYear;
       }
 
@@ -117,15 +118,21 @@ export const useBookings = () => {
       });
     }
 
-    if (dateFilters.filterMode === "month" && dateFilters.selectedYear !== undefined) {
+    if (
+      dateFilters.filterMode === "month" &&
+      dateFilters.selectedYear !== undefined
+    ) {
       const monthStr = String((dateFilters.selectedMonth ?? 0) + 1).padStart(
         2,
-        "0"
+        "0",
       );
       return `Tháng ${monthStr}/${dateFilters.selectedYear}`;
     }
 
-    if (dateFilters.filterMode === "year" && dateFilters.selectedYear !== undefined) {
+    if (
+      dateFilters.filterMode === "year" &&
+      dateFilters.selectedYear !== undefined
+    ) {
       return `Năm ${dateFilters.selectedYear}`;
     }
 
@@ -144,6 +151,7 @@ export const useBookings = () => {
   };
 
   return {
+    isLoading, // 👈 Trả về cho UI
     filters,
     setFilters,
     selectedDateText,

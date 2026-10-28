@@ -1,21 +1,26 @@
-import { useState, useMemo } from "react";
+"use client";
+
+import { useState, useMemo, useEffect } from "react";
 import { NewsItem, NewsCategoryFilter } from "../types/news.types";
-import rawNewsMock from "@/data/news.mock.json";
+import { useNewsStore } from "@/stores/useNewsStore";
 
 export function useNews() {
+  const { newsList, isLoading, fetchNews } = useNewsStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] =
     useState<NewsCategoryFilter>("all");
   const [detailNews, setDetailNews] = useState<NewsItem | null>(null);
 
-  const initialNews = rawNewsMock as unknown as NewsItem[];
+  useEffect(() => {
+    fetchNews();
+  }, [fetchNews]);
 
   const featuredNews = useMemo(() => {
-    return initialNews.find((item) => item.isFeatured) || initialNews[0];
-  }, [initialNews]);
+    return newsList.find((item) => item.isFeatured) || newsList[0];
+  }, [newsList]);
 
   const filteredNews = useMemo(() => {
-    return initialNews.filter((item) => {
+    return newsList.filter((item) => {
       const matchesCategory =
         selectedCategory === "all" || item.categorySlug === selectedCategory;
 
@@ -25,9 +30,10 @@ export function useNews() {
 
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery, initialNews]);
+  }, [selectedCategory, searchQuery, newsList]);
 
   return {
+    isLoading,
     searchQuery,
     setSearchQuery,
     selectedCategory,

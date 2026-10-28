@@ -1,7 +1,7 @@
 import { ApiResponse } from "@/types/api.types";
 import { createSuccessResponse, createErrorResponse } from "../api-response";
 import { mockDb } from "../mock-db";
-import { NewsItem } from "@/services/news.service";
+import { NewsItem } from "@/features/news/types/news.types";
 
 export async function handleNewsRequest<T>(
   endpoint: string,

@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { newsService, NewsItem } from "@/services/news.service";
+import { newsService } from "@/services/news.service";
+import { NewsItem } from "@/features/news/types/news.types";
 
 interface NewsState {
   newsList: NewsItem[];

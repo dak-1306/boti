@@ -13,6 +13,7 @@ import { BOOKING_TABS } from "@/features/bookings/constants/bookings.constants";
 
 export default function BookingsPage() {
   const {
+    isLoading,
     filters,
     setFilters,
     selectedDateText,
@@ -28,6 +29,58 @@ export default function BookingsPage() {
 
   const currentTabLabel =
     BOOKING_TABS.find((t) => t.id === filters.tab)?.label || "Đã đặt";
+
+  // SKELETON LOADING KHỚP 1:1 CHO TRANG ĐẶT SÂN
+  if (isLoading) {
+    return (
+      <div className="flex h-full w-full flex-col overflow-hidden bg-slate-50 dark:bg-slate-950">
+        <div className="shrink-0">
+          <BookingHeader
+            bottomExtension={
+              <BookingTabs
+                activeTab={filters.tab}
+                onTabChange={(tab) => setFilters((prev) => ({ ...prev, tab }))}
+              />
+            }
+          >
+            <BookingSectionHeader
+              title={currentTabLabel}
+              selectedDateText={selectedDateText}
+              onOpenCalendar={openDateDrawer}
+              onClearDateFilter={clearDateFilter}
+            />
+          </BookingHeader>
+        </div>
+
+        {/* Danh sách Booking Card Skeleton */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar sm:mx-auto sm:max-w-[390px] w-full animate-pulse">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-3 rounded-[22px] bg-card p-3 border border-border shadow-xs"
+            >
+              {/* Thumbnail Skeleton */}
+              <div className="h-24 w-24 shrink-0 rounded-2xl bg-muted" />
+
+              {/* Thông tin Đơn Skeleton */}
+              <div className="flex flex-1 flex-col justify-between min-w-0 space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="h-4 w-16 rounded-md bg-muted" />
+                  <div className="h-4 w-20 rounded-full bg-muted" />
+                </div>
+                <div className="h-3.5 w-3/4 rounded-md bg-muted" />
+                <div className="h-3 w-28 rounded-md bg-muted" />
+                <div className="h-3 w-24 rounded-md bg-muted" />
+                <div className="h-3 w-36 rounded-md bg-muted" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <BottomNav activeTab="bookings" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-slate-50 dark:bg-slate-950">
@@ -50,10 +103,7 @@ export default function BookingsPage() {
       </div>
 
       {/* Animation chuyển Tab siêu mượt nhờ key={filters.tab} */}
-      <div
-        key={filters.tab}
-        className="flex-1 overflow-y-auto no-scrollbar"
-      >
+      <div key={filters.tab} className="flex-1 overflow-y-auto no-scrollbar">
         {hasBookings ? (
           <BookingList
             bookings={bookings}

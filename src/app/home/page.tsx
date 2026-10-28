@@ -29,6 +29,7 @@ const VenueMapView = dynamic(
 
 export default function HomePage() {
   const {
+    isLoading,
     searchQuery,
     setSearchQuery,
     selectedCategory,
@@ -56,6 +57,71 @@ export default function HomePage() {
   } = useHome();
 
   const isMapView = viewMode === "map";
+
+  // SKELETON LOADING KHỚP 1:1 CHO TRANG CHỦ
+  if (isLoading) {
+    return (
+      <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+        <HomeHeader
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          onOpenFilterDrawer={openFilterDrawer}
+          onRequestLocation={onRequestLocation}
+          isLoadingLocation={isLoadingLocation}
+          hasLocation={hasLocation}
+        />
+
+        <main className="flex-1 w-full flex flex-col min-h-0 overflow-y-auto pb-20 no-scrollbar">
+          <div className="sm:mx-auto sm:max-w-[390px] w-full flex-1 flex flex-col min-h-0">
+            {/* Category Skeleton */}
+            <div className="w-full shrink-0 overflow-x-auto py-3 px-4 no-scrollbar">
+              <div className="flex items-center gap-3.5 w-max animate-pulse">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex flex-col items-center gap-1.5 shrink-0"
+                  >
+                    <div className="h-13 w-13 rounded-2xl bg-muted" />
+                    <div className="h-2.5 w-10 rounded-md bg-muted" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Section Header Skeleton */}
+            <div className="flex items-center justify-between px-4 py-2 shrink-0 animate-pulse">
+              <div className="h-4 w-28 rounded-md bg-muted" />
+              <div className="h-8 w-24 rounded-full bg-muted" />
+            </div>
+
+            {/* Grid Sân Skeleton (2 Cột) */}
+            <div className="grid grid-cols-2 gap-3 px-4 pb-4 animate-pulse">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col overflow-hidden rounded-2xl bg-card border border-border shadow-xs"
+                >
+                  <div className="h-28 w-full bg-muted" />
+                  <div className="p-2.5 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="h-3 w-14 rounded-md bg-muted" />
+                      <div className="h-3 w-8 rounded-md bg-muted" />
+                    </div>
+                    <div className="h-3.5 w-3/4 rounded-md bg-muted" />
+                    <div className="h-2.5 w-full rounded-md bg-muted" />
+                    <div className="h-2.5 w-1/2 rounded-md bg-muted" />
+                    <div className="mt-2 h-10 w-full rounded-xl bg-muted" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
+
+        <BottomNav activeTab="home" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
@@ -90,7 +156,6 @@ export default function HomePage() {
             />
           </div>
 
-          {/* 1. DANH SÁCH SÂN */}
           {!isMapView && (
             <div className="flex-1">
               <VenueGrid
@@ -102,7 +167,6 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* 2. BẢN ĐỒ: Giữ nguyên khung chuẩn Flexbox */}
           <div
             className={cn(
               "relative flex-1 w-full min-h-0 overflow-hidden touch-none",

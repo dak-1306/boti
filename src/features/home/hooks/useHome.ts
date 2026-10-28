@@ -1,4 +1,6 @@
-import { useState, useMemo } from "react";
+"use client";
+
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   CATEGORIES_DATA,
@@ -10,11 +12,12 @@ import {
   calculateHaversineDistance,
   formatDistanceText,
 } from "../utils/distance";
-
-import rawVenuesMock from "@/data/venues.mock.json";
+import { useVenueStore } from "@/stores/useVenueStore";
 
 export const useHome = () => {
   const router = useRouter();
+  const { venues: storeVenues, isLoading, fetchVenues } = useVenueStore();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
@@ -26,10 +29,12 @@ export const useHome = () => {
   const { userLocation, isLoadingLocation, locationError, requestLocation } =
     useLocation();
 
-  const initialVenues = rawVenuesMock as Venue[];
+  useEffect(() => {
+    fetchVenues();
+  }, [fetchVenues]);
 
   const filteredVenues = useMemo(() => {
-    return initialVenues
+    return storeVenues
       .map((venue) => {
         if (!userLocation) return venue;
 
@@ -93,7 +98,7 @@ export const useHome = () => {
         }
         return 0;
       });
-  }, [searchQuery, selectedCategory, filters, userLocation, initialVenues]);
+  }, [searchQuery, selectedCategory, filters, userLocation, storeVenues]);
 
   const [selectedVenueId, setSelectedVenueId] = useState<string | null>(null);
 
@@ -123,6 +128,7 @@ export const useHome = () => {
   };
 
   return {
+    isLoading, // 👈 Đọc trực tiếp từ Zustand Store
     searchQuery,
     setSearchQuery,
     selectedCategory,
