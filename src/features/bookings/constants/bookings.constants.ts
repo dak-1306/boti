@@ -23,6 +23,11 @@ export const MONTH_NAMES = [
 ] as const;
 
 export const BOOKING_TEXTS = {
+  cancelConfirmTitle: "Xác nhận hủy lịch đặt sân",
+  cancelConfirmDescription:
+    "Bạn có chắc chắn muốn hủy lịch đặt sân này không? Hành động này không thể hoàn tác.",
+  cancelConfirmText: "Hủy lịch",
+  cancelCancelText: "Quay lại",
   headerTitle: "Lịch đặt",
   headerSubtitle: "Quản lý lịch đặt sân của bạn",
   emptyTitle: "Bạn chưa có lịch đặt nào",

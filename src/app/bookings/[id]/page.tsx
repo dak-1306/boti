@@ -30,6 +30,7 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
     isCancelDialogOpen,
     openCancelDialog,
     closeCancelDialog,
+    handleConfirmCancel,
     isRescheduleDrawerOpen,
     openRescheduleDrawer,
     closeRescheduleDrawer,
@@ -99,6 +100,18 @@ function BookingDetailContent({ params }: { params: Promise<{ id: string }> }) {
         onClose={closePassDrawer}
         userBankInfo={user?.bankInfo}
         onConfirmPass={handleConfirmPass}
+      />
+
+      {/* Dialog xác nhận Hủy đặt sân */}
+      <ConfirmDialog
+        isOpen={isCancelDialogOpen}
+        onClose={closeCancelDialog}
+        onConfirm={handleConfirmCancel}
+        title={BOOKING_TEXTS.cancelConfirmTitle}
+        description={BOOKING_TEXTS.cancelConfirmDescription}
+        confirmText={BOOKING_TEXTS.cancelConfirmText}
+        cancelText={BOOKING_TEXTS.cancelCancelText}
+        variant="destructive"
       />
 
       {/* Dialog xác nhận Thu hồi Pass */}
